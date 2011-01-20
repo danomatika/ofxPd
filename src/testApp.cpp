@@ -11,13 +11,11 @@ void testApp::setup()
     getcwd(the_path, 255);
 	cout << "cwd: " << the_path << endl;
 	
-	cout << "ka1" << endl;
+	// so far this is following the samples/test.c example from libpd
+	
 	pdInit();
-	cout << "ka2" << endl;
 	pdDspOn();
-	cout << "ka3" << endl;
 	pdOpenPatch("test.pd", "data");
-	cout << "ka4" << endl;
 	
 	for(int i = 0; i < 10 * srate / 64; i++)
 	{

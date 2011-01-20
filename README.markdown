@@ -19,8 +19,14 @@ WARNING: Code is not currently working, still being actively developed.
 BUILD REQUIREMENTS
 ------------------
 
+Currently, ofxPd is being developed on Mac OSX. You will need to install Xcode from the Mac Developer Tools.
+
 BUILD AND INSTALLATION
 ----------------------
+
+Place ofxPd within a folder in the apps folder of the OF dir tree:
+
+`openframeworks/apps/myApps/ofxPd`
 
 USAGE
 -----
