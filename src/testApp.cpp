@@ -6,7 +6,7 @@ void testApp::setup()
 {
 	ofSetFrameRate(30);
 	
-	ofSetDataPathRoot("./data");
+
 	char the_path[256];
     getcwd(the_path, 255);
 	cout << "cwd: " << the_path << endl;
@@ -15,7 +15,7 @@ void testApp::setup()
 	
 	pdInit();
 	pdDspOn();
-	pdOpenPatch("test.pd", "data");
+	pdOpenPatch("test.pd");
 	
 	for(int i = 0; i < 10 * srate / 64; i++)
 	{

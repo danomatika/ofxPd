@@ -34,7 +34,7 @@ class ofxPd
 		void pdClearSearchPath();
 		
 		/// open a patch
-		void pdOpenPatch(string file, string folder="./");
+		void pdOpenPatch(string file);
 		
 		/// close a patch
 		void pdClosePatch(string name);
@@ -52,12 +52,26 @@ class ofxPd
 		void pdAftertouchReceived(int channel, int val) {}
 		void pdPolyAftertouchReceived(int channel, int pitch, int val) {}
 
+		
+		/// send messages to pd
+		void sendFloat(string messageName, float value);
+		void sendBang(string messageName);	
+		void sendMidiNote(int channel, int noteNum, int velocity);
+		void sendMidiControlChange(int channel, int ctlNum, int value);
+		void sendMidiBend(int channel, int value);
+		void sendMidiProgramChange(int channel, int program);
+		void sendMidiPolyTouch(int channel, int noteNum, int value);
+		void sendMidiAfterTouch(int channel, int value);
 	protected:
 
 		int srate;	///< the audio sample rate
 		float inbuf[64], outbuf[128];  /// one input channel, two output channels
 									   /// block size 64, one tick per buffer		
     private:
+	
+	
+		// helper function
+		void getDirAndFile(const char *path, char *outDir, char *outFile);
 	
 		bool	bPdInited;
 		bool	bVerbose;

@@ -13,6 +13,10 @@
 /* #define DEBUG(x) x */
 #define DEBUG(x)
 
+// need this to work on a mac
+#define HAVE_UNISTD_H
+#include <sys/stat.h>
+
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

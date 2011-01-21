@@ -74,17 +74,82 @@ void ofxPd::pdClearSearchPath()
 	libpd_clear_search_path();
 }
 
-void ofxPd::pdOpenPatch(string file, string folder)
+
+
+void ofxPd::getDirAndFile(const char *path, char *outDir, char *outFile) { 
+	char *lastSlash = strrchr(path, '/'); 
+	sprintf(outDir, ""); 
+	if(lastSlash==NULL) { 
+		sprintf(outFile, "%s", path); 
+	} else { 
+		strncpy(outDir, path, 1+1+lastSlash-path); 
+		outDir[1+lastSlash-path] = '\0'; 
+		strcpy(outFile, lastSlash+1); 
+	} 
+} 
+
+
+
+void ofxPd::pdOpenPatch(string file)
 {
+	char fileName[512];
+	char folderName[512];
+	
+	getDirAndFile(file.c_str(), folderName, fileName);
+	file = ofToDataPath(file);
+	
 	// [; pd open file folder(
 	libpd_start_message();
-	libpd_add_symbol(file.c_str());
-	libpd_add_symbol(folder.c_str());
+	libpd_add_symbol(fileName);
+	libpd_add_symbol(folderName);
 	if(libpd_finish_message("pd", "open") != 0)
 	{
 		ofLog(OF_LOG_ERROR, "ofxPd: couldn't open file");
 	}
 }
+
+
+void ofxPd::sendFloat(string receiverName, float value) {
+
+	libpd_float(receiverName.c_str(), value);
+}
+
+void ofxPd::sendBang(string receiverName) {
+
+	libpd_bang(receiverName.c_str());
+}
+
+void ofxPd::sendMidiNote(int channel, int noteNum, int velocity) {
+	libpd_start_message();
+	libpd_add_float(noteNum);
+	libpd_add_float(velocity);
+	libpd_add_float(channel);
+	libpd_finish_list("#notein");
+}
+
+void ofxPd::sendMidiControlChange(int channel, int ctlNum, int value) {
+	
+	libpd_controlchange(channel, ctlNum, value);
+	
+}
+void ofxPd::sendMidiBend(int channel, int value) {
+	
+	libpd_pitchbend(channel, value);
+}
+
+
+void ofxPd::sendMidiAfterTouch(int channel, int value) {
+	libpd_aftertouch(channel, value);
+}
+
+void ofxPd::sendMidiPolyTouch(int channel, int noteNum, int value) {
+	libpd_polyaftertouch(channel, noteNum, value);
+}
+
+void ofxPd::sendMidiProgramChange(int channel, int program) {
+	libpd_programchange(channel, program);
+}
+
 
 void ofxPd::pdClosePatch(string name)
 {
