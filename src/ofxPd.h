@@ -28,23 +28,33 @@ class ofxPd
 		void pdUpdate();
 		
 		/// add to the pd search path
-		void pdAddToSearchPath(string path);
+		void pdAddToSearchPath(const string& path);
 		
 		/// clear the current pd search path
 		void pdClearSearchPath();
 		
-		/// open a patch
-		void pdOpenPatch(string file, string folder="./");
+		/// open a patch, take a absolute or relative path (in data folder)
+		void pdOpenPatch(const string& patch);
 		
-		/// close a patch
-		void pdClosePatch(string name);
+		/// close a patch, takes the patch's basename (filename without extension)
+		void pdClosePatch(const string& name);
 		
 		// turn on/off digital signal processing
 		void pdDspOn();
 		void pdDspOff();
 		
+		/// send messages to pd
+		void pdSendFloat(const string& messageName, float value);
+		void pdSendBang(const string& messageName);	
+		void pdSendMidiNote(int channel, int noteNum, int velocity);
+		void pdSendMidiControlChange(int channel, int ctlNum, int value);
+		void pdSendMidiBend(int channel, int value);
+		void pdSendMidiProgramChange(int channel, int program);
+		void pdSendMidiPolyTouch(int channel, int noteNum, int value);
+		void pdSendMidiAfterTouch(int channel, int value);
+		
 		// callbacks for you to implement
-		void pdPrintReceived(string message) {}
+		void pdPrintReceived(const string& message) {}
 		void pdNoteonReceived(int channel, int pitch, int velocity) {}
 		void pdControlChangeReceived(int channel, int controller, int val) {}
 		void pdProgramChangeReceived(int channel, int program) {}
@@ -63,7 +73,8 @@ class ofxPd
 		bool	bVerbose;
 	
 		// libpd static callback functions
-		static void _print(const char *s);
+		static void _print(const char* s);
+		
 		static void _noteon(int channel, int pitch, int velocity);
 		static void _controlchange(int channel, int controller, int val);
 		static void _programchange(int channel, int program);

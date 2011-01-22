@@ -2,6 +2,8 @@
 
 #include "ofUtils.h"
 
+#include <Poco/Path.h>
+
 #define USEAPI_DUMMY
 
 // pointer to this class for static callback member functions
@@ -64,7 +66,7 @@ void ofxPd::pdUpdate()
 	libpd_process_float(inbuf, outbuf);
 }
 
-void ofxPd::pdAddToSearchPath(string path)
+void ofxPd::pdAddToSearchPath(const string& path)
 {
 	libpd_add_to_search_path(path.c_str());
 }
@@ -74,19 +76,35 @@ void ofxPd::pdClearSearchPath()
 	libpd_clear_search_path();
 }
 
-void ofxPd::pdOpenPatch(string file, string folder)
+void ofxPd::pdOpenPatch(const string& patch)
 {
+	Poco::Path path(patch);
+	
+	// shoudl we add the data folder?
+	if(path.isRelative())
+	{
+		path.assign("data/"+patch);
+	}
+	
+	string folder = path.parent().toString();
+	
+	// trim the trailing slash Poco::Path always adds ... blarg
+	if(folder.size() > 0 && folder.at(folder.size()-1) == '/')
+	{
+		folder.erase(folder.end()-1);
+	}
+	
+	ofLog(OF_LOG_VERBOSE, (string) "ofxPd: opening path: "+folder
+							+" filename: "+path.getFileName());
+
 	// [; pd open file folder(
 	libpd_start_message();
-	libpd_add_symbol(file.c_str());
+	libpd_add_symbol(path.getFileName().c_str());
 	libpd_add_symbol(folder.c_str());
-	if(libpd_finish_message("pd", "open") != 0)
-	{
-		ofLog(OF_LOG_ERROR, "ofxPd: couldn't open file");
-	}
+	libpd_finish_message("pd", "open");
 }
 
-void ofxPd::pdClosePatch(string name)
+void ofxPd::pdClosePatch(const string& name)
 {
 	// [; pd-name menuclose 1(
 	string patchname = (string) "pd-"+name;
@@ -111,10 +129,56 @@ void ofxPd::pdDspOff()
 	libpd_finish_message("pd", "dsp");
 }
 
+//----------------------------------------------------------
+void ofxPd::pdSendFloat(const string& receiverName, float value)
+{
+	libpd_float(receiverName.c_str(), value);
+}
+
+void ofxPd::pdSendBang(const string& receiverName)
+{
+
+	libpd_bang(receiverName.c_str());
+}
+
+void ofxPd::pdSendMidiNote(int channel, int note, int velocity)
+{
+	libpd_start_message();
+	libpd_add_float(note);
+	libpd_add_float(velocity);
+	libpd_add_float(channel);
+	libpd_finish_list("#notein");
+}
+
+void ofxPd::pdSendMidiControlChange(int channel, int control, int value)
+{
+	libpd_controlchange(channel, control, value);
+}
+
+void ofxPd::pdSendMidiBend(int channel, int value)
+{
+	libpd_pitchbend(channel, value);
+}
+
+void ofxPd::pdSendMidiAfterTouch(int channel, int value)
+{
+	libpd_aftertouch(channel, value);
+}
+
+void ofxPd::pdSendMidiPolyTouch(int channel, int note, int value)
+{
+	libpd_polyaftertouch(channel, note, value);
+}
+
+void ofxPd::pdSendMidiProgramChange(int channel, int program)
+{
+	libpd_programchange(channel, program);
+}
+
 /* ***** PRIVATE ***** */
 
 //----------------------------------------------------------
-void ofxPd::_print(const char *s)
+void ofxPd::_print(const char* s)
 {
 	cout << "print: " << s << endl;
 	thisPd->pdPrintReceived((string) s);
