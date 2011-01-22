@@ -14,7 +14,12 @@ ofxPd* thisPd = NULL;
 ofxPd::ofxPd()
 {
 	// common
-	bPdInited 			= false;
+	bPdInited = false;
+	sampleRate = 0;
+	numInChannels = 0;
+	numOutChannels = 0;
+	inputBuffer = NULL;
+	outputBuffer = NULL;
 	
 	thisPd = this;
 	
@@ -29,9 +34,18 @@ ofxPd::~ofxPd()
 }
 
 //--------------------------------------------------------------------
-bool ofxPd::pdInit()
+bool ofxPd::pdInit(const int numInChannels, const int numOutChannels, 
+	const int sampleRate)
 {
 	pdClear();
+	
+	this->sampleRate = sampleRate;
+	this->numInChannels = numInChannels;
+	this->numOutChannels = numOutChannels;
+	
+	// allocate buffers
+	inputBuffer = new float[numInChannels*getBlocksize()];
+	outputBuffer = new float[numOutChannels*getBlocksize()];
 	
 	// attach callbacks
 	libpd_printhook = (t_libpd_printhook) _print;
@@ -50,28 +64,31 @@ bool ofxPd::pdInit()
 	libpd_polyaftertouchhook = (t_libpd_polyaftertouchhook) _polyaftertouch;
 	
 	// init pd
-	srate = 44100;
 	libpd_init();
-	if(libpd_init_audio(2, 2, srate, 1) != 0)
+	if(libpd_init_audio(numInChannels, numOutChannels, this->sampleRate, 1) != 0)
 	{
 		ofLogFatalError("ofxPd") << "could not init";
 		return false;
 	}
 	
     bPdInited = true;
-	ofLogVerbose("ofxPd") << "inited";
+	ofLogVerbose("ofxPd") << "inited"
+						  << " samplerate: " << sampleRate
+						  << " channels in: " << numInChannels
+						  << " out: " << numOutChannels
+						  << " blocksize: " << getBlocksize();
 
     return bPdInited;
 }
 
 void ofxPd::pdClear()
 {
-    bPdInited = false;
-}
-
-void ofxPd::pdUpdate()
-{
-	libpd_process_float(inbuf, outbuf);
+	if(bPdInited)
+	{
+		if(inputBuffer)	delete[] inputBuffer;
+		if(outputBuffer) delete[] outputBuffer;
+	}
+	bPdInited = false;
 }
 
 void ofxPd::pdAddToSearchPath(const string& path)
@@ -98,8 +115,8 @@ void ofxPd::pdOpenPatch(const string& patch)
 		folder.erase(folder.end()-1);
 	}
 	
-	ofLogVerbose("ofxPd") << "opening path: " << folder
-				 << " filename: " << path.getFileName();
+	ofLogVerbose("ofxPd") << "opening filename: " << path.getFileName()
+						  << " path: " << folder;
 
 	// [; pd open file folder(
 	libpd_start_message();
@@ -110,6 +127,8 @@ void ofxPd::pdOpenPatch(const string& patch)
 
 void ofxPd::pdClosePatch(const string& name)
 {
+	ofLogVerbose("ofxPd") << "closing name: " << name;
+
 	// [; pd-name menuclose 1(
 	string patchname = (string) "pd-"+name;
 	libpd_start_message();
@@ -119,6 +138,8 @@ void ofxPd::pdClosePatch(const string& name)
 
 void ofxPd::pdDspOn()
 {
+	ofLogVerbose("ofxPd") << "dsp on";
+	
 	// [; pd dsp 1(
 	libpd_start_message();
 	libpd_add_float(1.0f);
@@ -127,6 +148,8 @@ void ofxPd::pdDspOn()
 
 void ofxPd::pdDspOff()
 {
+	ofLogVerbose("ofxPd") << "dsp off";
+	
 	// [; pd dsp 0(
 	libpd_start_message();
 	libpd_add_float(0.0f);
@@ -182,13 +205,18 @@ void ofxPd::pdSendMidiProgramChange(int channel, int program)
 //----------------------------------------------------------
 void ofxPd::pdBind(const string& source)
 {
-
 	libpd_bind(source.c_str());
 }
 
 void ofxPd::pdUnbind(const string& source)
 {
 	//libpd_unbind(source.c_str());
+}
+
+//----------------------------------------------------------
+int ofxPd::getBlocksize()
+{
+	return libpd_blocksize();
 }
 
 /* ***** PROTECTED ***** */

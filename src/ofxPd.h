@@ -21,14 +21,12 @@ class ofxPd : public ofSoundEffect
 		ofxPd();
 		virtual ~ofxPd();
         
-        /// initialize resources, must be called before open()
-		bool pdInit();
+        /// initialize resources
+		bool pdInit(const int numInChannels, const int numOutChannels, 
+					const int sampleRate);
         
         /// clear resources
         void pdClear();
-		
-		/// process 1 audio frame (here for now, will probably remove at some point)
-		void pdUpdate();
 		
 		/// add to the pd search path
 		void pdAddToSearchPath(const string& path);
@@ -70,6 +68,10 @@ class ofxPd : public ofSoundEffect
 		void pdAftertouchReceived(int channel, int val) {}
 		void pdPolyAftertouchReceived(int channel, int pitch, int val) {}
 
+		/// get the pd blocksize of pd (sample length per channel)
+		static int getBlocksize();
+
+		/// ofSoundUnit name
 		inline string getName() 	{return "Pure Data";}
 
 	protected:
@@ -77,12 +79,13 @@ class ofxPd : public ofSoundEffect
 		/// ofSoundEfffect interface
 		void process(float* input, float* output, int numFrames, int numInChannels, int numOutChannels);
 
-		int srate;	///< the audio sample rate
-		float inbuf[256*2], outbuf[256*2];  /// one input channel, two output channels
-									   /// block size 64, one tick per buffer		
     private:
 	
-		bool	bPdInited;
+		bool	bPdInited;	///< is pd inited?
+
+		int sampleRate;						///< the audio sample rate
+		int numInChannels, numOutChannels;	///< number of channels in/out
+		float *inputBuffer, *outputBuffer;  ///< interleaved audio buffers
 	
 		// libpd static callback functions
 		static void _print(const char* s);

@@ -12,11 +12,11 @@ void testApp::setup()
 	ofLogSetTopicLogLevel("ofxPd", OF_LOG_VERBOSE);
 	
 	// setup OF sound stream
-	ofSoundStreamSetup(2, 2, this, 44100, 256, 4);
+	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlocksize(), 4);
 	ofSoundStreamAddSoundSink(&pd);
 	ofSoundStreamAddSoundSource(&pd);
 	
-	pd.pdInit();
+	pd.pdInit(2, 2, 44100);
 	pd.pdDspOn();
 	pd.pdOpenPatch("test.pd");
 	pd.pdBind("toOF");
