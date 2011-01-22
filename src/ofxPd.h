@@ -55,11 +55,11 @@ class ofxPd
 		void pdSendMidiPolyTouch(int channel, int noteNum, int value);
 		void pdSendMidiAfterTouch(int channel, int value);
 		
-		/// add message source names to recive to
+		/// add message source names to receive to
 		void pdBind(const string& source);
 		void pdUnbind(const string& source);
 		
-		/// recieve messages from pd
+		/// receive messages from pd
 		/// these are callbacks for you to implement
 		void pdPrintReceived(const string& message) {}
 		void pdNoteonReceived(int channel, int pitch, int velocity) {}
