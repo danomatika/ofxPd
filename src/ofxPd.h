@@ -2,7 +2,7 @@
 #define _OFX_PD
 
 #include "ofConstants.h"
-#include "sound/ofSoundUnit.h"
+#include "sound/ofSoundEffect.h"
 
 #include <z_libpd.h>
 
@@ -13,7 +13,7 @@
 ///
 ///	references:	http://gitorious.org/pdlib/pages/Libpd
 ///
-class ofxPd : public ofSoundSource, public ofSoundSink
+class ofxPd : public ofSoundEffect
 {
 
 	public :
@@ -74,9 +74,8 @@ class ofxPd : public ofSoundSource, public ofSoundSink
 
 	protected:
 	
-		/// ofSoundUnit interface
-		void audioRequested(float* buffer, int numFrames, int numChannels);
-		void audioReceived(float* buffer, int numFrames, int numChannels);
+		/// ofSoundEfffect interface
+		void process(float* input, float* output, int numFrames, int numInChannels, int numOutChannels);
 
 		int srate;	///< the audio sample rate
 		float inbuf[256*2], outbuf[256*2];  /// one input channel, two output channels

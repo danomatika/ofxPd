@@ -194,29 +194,10 @@ void ofxPd::pdUnbind(const string& source)
 /* ***** PROTECTED ***** */
 
 //----------------------------------------------------------
-void ofxPd::audioRequested(float* buffer, int numFrames, int numChannels)
+void ofxPd::process(float* input, float* output, int numFrames,
+	int numInChannels, int numOutChannels)
 {
-//	try
-//	{
-//		libpd_process_float(inbuf, outbuf);
-//		memcpy(outbuf, buffer, numFrames*numChannels*sizeof(float));
-//	}
-//	catch(...)
-//	{
-//		ofLogFatalError("ofxPd") << "request error";
-//	}
-}
-
-void ofxPd::audioReceived(float* buffer, int numFrames, int numChannels)
-{
-//	try
-//	{
-//		memcpy(buffer, inbuf, numFrames*numChannels*sizeof(float));
-//	}
-//	catch(...)
-//	{
-//		ofLogFatalError("ofxPd") << "request error";
-//	}
+	libpd_process_float(input, output);
 }
 
 /* ***** PRIVATE ***** */
@@ -232,7 +213,7 @@ void ofxPd::_print(const char* s)
 		line.erase(line.end()-1);
 	}
 	
-	ofLogDebug("ofxPd") << "[" << line << "]";
+	ofLogDebug("ofxPd") << line;
 	thisPd->pdPrintReceived(line);
 }
 		
