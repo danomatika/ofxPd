@@ -11,8 +11,12 @@ void testApp::setup()
 	pdInit();
 	pdDspOn();
 	pdOpenPatch("test.pd");
+	pdBind("toOF");
 	pdSendBang("fromOF");
 	pdSendFloat("fromOF", 100);
+	
+	for(int i = 0; i < 10 * 44100 / 64; ++i)
+		pdUpdate();
 }
 
 //--------------------------------------------------------------

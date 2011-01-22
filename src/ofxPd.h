@@ -10,6 +10,8 @@
 ///
 /// derive this class an implement the callback functions
 ///
+///	references:	http://gitorious.org/pdlib/pages/Libpd
+///
 class ofxPd
 {
 
@@ -53,7 +55,12 @@ class ofxPd
 		void pdSendMidiPolyTouch(int channel, int noteNum, int value);
 		void pdSendMidiAfterTouch(int channel, int value);
 		
-		// callbacks for you to implement
+		/// add message source names to recive to
+		void pdBind(const string& source);
+		void pdUnbind(const string& source);
+		
+		/// recieve messages from pd
+		/// these are callbacks for you to implement
 		void pdPrintReceived(const string& message) {}
 		void pdNoteonReceived(int channel, int pitch, int velocity) {}
 		void pdControlChangeReceived(int channel, int controller, int val) {}
@@ -74,7 +81,14 @@ class ofxPd
 	
 		// libpd static callback functions
 		static void _print(const char* s);
-		
+				
+		static void _bang(const char* source);
+		static void _float(const char* source, float value);
+		static void _symbol(const char* source, const char* symbol);
+		static void _list(const char* source, int argc, t_atom* argv); 
+		static void _message(const char* source, const char *symbol,
+												int argc, t_atom *argv);
+
 		static void _noteon(int channel, int pitch, int velocity);
 		static void _controlchange(int channel, int controller, int val);
 		static void _programchange(int channel, int program);

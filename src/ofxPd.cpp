@@ -4,6 +4,7 @@
 
 #include <Poco/Path.h>
 
+// needed for libpd audio passing
 #define USEAPI_DUMMY
 
 // pointer to this class for static callback member functions
@@ -33,6 +34,13 @@ bool ofxPd::pdInit()
 	
 	// attach callbacks
 	libpd_printhook = (t_libpd_printhook) _print;
+	
+	libpd_banghook = (t_libpd_banghook) _bang;
+	libpd_floathook = (t_libpd_floathook) _float;
+	libpd_symbolhook = (t_libpd_symbolhook) _symbol;
+	libpd_listhook = (t_libpd_listhook) _symbol;
+	libpd_messagehook = (t_libpd_messagehook) _message;
+	
 	libpd_noteonhook = (t_libpd_noteonhook) _noteon;
 	libpd_controlchangehook = (t_libpd_controlchangehook) _controlchange;
 	libpd_programchangehook = (t_libpd_programchangehook) _programchange;
@@ -45,8 +53,8 @@ bool ofxPd::pdInit()
 	libpd_init();
 	if(libpd_init_audio(2, 2, srate, 1) != 0)
 	{
-		ofLog(OF_LOG_ERROR, "ofxPd: could not init");
-		OF_EXIT_APP(0);
+		ofLog(OF_LOG_FATAL_ERROR, "ofxPd: could not init");
+		return false;
 	}
 	
     bPdInited = true;
@@ -76,11 +84,14 @@ void ofxPd::pdClearSearchPath()
 	libpd_clear_search_path();
 }
 
+//
+//	references http://pocoproject.org/docs/Poco.Path.html
+//
 void ofxPd::pdOpenPatch(const string& patch)
 {
 	Poco::Path path(patch);
 	
-	// shoudl we add the data folder?
+	// should we add the data folder?
 	if(path.isRelative())
 	{
 		path.assign("data/"+patch);
@@ -175,18 +186,82 @@ void ofxPd::pdSendMidiProgramChange(int channel, int program)
 	libpd_programchange(channel, program);
 }
 
+//----------------------------------------------------------
+void ofxPd::pdBind(const string& source)
+{
+
+	libpd_bind(source.c_str());
+}
+
+void ofxPd::pdUnbind(const string& source)
+{
+	//libpd_unbind(source.c_str());
+}
+
 /* ***** PRIVATE ***** */
 
 //----------------------------------------------------------
 void ofxPd::_print(const char* s)
 {
-	cout << "print: " << s << endl;
+	cout << s << endl;
 	thisPd->pdPrintReceived((string) s);
+}
+		
+void ofxPd::_bang(const char* source)
+{
+	cout << "bang: " << source << endl;
+}
+
+void ofxPd::_float(const char* source, float value)
+{
+	cout << "float: " << source << " " << value << endl;
+}
+
+void ofxPd::_symbol(const char* source, const char* symbol)
+{
+	cout << "symbol: " << source << symbol << endl;
+}
+
+void ofxPd::_list(const char* source, int argc, t_atom* argv)
+{
+	cout << "list: " << source << endl;
+	for(int i = 0; i < argc; i++)
+	{  
+		t_atom a = argv[i];  
+		if(a.a_type == A_FLOAT)
+		{  
+			float x = a.a_w.w_float;  
+			cout << "	" << x << endl; 
+		}
+		else if(a.a_type == A_SYMBOL)
+		{  
+			char *s = a.a_w.w_symbol->s_name;  
+			cout << "	" << s << endl;  
+		}
+	}
+}
+
+void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *argv)
+{
+	cout << "message: " << source << " " << symbol << endl;
+	for(int i = 0; i < argc; i++)
+	{  
+		t_atom a = argv[i];  
+		if(a.a_type == A_FLOAT)
+		{  
+			float x = a.a_w.w_float;  
+			cout << "	" << x << endl; 
+		}
+		else if(a.a_type == A_SYMBOL)
+		{  
+			char *s = a.a_w.w_symbol->s_name;  
+			cout << "	" << s << endl;  
+		}
+	}
 }
 
 void ofxPd::_noteon(int channel, int pitch, int velocity)
 {
-	cout << "noteon" << endl;
 	thisPd->pdNoteonReceived(channel, pitch, velocity);
 }
 
