@@ -1,10 +1,15 @@
 #include "testApp.h"
 
 
+#include <Poco/Path.h>
+
 //--------------------------------------------------------------
 void testApp::setup()
 {
 	ofSetFrameRate(30);
+	
+	cout << Poco::Path::current() << endl;
+	ofLogSetTopicLogLevel("ofxPd", OF_LOG_VERBOSE);
 	
 	// setup OF sound stream
 	ofSoundStreamSetup(0, 2, this, 44100, 64, 4);
@@ -72,10 +77,10 @@ void testApp::audioRequested(float * output, int bufferSize, int nChannels)
 //--------------------------------------------------------------
 void testApp::pdPrintReceived(string message)
 {
-	cout << "print: " << message << endl;
+	//ofLogNotice() << "print: " << message;
 }
 
 void testApp::pdNoteonReceived(int channel, int pitch, int velocity)
 {
-	cout << "noteon: " << channel << " " << pitch << " " << velocity << endl;
+	//ofLogNotice() << "noteon: " << channel << " " << pitch << " " << velocity;
 }

@@ -77,7 +77,6 @@ class ofxPd
     private:
 	
 		bool	bPdInited;
-		bool	bVerbose;
 	
 		// libpd static callback functions
 		static void _print(const char* s);

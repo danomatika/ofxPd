@@ -14,10 +14,11 @@ ofxPd* thisPd = NULL;
 ofxPd::ofxPd()
 {
 	// common
-	bVerbose 			= false;
 	bPdInited 			= false;
 	
 	thisPd = this;
+	
+	ofLogAddTopic("ofxPd");
 }
 
 
@@ -53,13 +54,12 @@ bool ofxPd::pdInit()
 	libpd_init();
 	if(libpd_init_audio(2, 2, srate, 1) != 0)
 	{
-		ofLog(OF_LOG_FATAL_ERROR, "ofxPd: could not init");
+		ofLogFatalError("ofxPd") << "could not init";
 		return false;
 	}
 	
     bPdInited = true;
-    //if(bVerbose)
-	//	cout << "ofxPd: Inited" << endl;
+	ofLogVerbose("ofxPd") << "inited";
 
     return bPdInited;
 }
@@ -89,14 +89,7 @@ void ofxPd::pdClearSearchPath()
 //
 void ofxPd::pdOpenPatch(const string& patch)
 {
-	Poco::Path path(patch);
-	
-	// should we add the data folder?
-	if(path.isRelative())
-	{
-		path.assign("data/"+patch);
-	}
-	
+	Poco::Path path(ofToDataPath(patch));
 	string folder = path.parent().toString();
 	
 	// trim the trailing slash Poco::Path always adds ... blarg
@@ -105,8 +98,8 @@ void ofxPd::pdOpenPatch(const string& patch)
 		folder.erase(folder.end()-1);
 	}
 	
-	ofLog(OF_LOG_VERBOSE, (string) "ofxPd: opening path: "+folder
-							+" filename: "+path.getFileName());
+	ofLogVerbose("ofxPd") << "opening path: " << folder
+				 << " filename: " << path.getFileName();
 
 	// [; pd open file folder(
 	libpd_start_message();
@@ -203,59 +196,67 @@ void ofxPd::pdUnbind(const string& source)
 //----------------------------------------------------------
 void ofxPd::_print(const char* s)
 {
-	cout << s << endl;
-	thisPd->pdPrintReceived((string) s);
+	string line(s);
+	
+	// trim the trailing newline each print line has ... blarg again
+	if(line.size() > 0 && line.at(line.size()-1) == '\n')
+	{
+		line.erase(line.end()-1);
+	}
+	
+	ofLogDebug("ofxPd") << "[" << line << "]";
+	thisPd->pdPrintReceived(line);
 }
 		
 void ofxPd::_bang(const char* source)
 {
-	cout << "bang: " << source << endl;
+	ofLogDebug("ofxPd") << "bang: " << source;
 }
 
 void ofxPd::_float(const char* source, float value)
 {
-	cout << "float: " << source << " " << value << endl;
+	ofLogDebug("ofxPd") << "float: " << source << " " << value;
 }
 
 void ofxPd::_symbol(const char* source, const char* symbol)
 {
-	cout << "symbol: " << source << symbol << endl;
+	ofLogDebug("ofxPd") << "symbol: " << source << symbol;
 }
 
 void ofxPd::_list(const char* source, int argc, t_atom* argv)
 {
-	cout << "list: " << source << endl;
+	ofLogDebug("ofxPd") << "list: " << source;
 	for(int i = 0; i < argc; i++)
 	{  
 		t_atom a = argv[i];  
 		if(a.a_type == A_FLOAT)
 		{  
 			float x = a.a_w.w_float;  
-			cout << "	" << x << endl; 
+			ofLogDebug("ofxPd") << "	" << x; 
 		}
 		else if(a.a_type == A_SYMBOL)
 		{  
 			char *s = a.a_w.w_symbol->s_name;  
-			cout << "	" << s << endl;  
+			ofLogDebug("ofxPd") << "	" << s;  
 		}
 	}
 }
 
 void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *argv)
 {
-	cout << "message: " << source << " " << symbol << endl;
+	ofLogDebug("ofxPd") << "message: " << source << " " << symbol;
 	for(int i = 0; i < argc; i++)
 	{  
 		t_atom a = argv[i];  
 		if(a.a_type == A_FLOAT)
 		{  
 			float x = a.a_w.w_float;  
-			cout << "	" << x << endl; 
+			ofLogDebug("ofxPd") << "	" << x; 
 		}
 		else if(a.a_type == A_SYMBOL)
 		{  
 			char *s = a.a_w.w_symbol->s_name;  
-			cout << "	" << s << endl;  
+			ofLogDebug("ofxPd") << "	" << s;  
 		}
 	}
 }

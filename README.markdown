@@ -19,7 +19,7 @@ WARNING: Code is not currently working, still being actively developed.
 BUILD REQUIREMENTS
 ------------------
 
-Currently, ofxPd is being developed on Mac OSX. You will need to install Xcode from the Mac Developer Tools.
+Currently, ofxPd is being developed on Mac OSX. You will need to install Xcode from the Mac Developer Tools. You will also need the latest version of OpenFrameworks (007 unstable) from the [https://github.com/openframeworks/openFrameworks](github repository).
 
 BUILD AND INSTALLATION
 ----------------------
@@ -27,6 +27,12 @@ BUILD AND INSTALLATION
 Place ofxPd within a folder in the apps folder of the OF dir tree:
 
 `openframeworks/apps/myApps/ofxPd`
+
+If you get the following [http://www.openframeworks.cc/forum/viewtopic.php?f=8&t=5344&p=26537&hilit=Undefined+symbol#p26537](linker error) in xcode:
+
+`Undefined symbols: "std::basic_ostream<char, std::char_traits<char> ...`
+
+you need to change the Base SDK to 10.6: Project > Edit Project Settings
 
 USAGE
 -----
