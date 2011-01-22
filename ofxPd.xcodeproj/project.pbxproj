@@ -1179,6 +1179,7 @@
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "";
 				OTHER_CFLAGS = (
+					"-DHAVE_UNISTD_H",
 					"-DUSEAPI_DUMMY",
 					"-DPD",
 					"-dynamiclib",
@@ -1220,6 +1221,7 @@
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/libusb-osx/libs32\"";
 				OTHER_CFLAGS = (
+					"-DHAVE_UNISTD_H",
 					"-DUSEAPI_DUMMY",
 					"-DPD",
 					"-dynamiclib",
@@ -1261,6 +1263,7 @@
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/libusb-osx/libs32\"";
 				OTHER_CFLAGS = (
+					"-DHAVE_UNISTD_H",
 					"-DUSEAPI_DUMMY",
 					"-DPD",
 					"-dynamiclib",
