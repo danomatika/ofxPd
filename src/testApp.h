@@ -5,7 +5,7 @@
 
 #include "ofxPd.h"
 
-class testApp : public ofBaseApp, public ofxPd
+class testApp : public ofBaseApp
 {
 
 	public:
@@ -29,8 +29,7 @@ class testApp : public ofBaseApp, public ofxPd
 		void pdPrintReceived(string message);
 		void pdNoteonReceived(int channel, int pitch, int velocity);
 		
-		float * left;
-		float * right;
+		ofxPd pd;
 };
 
 #endif

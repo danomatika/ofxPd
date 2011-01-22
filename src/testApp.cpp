@@ -12,19 +12,16 @@ void testApp::setup()
 	ofLogSetTopicLogLevel("ofxPd", OF_LOG_VERBOSE);
 	
 	// setup OF sound stream
-	ofSoundStreamSetup(0, 2, this, 44100, 64, 4);
-	left = new float[256];
-	right = new float[256];
+	ofSoundStreamSetup(2, 2, this, 44100, 256, 4);
+	ofSoundStreamAddSoundSink(&pd);
+	ofSoundStreamAddSoundSource(&pd);
 	
-	pdInit();
-	pdDspOn();
-	pdOpenPatch("test.pd");
-	pdBind("toOF");
-	pdSendBang("fromOF");
-	pdSendFloat("fromOF", 100);
-	
-	for(int i = 0; i < 10 * 44100 / 64; ++i)
-		pdUpdate();
+	pd.pdInit();
+	pd.pdDspOn();
+	pd.pdOpenPatch("test.pd");
+	pd.pdBind("toOF");
+	pd.pdSendBang("fromOF");
+	pd.pdSendFloat("fromOF", 100);
 }
 
 //--------------------------------------------------------------

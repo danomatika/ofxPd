@@ -11,6 +11,9 @@
 #X obj 289 110 print PD;
 #X obj 208 165 s toOF;
 #X obj 192 89 *~ 0.5;
+#X obj 192 38 +~ 400;
+#X obj 192 -12 osc~ 1;
+#X obj 192 15 *~ 150;
 #X connect 0 0 1 0;
 #X connect 1 0 5 0;
 #X connect 3 0 11 0;
@@ -22,3 +25,6 @@
 #X connect 8 0 9 0;
 #X connect 11 0 4 1;
 #X connect 11 0 4 0;
+#X connect 12 0 3 0;
+#X connect 13 0 14 0;
+#X connect 14 0 12 0;
