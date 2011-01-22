@@ -28,6 +28,9 @@ class testApp : public ofBaseApp, public ofxPd
 		// pd callbacks
 		void pdPrintReceived(string message);
 		void pdNoteonReceived(int channel, int pitch, int velocity);
+		
+		float * left;
+		float * right;
 };
 
 #endif

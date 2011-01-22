@@ -6,7 +6,10 @@ void testApp::setup()
 {
 	ofSetFrameRate(30);
 	
-	// so far this is following the samples/test.c example from libpd
+	// setup OF sound stream
+	ofSoundStreamSetup(0, 2, this, 44100, 64, 4);
+	left = new float[256];
+	right = new float[256];
 	
 	pdInit();
 	pdDspOn();
@@ -23,8 +26,6 @@ void testApp::setup()
 void testApp::update()
 {
 	ofBackground(100, 100, 100);
-	
-	pdUpdate();
 }
 
 //--------------------------------------------------------------
