@@ -17,6 +17,7 @@ void testApp::setup()
 	ofSoundStreamAddSoundSource(&pd);
 	
 	pd.pdInit(2, 2, 44100);
+	pd.addListener(this);
 	pd.pdDspOn();
 	pd.pdOpenPatch("test.pd");
 	pd.pdBind("toOF");

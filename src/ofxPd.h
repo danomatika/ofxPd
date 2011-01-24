@@ -5,6 +5,10 @@
 #include "sound/ofSoundEffect.h"
 
 #include <z_libpd.h>
+#include "ofxPdListener.h"
+#ifndef HAVE_UNISTD_H
+#pragma warning You need to define HAVE_UNISTD_H in your project build settings!
+#endif
 
 ///
 ///	a Pure Data instance
@@ -58,16 +62,7 @@ class ofxPd : public ofSoundEffect
 		void pdBind(const string& source);
 		void pdUnbind(const string& source);
 		
-		/// receive messages from pd
-		/// these are callbacks for you to implement
-		void pdPrintReceived(const string& message) {}
-		void pdNoteonReceived(int channel, int pitch, int velocity) {}
-		void pdControlChangeReceived(int channel, int controller, int val) {}
-		void pdProgramChangeReceived(int channel, int program) {}
-		void pdPitchbendReceived(int channel, int val) {}
-		void pdAftertouchReceived(int channel, int val) {}
-		void pdPolyAftertouchReceived(int channel, int pitch, int val) {}
-
+		void addListener(ofxPdListener *listener);
 		/// get the pd blocksize of pd (sample length per channel)
 		static int getBlocksize();
 

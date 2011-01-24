@@ -5,7 +5,7 @@
 
 #include "ofxPd.h"
 
-class testApp : public ofBaseApp
+class testApp : public ofBaseApp, public ofxPdListener
 {
 
 	public:

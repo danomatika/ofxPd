@@ -7,8 +7,8 @@
 // needed for libpd audio passing
 #define USEAPI_DUMMY
 
-// pointer to this class for static callback member functions
-ofxPd* thisPd = NULL;
+// the listeners 
+vector<ofxPdListener*> pdListeners;
 
 //--------------------------------------------------------------------
 ofxPd::ofxPd()
@@ -21,7 +21,6 @@ ofxPd::ofxPd()
 	inputBuffer = NULL;
 	outputBuffer = NULL;
 	
-	thisPd = this;
 	
 	ofLogAddTopic("ofxPd");
 }
@@ -31,6 +30,10 @@ ofxPd::ofxPd()
 ofxPd::~ofxPd()
 {
     pdClear();
+}
+
+void ofxPd::addListener(ofxPdListener *listener) {
+	pdListeners.push_back(listener);
 }
 
 //--------------------------------------------------------------------
@@ -242,7 +245,9 @@ void ofxPd::_print(const char* s)
 	}
 	
 	ofLogDebug("ofxPd") << line;
-	thisPd->pdPrintReceived(line);
+	for(int i = 0; i < pdListeners.size(); i++) {
+		pdListeners[i]->pdPrintReceived(line);
+	}
 }
 		
 void ofxPd::_bang(const char* source)
@@ -300,30 +305,42 @@ void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *a
 
 void ofxPd::_noteon(int channel, int pitch, int velocity)
 {
-	thisPd->pdNoteonReceived(channel, pitch, velocity);
+	for(int i = 0; i < pdListeners.size(); i++) {
+		pdListeners[i]->pdNoteonReceived(channel, pitch, velocity);
+	}
 }
 
 void ofxPd::_controlchange(int channel, int controller, int val)
 {
-	thisPd->pdControlChangeReceived(channel, controller, val);
+	for(int i = 0; i < pdListeners.size(); i++) {
+		pdListeners[i]->pdControlChangeReceived(channel, controller, val);
+	}
 }
 
 void ofxPd::_programchange(int channel, int program)
 {
-	thisPd->pdProgramChangeReceived(channel, program);
+	for(int i = 0; i < pdListeners.size(); i++) {
+		pdListeners[i]->pdProgramChangeReceived(channel, program);
+	}
 }
 
 void ofxPd::_pitchbend(int channel, int val)
 {
-	thisPd->pdPitchbendReceived(channel, val);
+	for(int i = 0; i < pdListeners.size(); i++) {
+		pdListeners[i]->pdPitchbendReceived(channel, val);
+	}
 }
 
 void ofxPd::_aftertouch(int channel, int val)
 {
-	thisPd->pdAftertouchReceived(channel, val);
+	for(int i = 0; i < pdListeners.size(); i++) {
+		pdListeners[i]->pdAftertouchReceived(channel, val);
+	}
 }
 
 void ofxPd::_polyaftertouch(int channel, int pitch, int val)
 {
-	thisPd->pdPolyAftertouchReceived(channel, pitch, val);
+	for(int i = 0; i < pdListeners.size(); i++) {
+		pdListeners[i]->pdPolyAftertouchReceived(channel, pitch, val);
+	}
 }
