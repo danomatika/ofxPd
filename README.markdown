@@ -66,8 +66,8 @@ You also need to include the following C Flags for building the libpd source:
 </pre>
 
 For XCode:
-* create a new group "ofxPd"
-* drag these directories from ofxpd into this new group: ofxPd/src & ofxPd/libs
+
+* create a new group "ofxPd" * drag these directories from ofxpd into this new group: ofxPd/src & ofxPd/libs
 * add a search path to: ../../../addons/ofxPd/libs/libpd/pure-data/src under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
 * add the C Flags unde Targets->YourApp->Build->Other C Flags (make sure All Configurations and All Settings are selected)
 
