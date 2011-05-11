@@ -11,24 +11,16 @@
 vector<ofxPdListener*> pdListeners;
 
 //--------------------------------------------------------------------
-ofxPd::ofxPd()
-{
-	// common
+ofxPd::ofxPd() {
 	bPdInited = false;
 	sampleRate = 0;
 	numInChannels = 0;
 	numOutChannels = 0;
 	inputBuffer = NULL;
-	outputBuffer = NULL;
-	
-	
-	ofLogAddTopic("ofxPd");
 }
 
-
 //--------------------------------------------------------------------
-ofxPd::~ofxPd()
-{
+ofxPd::~ofxPd() {
     pdClear();
 }
 
@@ -37,9 +29,9 @@ void ofxPd::addListener(ofxPdListener *listener) {
 }
 
 //--------------------------------------------------------------------
-bool ofxPd::pdInit(const int numInChannels, const int numOutChannels, 
-	const int sampleRate)
-{
+bool ofxPd::pdInit(const int numInChannels, 
+	const int numOutChannels,  const int sampleRate) {
+	
 	pdClear();
 	
 	this->sampleRate = sampleRate;
@@ -48,7 +40,6 @@ bool ofxPd::pdInit(const int numInChannels, const int numOutChannels,
 	
 	// allocate buffers
 	inputBuffer = new float[numInChannels*getBlocksize()];
-	outputBuffer = new float[numOutChannels*getBlocksize()];
 	
 	// attach callbacks
 	libpd_printhook = (t_libpd_printhook) _print;
@@ -68,28 +59,28 @@ bool ofxPd::pdInit(const int numInChannels, const int numOutChannels,
 	
 	// init pd
 	libpd_init();
-	if(libpd_init_audio(numInChannels, numOutChannels, this->sampleRate, 1) != 0)
-	{
-		ofLogFatalError("ofxPd") << "could not init";
+	if(libpd_init_audio(numInChannels, numOutChannels,
+		this->sampleRate, 1) != 0) {
+		ofLog(OF_LOG_FATAL_ERROR, "ofxPd: Could not init");
 		return false;
 	}
 	
     bPdInited = true;
-	ofLogVerbose("ofxPd") << "inited"
-						  << " samplerate: " << sampleRate
-						  << " channels in: " << numInChannels
-						  << " out: " << numOutChannels
-						  << " blocksize: " << getBlocksize();
+	ostringstream status;
+	status 	<< "Inited"
+			<< " samplerate: " << sampleRate
+			<< " channels in: " << numInChannels
+			<< " out: " << numOutChannels
+			<< " blocksize: " << getBlocksize();
+	ofLog(OF_LOG_VERBOSE, "ofxPd: "+status.str());
 
     return bPdInited;
 }
 
 void ofxPd::pdClear()
 {
-	if(bPdInited)
-	{
+	if(bPdInited) {
 		if(inputBuffer)	delete[] inputBuffer;
-		if(outputBuffer) delete[] outputBuffer;
 	}
 	bPdInited = false;
 }
@@ -113,13 +104,12 @@ void ofxPd::pdOpenPatch(const string& patch)
 	string folder = path.parent().toString();
 	
 	// trim the trailing slash Poco::Path always adds ... blarg
-	if(folder.size() > 0 && folder.at(folder.size()-1) == '/')
-	{
+	if(folder.size() > 0 && folder.at(folder.size()-1) == '/') {
 		folder.erase(folder.end()-1);
 	}
 	
-	ofLogVerbose("ofxPd") << "opening filename: " << path.getFileName()
-						  << " path: " << folder;
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Opening filename: "+path.getFileName()+
+						  " path: "+folder);
 
 	// [; pd open file folder(
 	libpd_start_message();
@@ -130,7 +120,7 @@ void ofxPd::pdOpenPatch(const string& patch)
 
 void ofxPd::pdClosePatch(const string& name)
 {
-	ofLogVerbose("ofxPd") << "closing name: " << name;
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Closing name: "+name);
 
 	// [; pd-name menuclose 1(
 	string patchname = (string) "pd-"+name;
@@ -141,7 +131,7 @@ void ofxPd::pdClosePatch(const string& name)
 
 void ofxPd::pdDspOn()
 {
-	ofLogVerbose("ofxPd") << "dsp on";
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Dsp on");
 	
 	// [; pd dsp 1(
 	libpd_start_message();
@@ -151,7 +141,7 @@ void ofxPd::pdDspOn()
 
 void ofxPd::pdDspOff()
 {
-	ofLogVerbose("ofxPd") << "dsp off";
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Dsp off");
 	
 	// [; pd dsp 0(
 	libpd_start_message();
@@ -217,18 +207,29 @@ void ofxPd::pdUnbind(const string& source)
 }
 
 //----------------------------------------------------------
-int ofxPd::getBlocksize()
-{
+int ofxPd::getBlocksize() {
 	return libpd_blocksize();
 }
 
-/* ***** PROTECTED ***** */
-
 //----------------------------------------------------------
-void ofxPd::process(float* input, float* output, int numFrames,
-	int numInChannels, int numOutChannels)
-{
-	libpd_process_float(input, output);
+void ofxPd::audioIn(float * input, int bufferSize, int nChannels) {
+	try {
+		memcpy(inputBuffer, input, bufferSize*nChannels);
+	}
+	catch (...) {
+		ofLog(OF_LOG_WARNING, (string) "ofxPd: could not copy input buffer, " +
+			"check your buffersize and num channels");
+	}
+}
+
+void ofxPd::audioOut(float * output, int bufferSize, int nChannels) {
+	try {
+		libpd_process_float(inputBuffer, output);
+	}
+	catch (...) {
+		ofLog(OF_LOG_WARNING, (string) "ofxPd: could not process output buffer, " +
+			"check your buffersize and num channels");
+	}
 }
 
 /* ***** PRIVATE ***** */
@@ -239,12 +240,11 @@ void ofxPd::_print(const char* s)
 	string line(s);
 	
 	// trim the trailing newline each print line has ... blarg again
-	if(line.size() > 0 && line.at(line.size()-1) == '\n')
-	{
+	if(line.size() > 0 && line.at(line.size()-1) == '\n') {
 		line.erase(line.end()-1);
 	}
 	
-	ofLogDebug("ofxPd") << line;
+	ofLog(OF_LOG_VERBOSE, "ofxPd: "+line);
 	for(int i = 0; i < pdListeners.size(); i++) {
 		pdListeners[i]->pdPrintReceived(line);
 	}
@@ -252,53 +252,53 @@ void ofxPd::_print(const char* s)
 		
 void ofxPd::_bang(const char* source)
 {
-	ofLogDebug("ofxPd") << "bang: " << source;
+	ofLog(OF_LOG_VERBOSE, "ofxPd: bang: " + (string) source);
 }
 
 void ofxPd::_float(const char* source, float value)
 {
-	ofLogDebug("ofxPd") << "float: " << source << " " << value;
+	ofLog(OF_LOG_VERBOSE, "ofxPd: float: " + (string) source + " " + ofToString(value));
 }
 
 void ofxPd::_symbol(const char* source, const char* symbol)
 {
-	ofLogDebug("ofxPd") << "symbol: " << source << symbol;
+	ofLog(OF_LOG_VERBOSE, "ofxPd: symbol: " + (string) source + " " + (string) symbol);
 }
 
 void ofxPd::_list(const char* source, int argc, t_atom* argv)
 {
-	ofLogDebug("ofxPd") << "list: " << source;
-	for(int i = 0; i < argc; i++)
-	{  
+	ofLog(OF_LOG_VERBOSE, "ofxPd: list: " + (string) source);
+	
+	for(int i = 0; i < argc; i++) {
+		
 		t_atom a = argv[i];  
-		if(a.a_type == A_FLOAT)
-		{  
+		
+		if(a.a_type == A_FLOAT) {  
 			float x = a.a_w.w_float;  
-			ofLogDebug("ofxPd") << "	" << x; 
+			ofLog(OF_LOG_VERBOSE, "ofxPd: "	+ ofToString(x)); 
 		}
-		else if(a.a_type == A_SYMBOL)
-		{  
+		else if(a.a_type == A_SYMBOL) {  
 			char *s = a.a_w.w_symbol->s_name;  
-			ofLogDebug("ofxPd") << "	" << s;  
+			ofLog(OF_LOG_VERBOSE, "ofxPd: "	+ (string) s);  
 		}
 	}
 }
 
 void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *argv)
 {
-	ofLogDebug("ofxPd") << "message: " << source << " " << symbol;
-	for(int i = 0; i < argc; i++)
-	{  
+	ofLog(OF_LOG_VERBOSE, "ofxPd: message: " + (string) source + " " + (string) symbol);
+	
+	for(int i = 0; i < argc; i++) {  
+		
 		t_atom a = argv[i];  
-		if(a.a_type == A_FLOAT)
-		{  
+		
+		if(a.a_type == A_FLOAT) {  
 			float x = a.a_w.w_float;  
-			ofLogDebug("ofxPd") << "	" << x; 
+			ofLog(OF_LOG_VERBOSE, "ofxPd: "	+ ofToString(x)); 
 		}
-		else if(a.a_type == A_SYMBOL)
-		{  
+		else if(a.a_type == A_SYMBOL) {  
 			char *s = a.a_w.w_symbol->s_name;  
-			ofLogDebug("ofxPd") << "	" << s;  
+			ofLog(OF_LOG_VERBOSE, "ofxPd: "	+ (string) s);  
 		}
 	}
 }

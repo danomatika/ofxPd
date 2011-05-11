@@ -2,10 +2,10 @@
 #define _OFX_PD
 
 #include "ofConstants.h"
-#include "sound/ofSoundEffect.h"
 
 #include <z_libpd.h>
 #include "ofxPdListener.h"
+
 #ifndef HAVE_UNISTD_H
 #pragma warning You need to define HAVE_UNISTD_H in your project build settings!
 #endif
@@ -13,13 +13,12 @@
 ///
 ///	a Pure Data instance
 ///
-/// derive this class an implement the callback functions
+/// derive this class and implement the callback functions
 ///
 ///	references:	http://gitorious.org/pdlib/pages/Libpd
 ///
-class ofxPd : public ofSoundEffect
-{
-
+class ofxPd {
+	
 	public :
 
 		ofxPd();
@@ -62,25 +61,24 @@ class ofxPd : public ofSoundEffect
 		void pdBind(const string& source);
 		void pdUnbind(const string& source);
 		
+		/// add listener to receieve events
 		void addListener(ofxPdListener *listener);
+		
 		/// get the pd blocksize of pd (sample length per channel)
 		static int getBlocksize();
-
-		/// ofSoundUnit name
-		inline string getName() 	{return "Pure Data";}
-
-	protected:
-	
-		/// ofSoundEfffect interface
-		void process(float* input, float* output, int numFrames, int numInChannels, int numOutChannels);
-
+		
+		/// audio in/out callbacks
+		/// the libpd processing is done in the audioOut callback
+		virtual void audioIn(float * input, int bufferSize, int nChannels);
+		virtual void audioOut(float * output, int bufferSize, int nChannels);
+		
     private:
 	
-		bool	bPdInited;	///< is pd inited?
+		bool bPdInited;						///< is pd inited?
 
 		int sampleRate;						///< the audio sample rate
 		int numInChannels, numOutChannels;	///< number of channels in/out
-		float *inputBuffer, *outputBuffer;  ///< interleaved audio buffers
+		float *inputBuffer;  				///< interleaved input audio buffer
 	
 		// libpd static callback functions
 		static void _print(const char* s);
