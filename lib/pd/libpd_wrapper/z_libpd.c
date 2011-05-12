@@ -15,10 +15,12 @@
 #include "z_libpd.h"
 #include "x_libpdreceive.h"
 #include "s_stuff.h"
+#include "m_imp.h"
+#include "g_all_guis.h"
 
 #define MAXMSGLENGTH 32
 
-void pd_init();
+void pd_init(void);
 
 t_libpd_printhook libpd_printhook = NULL;
 t_libpd_banghook libpd_banghook = NULL;
@@ -33,6 +35,7 @@ t_libpd_programchangehook libpd_programchangehook = NULL;
 t_libpd_pitchbendhook libpd_pitchbendhook = NULL;
 t_libpd_aftertouchhook libpd_aftertouchhook = NULL;
 t_libpd_polyaftertouchhook libpd_polyaftertouchhook = NULL;
+t_libpd_midibytehook libpd_midibytehook = NULL;
 
 static int ticks_per_buffer;
 
@@ -42,7 +45,7 @@ static void *get_object(const char *s) {
 }
 
 /* this is called instead of sys_main() to start things */
-void libpd_init() {
+void libpd_init(void) {
   sys_printhook = (t_printhook) libpd_printhook;
   sys_soundin = NULL;
   sys_soundout = NULL;
@@ -65,7 +68,7 @@ void libpd_init() {
   sys_searchpath = NULL;
 }
 
-void libpd_clear_search_path() {
+void libpd_clear_search_path(void) {
   namelist_free(sys_searchpath);
   sys_searchpath = NULL;
 }
@@ -82,7 +85,7 @@ int libpd_init_audio(int inChans, int outChans, int sampleRate, int tpb) {
   inch[0] = inChans;
   outch[0] = outChans;
   sys_set_audio_settings(1, indev, 1, inch,
-         1, outdev, 1, outch, sampleRate, -1, 1);
+         1, outdev, 1, outch, sampleRate, -1, 1, DEFDACBLKSIZE);
   sched_set_using_audio(SCHED_AUDIO_CALLBACK);
   sys_reopen_audio();
   return 0;
@@ -131,11 +134,35 @@ int libpd_process_float(float *inBuffer, float *outBuffer) {
 int libpd_process_double(double *inBuffer, double *outBuffer) {
   PROCESS(,)
 }
+ 
+#define GETARRAY \
+  t_garray *garray = (t_garray *) pd_findbyclass(gensym(name), garray_class); \
+  if (!garray) return -1; \
+
+int libpd_arraysize(const char *name) {
+  GETARRAY
+  return garray_npoints(garray);
+}
+
+#define PDMEMCPY(_x, _y) \
+  GETARRAY \
+  if (n < 0 || offset < 0 || offset + n > garray_npoints(garray)) return -2; \
+  float *vec = ((float *) garray_vec(garray)) + offset; \
+  memcpy(_x, _y, n * sizeof(float)); \
+  return 0;
+
+int libpd_read_array(float *dest, const char *name, int offset, int n) {
+  PDMEMCPY(dest, vec)
+}
+
+int libpd_write_array(const char *name, int offset, float *src, int n) {
+  PDMEMCPY(vec, src)
+}
 
 static t_atom argv[MAXMSGLENGTH], *curr;
 static int argc;
 
-int libpd_start_message() {
+int libpd_start_message(void) {
   argc = 0;
   curr = argv;
   return MAXMSGLENGTH;
@@ -204,7 +231,7 @@ int libpd_bang(const char *recv) {
   }
 }
 
-int libpd_blocksize() {
+int libpd_blocksize(void) {
   return DEFDACBLKSIZE;
 }
 
@@ -213,7 +240,9 @@ int libpd_exists(const char *sym) {
 }
 
 #define CHECK_CHANNEL if (channel < 0) return -1;
+#define CHECK_PORT if (port < 0 || port > 0x0fff) return -1;
 #define CHECK_RANGE_7BIT(v) if (v < 0 || v > 0x7f) return -1;
+#define CHECK_RANGE_8BIT(v) if (v < 0 || v > 0xff) return -1;
 #define PORT (channel >> 4)
 #define CHANNEL (channel & 0x0f)
 
@@ -264,3 +293,38 @@ int libpd_polyaftertouch(int channel, int pitch, int value) {
   return 0;
 }
 
+int libpd_midibyte(int port, int byte) {
+  CHECK_PORT
+  CHECK_RANGE_8BIT(byte)
+  inmidi_byte(port, byte);
+  return 0;
+}
+
+int libpd_sysex(int port, int byte) {
+  CHECK_PORT
+  CHECK_RANGE_7BIT(byte)
+  inmidi_sysex(port, byte);
+  return 0;
+}
+
+int libpd_sysrealtime(int port, int byte) {
+  CHECK_PORT
+  CHECK_RANGE_8BIT(byte)
+  inmidi_realtimein(port, byte);
+  return 0;
+}
+
+void *libpd_openfile(const char *basename, const char *dirname) {
+  return (void *)glob_evalfile(NULL, gensym(basename), gensym(dirname));
+}
+
+void libpd_closefile(void *x) {
+  pd_free((t_pd *)x);
+}
+
+int libpd_getdollarzero(void *x) {
+  pd_pushsym((t_pd *)x);
+  int dzero = canvas_getdollarzero();
+  pd_popsym((t_pd *)x);
+  return dzero;
+}

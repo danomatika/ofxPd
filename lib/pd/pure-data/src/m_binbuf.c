@@ -995,7 +995,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                 {
                     if (stackdepth >= MAXSTACK)
                     {
-                        post("too many embedded patches");
+                        error("stack depth exceeded: too many embedded patches");
                         return (newb);
                     }
                     stack[stackdepth] = nobj;
@@ -1205,7 +1205,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                     t_float x, y;
                     if (stackdepth >= MAXSTACK)
                     {
-                        post("too many embedded patches");
+                        error("stack depth exceeded: too many embedded patches");
                         return (newb);
                     }
                     stack[stackdepth] = nobj;
@@ -1477,7 +1477,7 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
     canvas_resume_dsp(dspstate);
 }
 
-void glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
+t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
 {
     t_pd *x = 0;
         /* even though binbuf_evalfile appears to take care of dspstate,
@@ -1487,8 +1487,12 @@ void glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
 
     int dspstate = canvas_suspend_dsp();
     binbuf_evalfile(name, dir);
-    while ((x != s__X.s_thing) && (x = s__X.s_thing))
+    while ((x != s__X.s_thing) && s__X.s_thing) 
+    {
+        x = s__X.s_thing;
         vmess(x, gensym("pop"), "i", 1);
+    }
     pd_doloadbang();
     canvas_resume_dsp(dspstate);
+    return x;
 }
