@@ -7,8 +7,8 @@
 // needed for libpd audio passing
 #define USEAPI_DUMMY
 
-// the listeners 
-vector<ofxPdListener*> pdListeners;
+// the listeners
+vector<ofxPdListener*> _listeners;
 
 //--------------------------------------------------------------------
 ofxPd::ofxPd() {
@@ -21,18 +21,14 @@ ofxPd::ofxPd() {
 
 //--------------------------------------------------------------------
 ofxPd::~ofxPd() {
-    pdClear();
-}
-
-void ofxPd::addListener(ofxPdListener *listener) {
-	pdListeners.push_back(listener);
+    clear();
 }
 
 //--------------------------------------------------------------------
-bool ofxPd::pdInit(const int numInChannels, 
+bool ofxPd::init(const int numInChannels, 
 	const int numOutChannels,  const int sampleRate) {
 	
-	pdClear();
+	clear();
 	
 	this->sampleRate = sampleRate;
 	this->numInChannels = numInChannels;
@@ -77,7 +73,7 @@ bool ofxPd::pdInit(const int numInChannels,
     return bPdInited;
 }
 
-void ofxPd::pdClear()
+void ofxPd::clear()
 {
 	if(bPdInited) {
 		if(inputBuffer)	delete[] inputBuffer;
@@ -85,12 +81,12 @@ void ofxPd::pdClear()
 	bPdInited = false;
 }
 
-void ofxPd::pdAddToSearchPath(const string& path)
+void ofxPd::addToSearchPath(const string& path)
 {
 	libpd_add_to_search_path(path.c_str());
 }
 		
-void ofxPd::pdClearSearchPath()
+void ofxPd::clearSearchPath()
 {
 	libpd_clear_search_path();
 }
@@ -98,7 +94,7 @@ void ofxPd::pdClearSearchPath()
 //
 //	references http://pocoproject.org/docs/Poco.Path.html
 //
-void ofxPd::pdOpenPatch(const string& patch)
+void ofxPd::openPatch(const string& patch)
 {
 	Poco::Path path(ofToDataPath(patch));
 	string folder = path.parent().toString();
@@ -118,7 +114,7 @@ void ofxPd::pdOpenPatch(const string& patch)
 	libpd_finish_message("pd", "open");
 }
 
-void ofxPd::pdClosePatch(const string& name)
+void ofxPd::closePatch(const string& name)
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: Closing name: "+name);
 
@@ -129,7 +125,7 @@ void ofxPd::pdClosePatch(const string& name)
 	libpd_finish_message(patchname.c_str(), "menuclose");
 }
 
-void ofxPd::pdDspOn()
+void ofxPd::dspOn()
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: Dsp on");
 	
@@ -139,7 +135,7 @@ void ofxPd::pdDspOn()
 	libpd_finish_message("pd", "dsp");
 }
 
-void ofxPd::pdDspOff()
+void ofxPd::dspOff()
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: Dsp off");
 	
@@ -150,18 +146,18 @@ void ofxPd::pdDspOff()
 }
 
 //----------------------------------------------------------
-void ofxPd::pdSendFloat(const string& receiverName, float value)
+void ofxPd::sendFloat(const string& receiverName, float value)
 {
 	libpd_float(receiverName.c_str(), value);
 }
 
-void ofxPd::pdSendBang(const string& receiverName)
+void ofxPd::sendBang(const string& receiverName)
 {
 
 	libpd_bang(receiverName.c_str());
 }
 
-void ofxPd::pdSendMidiNote(int channel, int note, int velocity)
+void ofxPd::sendMidiNote(int channel, int note, int velocity)
 {
 	libpd_start_message();
 	libpd_add_float(note);
@@ -170,40 +166,45 @@ void ofxPd::pdSendMidiNote(int channel, int note, int velocity)
 	libpd_finish_list("#notein");
 }
 
-void ofxPd::pdSendMidiControlChange(int channel, int control, int value)
+void ofxPd::sendMidiControlChange(int channel, int control, int value)
 {
 	libpd_controlchange(channel, control, value);
 }
 
-void ofxPd::pdSendMidiBend(int channel, int value)
+void ofxPd::sendMidiBend(int channel, int value)
 {
 	libpd_pitchbend(channel, value);
 }
 
-void ofxPd::pdSendMidiAfterTouch(int channel, int value)
+void ofxPd::sendMidiAfterTouch(int channel, int value)
 {
 	libpd_aftertouch(channel, value);
 }
 
-void ofxPd::pdSendMidiPolyTouch(int channel, int note, int value)
+void ofxPd::sendMidiPolyTouch(int channel, int note, int value)
 {
 	libpd_polyaftertouch(channel, note, value);
 }
 
-void ofxPd::pdSendMidiProgramChange(int channel, int program)
+void ofxPd::sendMidiProgramChange(int channel, int program)
 {
 	libpd_programchange(channel, program);
 }
 
 //----------------------------------------------------------
-void ofxPd::pdBind(const string& source)
+void ofxPd::bind(const string& source)
 {
 	libpd_bind(source.c_str());
 }
 
-void ofxPd::pdUnbind(const string& source)
+void ofxPd::unbind(const string& source)
 {
 	//libpd_unbind(source.c_str());
+}
+
+//--------------------------------------------------------------------
+void ofxPd::addListener(ofxPdListener *listener) {
+	_listeners.push_back(listener);
 }
 
 //----------------------------------------------------------
@@ -245,8 +246,8 @@ void ofxPd::_print(const char* s)
 	}
 	
 	ofLog(OF_LOG_VERBOSE, "ofxPd: "+line);
-	for(int i = 0; i < pdListeners.size(); i++) {
-		pdListeners[i]->pdPrintReceived(line);
+	for(int i = 0; i < _listeners.size(); i++) {
+		_listeners[i]->printReceived(line);
 	}
 }
 		
@@ -305,42 +306,49 @@ void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *a
 
 void ofxPd::_noteon(int channel, int pitch, int velocity)
 {
-	for(int i = 0; i < pdListeners.size(); i++) {
-		pdListeners[i]->pdNoteonReceived(channel, pitch, velocity);
+	for(int i = 0; i < _listeners.size(); i++) {
+		_listeners[i]->noteonReceived(channel, pitch, velocity);
 	}
 }
 
 void ofxPd::_controlchange(int channel, int controller, int val)
 {
-	for(int i = 0; i < pdListeners.size(); i++) {
-		pdListeners[i]->pdControlChangeReceived(channel, controller, val);
+	for(int i = 0; i < _listeners.size(); i++) {
+		_listeners[i]->controlChangeReceived(channel, controller, val);
 	}
 }
 
 void ofxPd::_programchange(int channel, int program)
 {
-	for(int i = 0; i < pdListeners.size(); i++) {
-		pdListeners[i]->pdProgramChangeReceived(channel, program);
+	for(int i = 0; i < _listeners.size(); i++) {
+		_listeners[i]->programChangeReceived(channel, program);
 	}
 }
 
 void ofxPd::_pitchbend(int channel, int val)
 {
-	for(int i = 0; i < pdListeners.size(); i++) {
-		pdListeners[i]->pdPitchbendReceived(channel, val);
+	for(int i = 0; i < _listeners.size(); i++) {
+		_listeners[i]->pitchbendReceived(channel, val);
 	}
 }
 
 void ofxPd::_aftertouch(int channel, int val)
 {
-	for(int i = 0; i < pdListeners.size(); i++) {
-		pdListeners[i]->pdAftertouchReceived(channel, val);
+	for(int i = 0; i < _listeners.size(); i++) {
+		_listeners[i]->aftertouchReceived(channel, val);
 	}
 }
 
 void ofxPd::_polyaftertouch(int channel, int pitch, int val)
 {
-	for(int i = 0; i < pdListeners.size(); i++) {
-		pdListeners[i]->pdPolyAftertouchReceived(channel, pitch, val);
+	for(int i = 0; i < _listeners.size(); i++) {
+		_listeners[i]->polyAftertouchReceived(channel, pitch, val);
+	}
+}
+
+void ofxPd::_midibyte(int port, int byte) {
+	
+	for(int i = 0; i < _listeners.size(); i++) {
+		_listeners[i]->midibyteReceived(port, byte);
 	}
 }

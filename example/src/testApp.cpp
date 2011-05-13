@@ -5,6 +5,7 @@
 
 //--------------------------------------------------------------
 void testApp::setup() {
+
 	ofSetFrameRate(30);
 	
 	cout << Poco::Path::current() << endl;
@@ -12,13 +13,13 @@ void testApp::setup() {
 	// setup OF sound stream
 	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlocksize(), 4);
 	
-	pd.pdInit(2, 2, 44100);
+	pd.init(2, 2, 44100);
 	pd.addListener(this);
-	pd.pdDspOn();
-	pd.pdOpenPatch("test.pd");
-	pd.pdBind("toOF");
-	pd.pdSendBang("fromOF");
-	pd.pdSendFloat("fromOF", 100);
+	pd.dspOn();
+	pd.openPatch("test.pd");
+	pd.bind("toOF");
+	pd.sendBang("fromOF");
+	pd.sendFloat("fromOF", 100);
 }
 
 //--------------------------------------------------------------

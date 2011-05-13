@@ -6,13 +6,17 @@
  *
  */
 #pragma once
+
 class ofxPdListener {
-public:
-	void pdPrintReceived(string message) {}
-	void pdNoteonReceived(int channel, int pitch, int velocity) {}
-	void pdControlChangeReceived(int channel, int controller, int val) {}
-	void pdProgramChangeReceived(int channel, int program) {}
-	void pdPitchbendReceived(int channel, int val) {}
-	void pdAftertouchReceived(int channel, int val) {}
-	void pdPolyAftertouchReceived(int channel, int pitch, int val) {}
+
+	public:
+	
+		void printReceived(string message) {}
+		void noteonReceived(int channel, int pitch, int velocity) {}
+		void controlChangeReceived(int channel, int controller, int val) {}
+		void programChangeReceived(int channel, int program) {}
+		void pitchbendReceived(int channel, int val) {}
+		void aftertouchReceived(int channel, int val) {}
+		void polyAftertouchReceived(int channel, int pitch, int val) {}
+		void midibyteReceived(int port, int byte) {}
 };

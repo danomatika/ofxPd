@@ -25,41 +25,41 @@ class ofxPd {
 		virtual ~ofxPd();
         
         /// initialize resources
-		bool pdInit(const int numInChannels, const int numOutChannels, 
+		bool init(const int numInChannels, const int numOutChannels, 
 					const int sampleRate);
         
         /// clear resources
-        void pdClear();
+        void clear();
 		
 		/// add to the pd search path
-		void pdAddToSearchPath(const string& path);
+		void addToSearchPath(const string& path);
 		
 		/// clear the current pd search path
-		void pdClearSearchPath();
+		void clearSearchPath();
 		
 		/// open a patch, take a absolute or relative path (in data folder)
-		void pdOpenPatch(const string& patch);
+		void openPatch(const string& patch);
 		
 		/// close a patch, takes the patch's basename (filename without extension)
-		void pdClosePatch(const string& name);
+		void closePatch(const string& name);
 		
 		// turn on/off digital signal processing
-		void pdDspOn();
-		void pdDspOff();
+		void dspOn();
+		void dspOff();
 		
 		/// send messages to pd
-		void pdSendFloat(const string& messageName, float value);
-		void pdSendBang(const string& messageName);	
-		void pdSendMidiNote(int channel, int noteNum, int velocity);
-		void pdSendMidiControlChange(int channel, int ctlNum, int value);
-		void pdSendMidiBend(int channel, int value);
-		void pdSendMidiProgramChange(int channel, int program);
-		void pdSendMidiPolyTouch(int channel, int noteNum, int value);
-		void pdSendMidiAfterTouch(int channel, int value);
+		void sendFloat(const string& messageName, float value);
+		void sendBang(const string& messageName);	
+		void sendMidiNote(int channel, int noteNum, int velocity);
+		void sendMidiControlChange(int channel, int ctlNum, int value);
+		void sendMidiBend(int channel, int value);
+		void sendMidiProgramChange(int channel, int program);
+		void sendMidiPolyTouch(int channel, int noteNum, int value);
+		void sendMidiAfterTouch(int channel, int value);
 		
 		/// add message source names to receive to
-		void pdBind(const string& source);
-		void pdUnbind(const string& source);
+		void bind(const string& source);
+		void unbind(const string& source);
 		
 		/// add listener to receieve events
 		void addListener(ofxPdListener *listener);
@@ -79,7 +79,7 @@ class ofxPd {
 		int sampleRate;						///< the audio sample rate
 		int numInChannels, numOutChannels;	///< number of channels in/out
 		float *inputBuffer;  				///< interleaved input audio buffer
-	
+		
 		// libpd static callback functions
 		static void _print(const char* s);
 				
@@ -96,6 +96,7 @@ class ofxPd {
 		static void _pitchbend(int channel, int val);
 		static void _aftertouch(int channel, int val);
 		static void _polyaftertouch(int channel, int pitch, int val);
+		static void _midibyte(int port, int byte);
 };
 
 #endif
