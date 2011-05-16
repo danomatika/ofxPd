@@ -1,0 +1,143 @@
+
+TYPES
+
+// message primitives
+Bang(string recvName)
+Float(string recvName, float value)
+Symbol(string recvName, string symbol)
+
+// compound message
+class List {
+
+	public:
+
+		unsigned int len();	// number of items
+		string types();		// OSC style type string ie "fssfffs"
+
+		// check type
+		bool isFloat(int index=-1)
+		bool isSymbol(int index=-1)
+
+		// get as type
+		float asFloat(int index=-1)
+		string asSymbol(int index=-1)
+
+	protected:
+
+		List(string dest, int length, t_atom *items)
+
+		addFloat(Float& f);
+		addSymbol(Symbol& s); 
+
+	private:
+
+		string types;
+		unsigned int length;
+		t_atom *items;
+};
+
+// compound messages
+StartList(string recvName)
+StartMsg(string recvName, string symName)
+
+// midi
+Note(int pitch, int velocity, int channel=0)
+ControlChange(int controller, int value, int channel=0)
+ProgramChange(int program, int channel=0)
+PitchBend(int value, int channel=0)
+Aftertouch(int value, int channel=0)
+PolyAftertouch(int pitch, int value, int channel=0)
+
+// compound raw midi
+StartMidi(int port=0)
+StartSysex(int port=0)
+StartSysexRealtime(int port=0)
+
+// finish any compound message
+Finish()
+
+
+
+SENDING
+
+// MESSAGES
+
+// single messages
+pd.sendBang("test");
+pd.sendFloat("test", 100);
+pd.sendSymbol("test", "symbol1");
+pd << Bang("test") << Float("test", 100) << Symbol("test", "symbol1");
+
+// compound messages
+
+// send a list
+//
+// [ 100 292.99 c string (
+// |
+// [ s test (
+//
+pd.startList("test");
+pd.addFloat(100);
+pd.addFloat(292.99);
+pd.addSymbol("c");
+pd.addSymbol("string");
+pd.finish();
+pd << StartMessage("test") << 100 << 292.99 << 'c' << "string" << Finish();
+
+// send a typed message
+//
+// [; pd dsp 1 (
+//
+pd.startMsg("pd", "dsp");
+pd.addFloat(1);
+pd.finish();
+pd << StartMsg("pd", "dsp") << 1 << Finish();
+
+// MIDI
+
+// note
+pd.sendNote(60);
+pd.sendNote(60, 100);
+pd.sendNote(60, 100, 0);
+pd << Note(60) << Note(60, 100) << Note(60, 100, 0);
+
+// controls
+pd << ControlChange(7, 100) << ControlChange(7, 100, 0);	// 7 - Volume
+pd << ProgamChange(40) << ProgramChange(40, 0);	// 40 - Violin
+pd << PitchBend(8000) << PitchBend(8000, 0);	// value -8192 to 8192
+pd << Aftertouch(100) << Aftertouch(100, 0);
+pd << PolyAftertouch(60, 100) << PolyAftertouch(60, 100, 0);
+
+// raw midi
+// Noteon chan 0, Middle C, velocity
+pd << StartMidi() << 0x90 << 0x3c << 0x40 << FinishBytes(); 
+pd << StartSysex() << 0xF0 << 0x7D << 0xF7 << FinishBytes();
+pd << StartSysexRealtime() << 0xF0 << 0x7D << 0xF7 << FinishBytes();
+
+
+
+RECEIVING
+
+public ofxPdListener {
+
+	public:
+
+		void printReceived(const std::string& message) {}
+
+		void bangReceived(string dest) {}
+		void floatReceived(string dest, float value) {}
+		void symbolReceived(string dest, string symbol) {}
+		void listReceived(string dest, const List& list) {}
+		void messageReceived(string dest, string msg, const List& list) {}
+		
+		void noteReceived(int channel, int pitch, int velocity) {}
+		void controlChangeReceived(int channel, int controller, int val) {}
+		void programChangeReceived(int channel, int program) {}
+		void pitchbendReceived(int channel, int val) {}
+		void aftertouchReceived(int channel, int val) {}
+		void polyAftertouchReceived(int channel, int pitch, int val) {}
+		void midiByteReceived(int port, int byte) {}
+		void sysexReceived(int port, int byte) {}
+		void sysexRealtimeReceived(int port, int byte) {}
+};
+
