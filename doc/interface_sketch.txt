@@ -95,6 +95,8 @@ pd << StartMsg("pd", "dsp") << 1 << Finish();
 
 // MIDI
 
+// midi channels should be 1-16? ... same as patching
+
 // note
 pd.sendNote(60);
 pd.sendNote(60, 100);
@@ -136,8 +138,21 @@ public ofxPdListener {
 		void pitchbendReceived(int channel, int val) {}
 		void aftertouchReceived(int channel, int val) {}
 		void polyAftertouchReceived(int channel, int pitch, int val) {}
+		
 		void midiByteReceived(int port, int byte) {}
 		void sysexReceived(int port, int byte) {}
 		void sysexRealtimeReceived(int port, int byte) {}
 };
+
+pd.addListener(listener);	// add listener to global space
+pd.subscribe("test");		// subscribe to "test"
+
+pd.subscribeListener(listener, "test");	// bind listener to "test",
+									// adds both if not already added,
+									// takes listener out of global space
+
+pd.unsubscribeListener(listener, "test"); // unbind listener to "test',
+									 // puts it back in the global space
+pd.removeListener(listener);	 // removes listener from global space
+pd.unsubscribeListener(listener); // unsubscribes listener from all sources, global
 

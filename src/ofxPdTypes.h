@@ -148,7 +148,8 @@ struct PolyAftertouch {
 /// start a raw midi byte stream
 struct StartMidi {
 
-	const int port; 	///< pd midi port
+	const int port; 	///< pd midi port, dev# * 16 + channel (0-15)
+						/// so dev #2, chan 3 = 16 + 3 = 19
 	
 	explicit StartMidi(const int port=0) : port(port) {}
 };
@@ -156,7 +157,8 @@ struct StartMidi {
 /// start a raw sysex byte stream
 struct StartSysEx {
 
-	const int port; 	///< pd midi port
+	const int port; 	///< pd midi port, dev# * 16 + channel (0-15)
+						/// so dev #2, chan 3 = 16 + 3 = 19
 	
 	explicit StartSysEx(const int port=0) : port(port) {}
 };
@@ -164,7 +166,8 @@ struct StartSysEx {
 /// start a sys realtime byte stream
 struct StartSysRealtime {
 
-	const int port; 	///< pd midi port
+	const int port; 	///< pd midi port, dev# * 16 + channel (0-15)
+						/// so dev #2, chan 3 = 16 + 3 = 19
 	
 	explicit StartSysRealtime(const int port=0) : port(port) {}
 };

@@ -11,13 +11,13 @@ void testApp::setup() {
 	cout << Poco::Path::current() << endl;
 	
 	// setup OF sound stream
-	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlocksize(), 4);
+	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlockSize(), 4);
 	
 	pd.init(2, 2, 44100);
-	pd.addListener(this);
+	pd.addListener(*this);
 	pd.dspOn();
 	pd.openPatch("test.pd");
-	pd.bind("toOF");
+	pd.addSource("toOF");
 	pd.sendBang("fromOF");
 	pd.sendFloat("fromOF", 100);
 }

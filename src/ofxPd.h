@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+#include <set>
 #include <z_libpd.h>
 
 #include "ofxPdListener.h"
@@ -45,7 +47,35 @@ class ofxPd {
 		void dspOn();
 		void dspOff();
 		
-		/** \section Send Functions */
+		/** \section Receiving */
+		
+		/// add/remove listener to receive events
+		///
+		/// the "" source is the global space aka receives messages from all sources
+		///
+		void addListener(ofxPdListener& listener, const std::string& source="");
+		void removeListener(ofxPdListener& listener);
+		bool listenerExists(ofxPdListener& listener);
+		void clearListeners();
+		
+		/// bind/unbind receiver source to libpd
+		///
+		/// aka
+		///
+		/// [r source]
+		/// |
+		///
+		void addSource(const std::string& source);
+		void removeSource(const std::string& source);
+		bool sourceExists(const std::string& source);
+		void clearSources();
+		
+		/// source="" unsubscribes listener from existing sources and 
+		/// subscribes listener to global space (aka all sources)
+		void subscribe(ofxPdListener& listener, const std::string& source="");
+		void unsubscribe(ofxPdListener& listener, const std::string& source="");
+		
+		/** \section Sending Functions */
 		
 		/// messages
 		void sendBang(const std::string& dest);
@@ -68,11 +98,15 @@ class ofxPd {
 		void sendPolyAftertouch(const int pitch, const int value, const int channel=0);		
 		
 		/// raw midi bytes
+		///
+		/// port is the pd midi out port, dev# * 16 + channel (0-15)
+		/// so chan 3 on midi out dev #2 is 16 + 3 = 19
+		///
 		void sendMidiByte(const int value, const int port=0);
 		void sendSysExByte(const int value, const int port=0);
 		void sendSysRealtimeByte(const int value, const int port=0);
 		
-		/** \section Send Stream Interface */
+		/** \section Sending Stream Interface */
 		
 		/// single messages
 		ofxPd& operator<<(const Bang& var);
@@ -110,27 +144,16 @@ class ofxPd {
 		/// finish a compound message
         ofxPd& operator<<(const Finish& var);
 		
-		/// is a stream message currently in progress?
+		/// is a message currently in progress?
         inline bool isMsgInProgress() {return bMsgInProgress;}
-	
 		
-			
+		/** Utils */
 		
+		/// get the blocksize of pd (sample length per channel)
+		static int getBlockSize();
 		
-		/// add listener to receieve events
-		void addListener(ofxPdListener& listener, const std::string& source="");
-		void addListener(ofxPdListener& listener, const std::vector<std::string>& sources);
+		/** sections Audio Processing Callbacks */
 		
-		/// add message source names to receive to
-		void bind(ofxPdListener& listener, const std::string& source);
-		void unbind(ofxPdListener& listener, const std::string& source);
-		
-		
-		
-		/// get the pd blocksize of pd (sample length per channel)
-		static int getBlocksize();
-		
-		/// audio in/out callbacks
 		/// the libpd processing is done in the audioOut callback
 		virtual void audioIn(float * input, int bufferSize, int nChannels);
 		virtual void audioOut(float * output, int bufferSize, int nChannels);
@@ -157,6 +180,37 @@ class ofxPd {
 		std::string msgDest;	///< message destination
 		std::string msgMsg;		///< message target message
 		int midiPort;			///< target midi port
+	
+		/// a receiving sources's pointer and bound listeners
+		struct Source {
+			
+			// data
+			void* pointer;						///< source pointer
+			std::set<ofxPdListener*> listeners;	///< subscribed listeners
+
+			// helper functions
+			void addListener(ofxPdListener* listener) {
+				listeners.insert(listener);
+			}
+			
+			void removeListener(ofxPdListener* listener) {
+				std::set<ofxPdListener*>::iterator iter;
+				iter = listeners.find(listener);
+				if(iter != listeners.end())
+					listeners.erase(iter);
+			}
+			/*
+			bool listenerExists(ofxPdListener* listener) {
+				if(listeners.find(listener) != listeners.end())
+					return true;
+				return false;
+			}
+			*/
+		};
+			
+		std::set<ofxPdListener*> listeners;		///< the listeners
+		std::map<std::string, Source> sources;	///< bound sources
+												///< first object always global
 		
 		// libpd static callback functions
 		static void _print(const char* s);
