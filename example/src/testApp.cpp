@@ -7,6 +7,7 @@
 void testApp::setup() {
 
 	ofSetFrameRate(30);
+	//ofSetLogLevel(OF_LOG_VERBOSE);
 	
 	cout << Poco::Path::current() << endl;
 	
@@ -14,12 +15,27 @@ void testApp::setup() {
 	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlockSize(), 4);
 	
 	pd.init(2, 2, 44100);
+	
+	pd.addSource("toOF");
+	//pd.addSource("env");
 	pd.addListener(*this);
+	pd.subscribe(*this);
+	//pd.subscribe(*this, "toOF");
+	//pd.subscribe(*this, "env");
+	
 	pd.dspOn();
 	pd.openPatch("test.pd");
-	pd.addSource("toOF");
+	
 	pd.sendBang("fromOF");
 	pd.sendFloat("fromOF", 100);
+	pd.sendSymbol("fromOF", "test string");
+	
+	
+	pd.startList("tone");
+		pd.addSymbol("pitch");
+		pd.addFloat(72);
+	pd.finish();
+	pd.sendBang("tone");
 }
 
 //--------------------------------------------------------------
@@ -34,7 +50,27 @@ void testApp::draw() {}
 void testApp::exit() {}
 
 //--------------------------------------------------------------
-void testApp::keyPressed (int key) {}
+void testApp::keyPressed (int key) {
+
+	switch(key) {
+	
+		case 'a':
+			pd << StartList("tone") << "pitch" << 60 << Finish() << Bang("tone");
+			break;
+			
+		case 's':
+			pd << StartList("tone") << "pitch" << 61 << Finish() << Bang("tone");
+			break;
+			
+		case 'd':
+			pd << StartList("tone") << "pitch" << 62 << Finish() << Bang("tone");
+			break;
+			
+		default:
+			break;
+	}
+
+}
 
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y) {}
@@ -52,24 +88,40 @@ void testApp::mouseReleased(int x, int y, int button) {}
 void testApp::windowResized(int w, int h) {}
 
 //--------------------------------------------------------------
-void testApp::audioReceived(float * input, int bufferSize, int nChannels)
-{
+void testApp::audioReceived(float * input, int bufferSize, int nChannels) {
 	pd.audioIn(input, bufferSize, nChannels);
 }
 
 //--------------------------------------------------------------
-void testApp::audioRequested(float * output, int bufferSize, int nChannels)
-{
+void testApp::audioRequested(float * output, int bufferSize, int nChannels) {
 	pd.audioOut(output, bufferSize, nChannels);
 }
 
 //--------------------------------------------------------------
-void testApp::pdPrintReceived(string message)
-{
-	//ofLogNotice() << "print: " << message;
+void testApp::printReceived(const std::string& message) {
+	cout << "print: " << message << endl;
+}
+		
+void testApp::bangReceived(const std::string& dest) {
+	cout << "bang " << dest << endl;
 }
 
-void testApp::pdNoteonReceived(int channel, int pitch, int velocity)
-{
-	//ofLogNotice() << "noteon: " << channel << " " << pitch << " " << velocity;
+void testApp::floatReceived(const std::string& dest, float value) {
+	cout << "float " << dest << ": " << value << endl;
+}
+
+void testApp::symbolReceived(const std::string& dest, const std::string& symbol) {
+	cout << "symbol " << dest << ": " << symbol << endl;
+}
+
+void testApp::listReceived(const std::string& dest, const List& list) {
+	cout << "list " << dest << ": " << endl;
+}
+
+void testApp::messageReceived(const std::string& dest, const std::string& msg, const List& list) {
+	cout << "message " << dest << ": " << msg << endl;
+}
+
+void testApp::noteReceived(const int channel, const int pitch, const int velocity) {
+	cout << "note: " << channel << " " << pitch << " " << velocity << endl;
 }

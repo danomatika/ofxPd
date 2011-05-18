@@ -13,8 +13,6 @@
 ///
 ///	a Pure Data instance
 ///
-/// derive this class and implement the callback functions
-///
 ///	references:	http://gitorious.org/pdlib/pages/Libpd
 ///
 class ofxPd {
@@ -47,7 +45,7 @@ class ofxPd {
 		void dspOn();
 		void dspOff();
 		
-		/** \section Receiving */
+		//// \section Receiving
 		
 		/// add/remove listener to receive events
 		///
@@ -58,7 +56,7 @@ class ofxPd {
 		bool listenerExists(ofxPdListener& listener);
 		void clearListeners();
 		
-		/// bind/unbind receiver source to libpd
+		/// add/remove receiver sources from libpd
 		///
 		/// aka
 		///
@@ -75,7 +73,7 @@ class ofxPd {
 		void subscribe(ofxPdListener& listener, const std::string& source="");
 		void unsubscribe(ofxPdListener& listener, const std::string& source="");
 		
-		/** \section Sending Functions */
+		/// \section Sending Functions
 		
 		/// messages
 		void sendBang(const std::string& dest);
@@ -106,7 +104,7 @@ class ofxPd {
 		void sendSysExByte(const int value, const int port=0);
 		void sendSysRealtimeByte(const int value, const int port=0);
 		
-		/** \section Sending Stream Interface */
+		/// \section Sending Stream Interface
 		
 		/// single messages
 		ofxPd& operator<<(const Bang& var);
@@ -147,12 +145,12 @@ class ofxPd {
 		/// is a message currently in progress?
         inline bool isMsgInProgress() {return bMsgInProgress;}
 		
-		/** Utils */
+		/// Utils
 		
 		/// get the blocksize of pd (sample length per channel)
 		static int getBlockSize();
 		
-		/** sections Audio Processing Callbacks */
+		/// sections Audio Processing Callbacks
 		
 		/// the libpd processing is done in the audioOut callback
 		virtual void audioIn(float * input, int bufferSize, int nChannels);
@@ -211,6 +209,9 @@ class ofxPd {
 		std::set<ofxPdListener*> listeners;		///< the listeners
 		std::map<std::string, Source> sources;	///< bound sources
 												///< first object always global
+		
+		std::string printMsg;	///< used to build a print message
+		
 		
 		// libpd static callback functions
 		static void _print(const char* s);

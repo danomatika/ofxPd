@@ -15,21 +15,10 @@ ofxPd* pdPtr = NULL;
 
 //--------------------------------------------------------------------
 ofxPd::ofxPd() {
-	
 	pdPtr = this;
-	
 	bPdInited = false;
-	
-	sampleRate = 0;
-	numInChannels = 0;
-	numOutChannels = 0;
 	inputBuffer = NULL;
-	
-	bMsgInProgress = false;
-	msgType = LIST;
-	midiPort = 0;
-	
-	clearSources();
+	clear();
 }
 
 //--------------------------------------------------------------------
@@ -71,8 +60,8 @@ bool ofxPd::init(const int numInChannels,
 	// init pd
 	libpd_init();
 	if(libpd_init_audio(numInChannels, numOutChannels,
-		this->sampleRate, 1) != 0) {
-		ofLog(OF_LOG_FATAL_ERROR, "ofxPd: Could not init");
+		this->sampleRate*2, 1) != 0) {
+		ofLog(OF_LOG_ERROR, "ofxPd: Could not init");
 		return false;
 	}
 	
@@ -92,7 +81,19 @@ void ofxPd::clear() {
 	if(bPdInited) {
 		if(inputBuffer)	delete[] inputBuffer;
 	}
+	
 	bPdInited = false;
+	
+	sampleRate = 0;
+	numInChannels = 0;
+	numOutChannels = 0;
+	inputBuffer = NULL;
+	
+	bMsgInProgress = false;
+	msgType = LIST;
+	midiPort = 0;
+
+	clearSources();
 }
 
 void ofxPd::addToSearchPath(const std::string& path) {
@@ -166,7 +167,7 @@ void ofxPd::addListener(ofxPdListener& listener, const std::string& source) {
 		ofLog(OF_LOG_WARNING, "ofxPd: addListener: ignoring duplicate listener");
 		return;
 	}
-	
+
 	// add source if not existing
 	if(!sourceExists(source)) {
 		addSource(source);
@@ -635,56 +636,67 @@ void ofxPd::_print(const char* s)
 {
 	string line(s);
 	
-	// trim the trailing newline each print line has ... blarg again
 	if(line.size() > 0 && line.at(line.size()-1) == '\n') {
-		line.erase(line.end()-1);
-	}
+		
+		// build the message
+		if(line.size() > 1) {
+			line.erase(line.end()-1);
+			pdPtr->printMsg += line;
+		}
+		
+		ofLog(OF_LOG_VERBOSE, "ofxPd: print: %s", pdPtr->printMsg.c_str());
+		
+		// broadcast
+		set<ofxPdListener*>& listeners = pdPtr->listeners;
+		set<ofxPdListener*>::iterator iter;
+		for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
+			(*iter)->printReceived(pdPtr->printMsg);
+		}
 	
-	ofLog(OF_LOG_VERBOSE, "ofxPd: print: "+line);
-	
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->printReceived(line);
+		pdPtr->printMsg = "";
+		return;
 	}
+		
+	// build the message
+	pdPtr->printMsg += line;
 }
 		
 void ofxPd::_bang(const char* source)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: bang: " + (string) source);
+	ofLog(OF_LOG_VERBOSE, "ofxPd: bang: %s", source);
 	
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
 	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->bangReceived(source);
+		(*iter)->bangReceived((string) source);
 	}
 }
 
 void ofxPd::_float(const char* source, float value)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: float: " + (string) source + " " + ofToString(value));
+	ofLog(OF_LOG_VERBOSE, "ofxPd: float: %s %d", source, value);
 	
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
 	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->floatReceived(source, value);
+		(*iter)->floatReceived((string) source, value);
 	}
 }
 
 void ofxPd::_symbol(const char* source, const char* symbol)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: symbol: " + (string) source + " " + (string) symbol);
+	ofLog(OF_LOG_VERBOSE, "ofxPd: symbol: %s %s", source, symbol);
 	
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
 	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->symbolReceived(source, symbol);
+		(*iter)->symbolReceived((string) source, (string) symbol);
 	}
 }
 
 void ofxPd::_list(const char* source, int argc, t_atom* argv)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: list: " + (string) source);
+	ofLog(OF_LOG_VERBOSE, "ofxPd: list: %s", source);
 	
 	for(int i = 0; i < argc; i++) {
 		
@@ -692,18 +704,18 @@ void ofxPd::_list(const char* source, int argc, t_atom* argv)
 		
 		if(a.a_type == A_FLOAT) {  
 			float x = a.a_w.w_float;  
-			ofLog(OF_LOG_VERBOSE, "ofxPd: "	+ ofToString(x)); 
+			ofLog(OF_LOG_VERBOSE, "ofxPd: %d", x); 
 		}
 		else if(a.a_type == A_SYMBOL) {  
 			char *s = a.a_w.w_symbol->s_name;  
-			ofLog(OF_LOG_VERBOSE, "ofxPd: "	+ (string) s);  
+			ofLog(OF_LOG_VERBOSE, "ofxPd: %s", s);  
 		}
 	}
 }
 
 void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *argv)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: message: " + (string) source + " " + (string) symbol);
+	ofLog(OF_LOG_VERBOSE, "ofxPd: message: %s %s", source, symbol);
 	
 	for(int i = 0; i < argc; i++) {  
 		
@@ -711,19 +723,18 @@ void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *a
 		
 		if(a.a_type == A_FLOAT) {  
 			float x = a.a_w.w_float;  
-			ofLog(OF_LOG_VERBOSE, "ofxPd: "	+ ofToString(x)); 
+			ofLog(OF_LOG_VERBOSE, "ofxPd: %d", x); 
 		}
 		else if(a.a_type == A_SYMBOL) {  
 			char *s = a.a_w.w_symbol->s_name;  
-			ofLog(OF_LOG_VERBOSE, "ofxPd: "	+ (string) s);  
+			ofLog(OF_LOG_VERBOSE, "ofxPd: %s", s);  
 		}
 	}
 }
 
 void ofxPd::_noteon(int channel, int pitch, int velocity)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: note: " + ofToString(channel) +
-						  " " + ofToString(pitch) + " " + ofToString(velocity));
+	ofLog(OF_LOG_VERBOSE, "ofxPd: note: %d %d %d", channel, pitch, velocity);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
@@ -734,8 +745,7 @@ void ofxPd::_noteon(int channel, int pitch, int velocity)
 
 void ofxPd::_controlchange(int channel, int controller, int value)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: control change: " + ofToString(channel) +
-						  " " + ofToString(controller) + " " + ofToString(value));
+	ofLog(OF_LOG_VERBOSE, "ofxPd: control change: %d %d %d", channel, controller, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
@@ -746,8 +756,7 @@ void ofxPd::_controlchange(int channel, int controller, int value)
 
 void ofxPd::_programchange(int channel, int value)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: program change: " + ofToString(channel) +
-						  " " + ofToString(value));
+	ofLog(OF_LOG_VERBOSE, "ofxPd: program change: %d %d", channel, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
@@ -758,8 +767,7 @@ void ofxPd::_programchange(int channel, int value)
 
 void ofxPd::_pitchbend(int channel, int value)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: pitchbend: " + ofToString(channel) +
-						  " " + ofToString(value));
+	ofLog(OF_LOG_VERBOSE, "ofxPd: pitchbend: %d %d", channel, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
@@ -770,8 +778,7 @@ void ofxPd::_pitchbend(int channel, int value)
 
 void ofxPd::_aftertouch(int channel, int value)
 {
-	ofLog(OF_LOG_VERBOSE, "ofxPd: aftertouch: " + ofToString(channel) +
-						  " " + ofToString(value));
+	ofLog(OF_LOG_VERBOSE, "ofxPd: aftertouch: %d %d", channel, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
@@ -782,8 +789,7 @@ void ofxPd::_aftertouch(int channel, int value)
 
 void ofxPd::_polyaftertouch(int channel, int pitch, int value) {
 
-	ofLog(OF_LOG_VERBOSE, "ofxPd: polyaftertouch: " + ofToString(channel) +
-						  " " + ofToString(pitch) + " " + ofToString(value));
+	ofLog(OF_LOG_VERBOSE, "ofxPd: polyaftertouch: %d %d %d", channel, pitch, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
@@ -794,8 +800,7 @@ void ofxPd::_polyaftertouch(int channel, int pitch, int value) {
 
 void ofxPd::_midibyte(int port, int byte) {
 	
-	ofLog(OF_LOG_VERBOSE, "ofxPd: midibyte: " + ofToString(port) +
-						  " " + ofToString(byte));
+	ofLog(OF_LOG_VERBOSE, "ofxPd: midibyte: %d %d", port, byte);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
