@@ -59,9 +59,7 @@ If you want to add ofxPd to another project, you need to make sure you include t
 openFrameworks/addons/ofxPd/src
 </pre>
 
-You also need to include the following C Flags for building the libpd source:
-<pre>
-</pre>
+You will also need to include some additional C Flags for building the libpd source:
 
 #### For XCode:
 
