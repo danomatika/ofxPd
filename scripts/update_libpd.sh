@@ -20,8 +20,8 @@ rm libpd/libpd_wrapper/z_jni.c
 rm libpd/libpd_wrapper/z_jni.h
 
 # copy sources
-cp -Rv libpd/pure-data ../lib/pd
-cp -Rv libpd/libpd_wrapper ../lib/pd
+cp -Rv libpd/pure-data ../src/pd
+cp -Rv libpd/libpd_wrapper ../src/pd
 
 # cleanup
 rm -rfv libpd
