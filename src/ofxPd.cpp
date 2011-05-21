@@ -13,17 +13,41 @@ using namespace std;
 // pointer for static member functions
 ofxPd* pdPtr = NULL;
 
+
+#ifdef TARGET_LINUX
+
+#include <pthread.h>
+static pthread_mutex_t mutex;
+#define _LOCK() pthread_mutex_lock(&mutex)
+#define _UNLOCK() pthread_mutex_unlock( &mutex )
+
+#else
+
+#define _LOCK()
+#define _UNLOCK()
+
+#endif
+
+
 //--------------------------------------------------------------------
 ofxPd::ofxPd() {
 	pdPtr = this;
 	bPdInited = false;
 	inputBuffer = NULL;
 	clear();
+
+#ifdef TARGET_LINUX
+	pthread_mutex_init( &mutex, NULL );
+#endif
 }
 
 //--------------------------------------------------------------------
 ofxPd::~ofxPd() {
     clear();
+#ifdef TARGET_LINUX
+	pthread_mutex_destroy( &mutex );
+#endif
+	sources.clear();
 }
 
 //--------------------------------------------------------------------
@@ -58,12 +82,15 @@ bool ofxPd::init(const int numInChannels,
 	libpd_midibytehook = (t_libpd_midibytehook) _midibyte;
 	
 	// init pd
+	_LOCK();
 	libpd_init();
 	if(libpd_init_audio(numInChannels, numOutChannels,
 		this->sampleRate*2, 1) != 0) {
+		_UNLOCK();
 		ofLog(OF_LOG_ERROR, "ofxPd: Could not init");
 		return false;
 	}
+	_UNLOCK();
 	
     bPdInited = true;
 	ostringstream status;
@@ -78,8 +105,10 @@ bool ofxPd::init(const int numInChannels,
 }
 
 void ofxPd::clear() {
+	_LOCK();
 	if(bPdInited) {
 		if(inputBuffer)	delete[] inputBuffer;
+
 	}
 	
 	bPdInited = false;
@@ -92,16 +121,21 @@ void ofxPd::clear() {
 	bMsgInProgress = false;
 	msgType = LIST;
 	midiPort = 0;
+	_UNLOCK();
 
 	clearSources();
 }
 
 void ofxPd::addToSearchPath(const std::string& path) {
+	_LOCK();
 	libpd_add_to_search_path(path.c_str());
+	_UNLOCK();
 }
 		
 void ofxPd::clearSearchPath() {
+	_LOCK();
 	libpd_clear_search_path();
+	_UNLOCK();
 }
 
 //
@@ -121,10 +155,12 @@ void ofxPd::openPatch(const std::string& patch) {
 						  " path: "+folder);
 
 	// [; pd open file folder(
+	_LOCK();
 	libpd_start_message();
 	libpd_add_symbol(path.getFileName().c_str());
 	libpd_add_symbol(folder.c_str());
 	libpd_finish_message("pd", "open");
+	_UNLOCK();
 }
 
 void ofxPd::closePatch(const std::string& name) {
@@ -133,9 +169,11 @@ void ofxPd::closePatch(const std::string& name) {
 
 	// [; pd-name menuclose 1(
 	string patchname = (string) "pd-"+name;
+	_LOCK();
 	libpd_start_message();
 	libpd_add_float(1.0f);
 	libpd_finish_message(patchname.c_str(), "menuclose");
+	_UNLOCK();
 }
 
 void ofxPd::dspOn() {
@@ -143,9 +181,11 @@ void ofxPd::dspOn() {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: Dsp on");
 	
 	// [; pd dsp 1(
+	_LOCK();
 	libpd_start_message();
 	libpd_add_float(1.0f);
 	libpd_finish_message("pd", "dsp");
+	_UNLOCK();
 }
 
 void ofxPd::dspOff() {
@@ -153,9 +193,11 @@ void ofxPd::dspOff() {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: Dsp off");
 	
 	// [; pd dsp 0(
+	_LOCK();
 	libpd_start_message();
 	libpd_add_float(0.0f);
 	libpd_finish_message("pd", "dsp");
+	_UNLOCK();
 }
 
 //--------------------------------------------------------------------
@@ -290,15 +332,21 @@ void ofxPd::unsubscribe(ofxPdListener& listener, const std::string& source) {
 
 //----------------------------------------------------------
 void ofxPd::sendBang(const std::string& dest) {
+	_LOCK();
 	libpd_bang(dest.c_str());
+	_UNLOCK();
 }
 
 void ofxPd::sendFloat(const std::string& dest, float value) {
+	_LOCK();
 	libpd_float(dest.c_str(), value);
+	_UNLOCK();
 }
 
 void ofxPd::sendSymbol(const std::string& dest, const std::string& symbol) {
+	_LOCK();
 	libpd_symbol(dest.c_str(), symbol.c_str());
+	_UNLOCK();
 }
 
 //----------------------------------------------------------
@@ -308,7 +356,8 @@ void ofxPd::startList(const std::string& dest) {
     	ofLog(OF_LOG_ERROR, "ofxPd: Can not start list, message in progress");
 		return;
 	}
-	
+
+	_LOCK();	
 	libpd_start_message();
 	bMsgInProgress = true;
 	msgType = LIST;
@@ -321,7 +370,8 @@ void ofxPd::startMessage(const std::string& dest, const std::string& msg) {
     	ofLog(OF_LOG_ERROR, "ofxPd: Can not start message, message in progress");
 		return;
 	}
-	
+
+	_LOCK();	
 	libpd_start_message();
 	bMsgInProgress = true;
 	msgType = MSG;
@@ -376,46 +426,65 @@ void ofxPd::finish() {
 			libpd_finish_message(msgDest.c_str(), msgMsg.c_str());
 			break;
 	}
+	_UNLOCK();
 	
 	bMsgInProgress = false;
 }
 
 //----------------------------------------------------------
 void ofxPd::sendNote(const int pitch, const int velocity, const int channel) {
+	_LOCK();
 	libpd_noteon(channel, pitch, velocity);
+	_UNLOCK();
 }
 
 void ofxPd::sendControlChange(const int control, const int value, int channel) {
+	_LOCK();
 	libpd_controlchange(channel, control, value);
+	_UNLOCK();
 }
 
 void ofxPd::sendProgramChange(int program, const int channel) {
+	_LOCK();
 	libpd_programchange(channel, program);
+	_UNLOCK();
 }
 
 void ofxPd::sendPitchBend(const int value, const int channel) {
+	_LOCK();
 	libpd_pitchbend(channel, value);
+	_UNLOCK();
 }
 
 void ofxPd::sendAftertouch(const int value, const int channel) {
+	_LOCK();
 	libpd_aftertouch(channel, value);
+	_UNLOCK();
 }
 
 void ofxPd::sendPolyAftertouch(int note, int value, const int channel) {
+	_LOCK();
 	libpd_polyaftertouch(channel, note, value);
+	_UNLOCK();
 }
 
 //----------------------------------------------------------
 void ofxPd::sendMidiByte(const int value, const int port) {
+	_LOCK();
 	libpd_midibyte(port, value);
+	_UNLOCK();
 }
 
 void ofxPd::sendSysExByte(const int value, const int port) {
+	_LOCK();
 	libpd_sysex(port, value);
+	_UNLOCK();
 }
 
 void ofxPd::sendSysRealtimeByte(const int value, const int port) {
+	_LOCK();
 	libpd_sysrealtime(port, value);
+	_UNLOCK();
 }
 
 //----------------------------------------------------------
@@ -606,14 +675,20 @@ ofxPd& ofxPd::operator<<(const Finish& var) {
 
 //----------------------------------------------------------
 int ofxPd::getBlockSize() {
-	return libpd_blocksize();
+	_LOCK();
+	int bs = libpd_blocksize();
+	_UNLOCK();
+	return bs;
 }
 
 //----------------------------------------------------------
 void ofxPd::audioIn(float * input, int bufferSize, int nChannels) {
 	
 	try {
-		memcpy(inputBuffer, input, bufferSize*nChannels);
+	_LOCK();
+		if ( inputBuffer )
+			memcpy(inputBuffer, input, bufferSize*nChannels);
+	_UNLOCK();
 	}
 	catch (...) {
 		ofLog(OF_LOG_ERROR, (string) "ofxPd: could not copy input buffer, " +
@@ -623,10 +698,12 @@ void ofxPd::audioIn(float * input, int bufferSize, int nChannels) {
 
 void ofxPd::audioOut(float * output, int bufferSize, int nChannels) {
 	
+	_LOCK();
 	if(libpd_process_float(inputBuffer, output) != 0) {
 		ofLog(OF_LOG_ERROR, (string) "ofxPd: could not process output buffer, " +
 			"check your buffersize and num channels");
 	}
+	_UNLOCK();
 }
 
 /* ***** PRIVATE ***** */
