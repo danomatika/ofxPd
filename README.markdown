@@ -32,11 +32,19 @@ Place ofxPd within a folder in the apps folder of the OF dir tree:
 
 `openframeworks/addons/ofxPd`
 
+### Bugs
+
+#### Undefined basic_ostream
+
 If you get the following [linker error](http://www.openframeworks.cc/forum/viewtopic.php?f=8&t=5344&p=26537&hilit=Undefined+symbol#p26537) in xcode:
 
 `Undefined symbols: "std::basic_ostream<char, std::char_traits<char> ...`
 
 you need to change the Base SDK to 10.6: Project > Edit Project Settings
+
+#### RtAudio Hang on Exit in 0062
+
+RtAudio will hang on app exit in OF 0062. The only way to fix this is to make a small edit to the OF 0062 core by editing /lib/openFrameworks/sound/ofSoundStream.cpp and commenting line 143 so close() is not called.
 
 ### How to Create a New ofxPd Project
 

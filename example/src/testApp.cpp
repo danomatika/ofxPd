@@ -47,10 +47,7 @@ void testApp::update() {
 void testApp::draw() {}
 
 //--------------------------------------------------------------
-void testApp::exit() {
-	// manually close to avoid hanging on exit
-	ofSoundStreamClose();
-}
+void testApp::exit() {}
 
 //--------------------------------------------------------------
 void testApp::keyPressed (int key) {
