@@ -38,7 +38,7 @@ If you get the following [linker error](http://www.openframeworks.cc/forum/viewt
 
 you need to change the Base SDK to 10.6: Project > Edit Project Settings
 
-#### How to Create a New ofxPd Project
+### How to Create a New ofxPd Project
 
 To develop your own project based on ofxPd, simply copy the example project and rename it. You probably want to put it in your apps folder, for example, after copying:
 
@@ -52,24 +52,30 @@ openFrameworks/apps/myApps/myPdProject/
 
 On Mac, rename the project in XCode (do not rename the .xcodeproj file in Finder!): XCode Menu->Project->Rename
 
-#### Adding ofxpd to an Existing Project
+### Adding ofxpd to an Existing Project
 
-If you want to add ofxPd to another project, you need to make sure you include the src and libs folders:
+If you want to add ofxPd to another project, you need to make sure you include the src folder:
 <pre>
 openFrameworks/addons/ofxPd/src
-openFrameworks/addons/ofxPd/libs
 </pre>
 
-You also need to include the following C Flags for building the libpd source:
-<pre>
--DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -dynamiclib -ldl -lm
-</pre>
+You will also need to include some additional C Flags for building the libpd source:
 
-For XCode:
+#### For XCode:
 
 * create a new group "ofxPd" * drag these directories from ofxpd into this new group: ofxPd/src & ofxPd/libs
 * add a search path to: ../../../addons/ofxPd/libs/libpd/pure-data/src under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
-* add the C Flags unde Targets->YourApp->Build->Other C Flags (make sure All Configurations and All Settings are selected)
+* under Targets->YourApp->Build->Other C Flags (make sure All Configurations and All Settings are selected), add
+	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -dynamiclib -ldl -lm</pre>
+
+#### For Linux:
+
+* edit addons.make in your project folder and add the following line to the end of the file: 
+	<pre>ofxPd</pre>
+* edit config.make in your project folder and change the lines for USER_CFLAGS, USER_LDFLAGS and USER_LIBS to:
+	<pre>USER_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -shared</pre>
+	<pre>USER_LDFLAGS = --export-dynamic</pre>
+	<pre>USER_LIBS = -ldl -lm</pre>
 
 DEVELOPING
 ----------
