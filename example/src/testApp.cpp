@@ -17,11 +17,13 @@ void testApp::setup() {
 	pd.init(2, 2, 44100);
 	
 	pd.addSource("toOF");
-	//pd.addSource("env");
+	pd.addSource("env");
 	pd.addListener(*this);
-	pd.subscribe(*this);
-	//pd.subscribe(*this, "toOF");
-	//pd.subscribe(*this, "env");
+	pd.subscribe(*this);			// listen to everything
+	pd.unsubscribe(*this, "env");	// don't listen to "env"
+	
+	//pd.subscribe(*this, "toOF");	// listen to "toOF"
+	//pd.unsubscribe(*this);		// don't listen to anything
 	
 	pd.dspOn();
 	pd.openPatch("test.pd");
@@ -64,6 +66,15 @@ void testApp::keyPressed (int key) {
 			
 		case 'd':
 			pd << StartList("tone") << "pitch" << 62 << Finish() << Bang("tone");
+			break;
+			
+		case 'e':
+			if(pd.isSubscribed(*this, "env")) {
+				pd.unsubscribe(*this, "env");
+			}
+			else {
+				pd.subscribe(*this, "env");
+			}
 			break;
 			
 		default:

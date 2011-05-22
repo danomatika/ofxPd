@@ -107,8 +107,7 @@ bool ofxPd::init(const int numInChannels,
 void ofxPd::clear() {
 	_LOCK();
 	if(bPdInited) {
-		if(inputBuffer)	delete[] inputBuffer;
-
+		if(inputBuffer) delete[] inputBuffer;
 	}
 	
 	bPdInited = false;
@@ -201,7 +200,7 @@ void ofxPd::dspOff() {
 }
 
 //--------------------------------------------------------------------
-void ofxPd::addListener(ofxPdListener& listener, const std::string& source) {
+void ofxPd::addListener(ofxPdListener& listener) {
 	
 	pair<set<ofxPdListener*>::iterator, bool> ret;
 	ret = listeners.insert(&listener);
@@ -209,14 +208,6 @@ void ofxPd::addListener(ofxPdListener& listener, const std::string& source) {
 		ofLog(OF_LOG_WARNING, "ofxPd: addListener: ignoring duplicate listener");
 		return;
 	}
-
-	// add source if not existing
-	if(!sourceExists(source)) {
-		addSource(source);
-	}
-	
-	// subscribe to source
-	sources.find(source)->second.addListener(&listener);
 }
 
 void ofxPd::removeListener(ofxPdListener& listener) {
@@ -231,11 +222,7 @@ void ofxPd::removeListener(ofxPdListener& listener) {
 	listeners.erase(l_iter);
 
 	// remove from all sources
-	map<string, Source>::iterator s_iter = sources.begin();
-	for(s_iter = sources.begin(); s_iter != sources.end(); ++s_iter) {
-		s_iter->second.removeListener(&listener);
-	}
-		
+	unsubscribe(listener);		
 }
 
 bool ofxPd::listenerExists(ofxPdListener& listener) {
@@ -299,18 +286,39 @@ void ofxPd::clearSources() {
 void ofxPd::subscribe(ofxPdListener& listener, const std::string& source) {
 
 	if(!listenerExists(listener)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown listener, use addListener first");
-		return;
-	}
-
-	map<string, Source>::iterator iter;
-	iter = sources.find(source);
-	if(iter == sources.end()) {
-		ofLog(OF_LOG_WARNING, "ofxPd: unsubscribe: unknown source, use addSource first");
+		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown listener, call addListener first");
 		return;
 	}
 	
-	iter->second.addListener(&listener);
+	if(!sourceExists(source)) {
+		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown source, call addSource first");
+		return;
+	}
+	
+	// global source (all sources)
+	map<string,Source>::iterator g_iter;
+	g_iter = sources.find("");
+	
+	// subscribe to specific source
+	if(source != "") {
+	
+		// make sure unsubscribed from global source
+		if(g_iter->second.listenerExists(&listener)) {
+			g_iter->second.removeListener(&listener);
+		}
+		
+		// subscribe to specific source
+		map<string,Source>::iterator s_iter;
+		s_iter = sources.find(source);
+		s_iter->second.addListener(&listener);
+	}
+	else {
+		// make sure unsubscribed from all sources
+		unsubscribe(listener);
+	
+		// subscribe to global source
+		g_iter->second.addListener(&listener);
+	}
 }
 
 void ofxPd::unsubscribe(ofxPdListener& listener, const std::string& source) {
@@ -320,14 +328,51 @@ void ofxPd::unsubscribe(ofxPdListener& listener, const std::string& source) {
 		return;
 	}
 
-	map<string, Source>::iterator iter;
-	iter = sources.find(source);
-	if(iter == sources.end()) {
+	if(!sourceExists(source)) {
 		ofLog(OF_LOG_WARNING, "ofxPd: unsubscribe: ignoring unknown source");
 		return;
 	}
 	
-	iter->second.removeListener(&listener);
+	map<string,Source>::iterator s_iter;
+	
+	// unsubscribe from specific source
+	if(source != "") {
+	
+		// global source (all sources)
+		map<string,Source>::iterator g_iter;
+		g_iter = sources.find("");
+	
+		// negation from global
+		if(g_iter->second.listenerExists(&listener)) {
+			
+			// remove from global
+			g_iter->second.removeListener(&listener);
+			
+			// add to *all* other sources
+			for(s_iter = sources.begin(); s_iter != sources.end(); ++s_iter) {
+				if(s_iter != g_iter) {
+					s_iter->second.addListener(&listener);
+				}
+			}
+		}
+		
+		// remove from source
+		s_iter = sources.find(source);
+		s_iter->second.removeListener(&listener);
+	}
+	else {	// unsubscribe from all sources	
+		for(s_iter = sources.begin(); s_iter != sources.end(); ++s_iter) {
+			s_iter->second.removeListener(&listener);
+		}
+	}
+}
+
+bool ofxPd::isSubscribed(ofxPdListener& listener, const std::string& source) {
+	map<string,Source>::iterator s_iter;
+	s_iter = sources.find(source);
+	if(s_iter != sources.end() && s_iter->second.listenerExists(&listener))
+		return true;
+	return false;
 }
 
 //----------------------------------------------------------
@@ -742,10 +787,23 @@ void ofxPd::_bang(const char* source)
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: bang: %s", source);
 	
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->bangReceived((string) source);
+	set<ofxPdListener*>::iterator l_iter;
+	set<ofxPdListener*>* listeners;
+	
+	// send to global listeners
+	map<string,Source>::iterator g_iter;
+	g_iter = pdPtr->sources.find("");
+	listeners = &g_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->bangReceived((string) source);
+	}
+	
+	// send to subscribed listeners
+	map<string,Source>::iterator s_iter;
+	s_iter = pdPtr->sources.find((string) source);
+	listeners = &s_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->bangReceived((string) source);
 	}
 }
 
@@ -753,10 +811,23 @@ void ofxPd::_float(const char* source, float value)
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: float: %s %d", source, value);
 	
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->floatReceived((string) source, value);
+	set<ofxPdListener*>::iterator l_iter;
+	set<ofxPdListener*>* listeners;
+	
+	// send to global listeners
+	map<string,Source>::iterator g_iter;
+	g_iter = pdPtr->sources.find("");
+	listeners = &g_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->floatReceived((string) source, value);
+	}
+	
+	// send to subscribed listeners
+	map<string,Source>::iterator s_iter;
+	s_iter = pdPtr->sources.find((string) source);
+	listeners = &s_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->floatReceived((string) source, value);
 	}
 }
 
@@ -764,10 +835,23 @@ void ofxPd::_symbol(const char* source, const char* symbol)
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: symbol: %s %s", source, symbol);
 	
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->symbolReceived((string) source, (string) symbol);
+	set<ofxPdListener*>::iterator l_iter;
+	set<ofxPdListener*>* listeners;
+	
+	// send to global listeners
+	map<string,Source>::iterator g_iter;
+	g_iter = pdPtr->sources.find("");
+	listeners = &g_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->symbolReceived((string) source, (string) symbol);
+	}
+	
+	// send to subscribed listeners
+	map<string,Source>::iterator s_iter;
+	s_iter = pdPtr->sources.find((string) source);
+	listeners = &s_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->symbolReceived((string) source, (string) symbol);
 	}
 }
 

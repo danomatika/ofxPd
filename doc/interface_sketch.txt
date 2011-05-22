@@ -145,14 +145,23 @@ public ofxPdListener {
 };
 
 pd.addListener(listener);	// add listener to global space
-pd.subscribe("test");		// subscribe to "test"
+pd.addListener(listener, "source1");
 
-pd.subscribeListener(listener, "test");	// bind listener to "test",
-									// adds both if not already added,
-									// takes listener out of global space
+pd.addSource("source1");		// add "test" source
 
-pd.unsubscribeListener(listener, "test"); // unbind listener to "test',
-									 // puts it back in the global space
-pd.removeListener(listener);	 // removes listener from global space
-pd.unsubscribeListener(listener); // unsubscribes listener from all sources, global
+pd.subscribe(listener, "source1");	// subscribe listener to "test",
+								// adds both if not already added,
+								// takes listener out of global space
+
+pd.addSource("source2");
+pd.subscribe(listener, "source2");
+
+
+pd.unsubscribe(listener, "source2");
+
+pd.unsubscribe(listener, "source1");	// unsubscribe listener to "test'
+
+
+pd.unsubscribe(listener);	// unsubscribes listener from all sources, global
+pd.removeListener(listener);		// removes listener from global space
 
