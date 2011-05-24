@@ -1,13 +1,25 @@
 #include "testApp.h"
 
-#include <Poco/Path.h>
-
 //--------------------------------------------------------------
 void testApp::setup() {
 
+	// register touch events
+	ofRegisterTouchEvents(this);
+	
+	// initialize the accelerometer
+	ofxAccelerometer.setup();
+	
+	//iPhoneAlerts will be sent to this.
+	ofxiPhoneAlerts.addListener(this);
+	
+	//If you want a landscape oreintation 
+	//iPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
+	
+	ofBackground(127, 127, 127);
+	
 	// setup OF sound stream
-	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlockSize(), 4);
-
+	ofSoundStreamSetup(0, 2, this, 44100, ofxPd::getBlockSize()*32, 4);
+	
 	core.setup();
 }
 
@@ -27,31 +39,48 @@ void testApp::exit() {
 }
 
 //--------------------------------------------------------------
-void testApp::keyPressed(int key) {
-	core.keyPressed(key);
+void testApp::touchDown(ofTouchEventArgs &touch) {
+
 }
 
 //--------------------------------------------------------------
-void testApp::mouseMoved(int x, int y) {}
+void testApp::touchMoved(ofTouchEventArgs &touch) {
 
-//--------------------------------------------------------------
-void testApp::mouseDragged(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void testApp::mousePressed(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void testApp::mouseReleased(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void testApp::windowResized(int w, int h) {}
-
-//--------------------------------------------------------------
-void testApp::audioReceived(float * input, int bufferSize, int nChannels) {
-	core.audioReceived(input, bufferSize, nChannels);
 }
 
 //--------------------------------------------------------------
-void testApp::audioRequested(float * output, int bufferSize, int nChannels) {
-	core.audioRequested(output, bufferSize, nChannels);
+void testApp::touchUp(ofTouchEventArgs &touch) {
+
 }
+
+//--------------------------------------------------------------
+void testApp::touchDoubleTap(ofTouchEventArgs &touch) {
+
+}
+
+//--------------------------------------------------------------
+void testApp::lostFocus() {
+
+}
+
+//--------------------------------------------------------------
+void testApp::gotFocus() {
+
+}
+
+//--------------------------------------------------------------
+void testApp::gotMemoryWarning() {
+
+}
+
+//--------------------------------------------------------------
+void testApp::deviceOrientationChanged(int newOrientation) {
+
+}
+
+
+//--------------------------------------------------------------
+void testApp::touchCancelled(ofTouchEventArgs& args) {
+
+}
+
