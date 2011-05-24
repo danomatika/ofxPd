@@ -23,8 +23,8 @@ class ofxPd {
 		virtual ~ofxPd();
         
         /// initialize resources
-		bool init(const int numInChannels, const int numOutChannels, 
-					const int sampleRate);
+		bool init(const int numInChannels, const int numOutChannels,
+				  const int sampleRate, const int ticksPerBuffer=32);
         
         /// clear resources
         void clear();
@@ -49,29 +49,46 @@ class ofxPd {
 		
 		/// add/remove listener to receive events
 		///
-		/// the "" source is the global space aka receives messages from all sources
+		/// listeners automatically receive print and midi events only,
+		/// use subscribe() to plug a listener into a source
 		///
-		void addListener(ofxPdListener& listener, const std::string& source="");
+		void addListener(ofxPdListener& listener);
 		void removeListener(ofxPdListener& listener);
 		bool listenerExists(ofxPdListener& listener);
-		void clearListeners();
+		void clearListeners();	/// also unsubscribes all listeners
 		
 		/// add/remove receiver sources from libpd
 		///
-		/// aka
+		/// aka the pd receive name
 		///
 		/// [r source]
 		/// |
 		///
+		/// note: the global source (aka "") exists by default 
+		///
 		void addSource(const std::string& source);
 		void removeSource(const std::string& source);
 		bool sourceExists(const std::string& source);
-		void clearSources();
+		void clearSources();	/// listeners will be unsubscribed from *all* sources
 		
-		/// source="" unsubscribes listener from existing sources and 
-		/// subscribes listener to global space (aka all sources)
+		/// un/subscribe a listener to a receiver source from libpd
+		///
+		/// un/subscribe using a source name or "" for all sources,
+		/// make sure to add the listener and source first
+		///
+		/// note: the global source (aka "") is added by default
+		/// note: unsubscribing from the global source unsubscribes from *all*
+		///       sources, so the listener will not recieve any message events,
+		///		  but still get print and midi events
+		///
+		/// also: use negation if you want to subscribe to all sources but one:
+		///
+		/// pd.subscribe(listener);				// subscribe to all
+		/// pd.unsubscribe(listener, "source"); // unsubscribe from "source"
+		///
 		void subscribe(ofxPdListener& listener, const std::string& source="");
 		void unsubscribe(ofxPdListener& listener, const std::string& source="");
+		bool isSubscribed(ofxPdListener& listener, const std::string& source="");
 		
 		/// \section Sending Functions
 		
@@ -197,17 +214,16 @@ class ofxPd {
 				if(iter != listeners.end())
 					listeners.erase(iter);
 			}
-			/*
+
 			bool listenerExists(ofxPdListener* listener) {
 				if(listeners.find(listener) != listeners.end())
 					return true;
 				return false;
 			}
-			*/
 		};
 			
 		std::set<ofxPdListener*> listeners;		///< the listeners
-		std::map<std::string, Source> sources;	///< bound sources
+		std::map<std::string,Source> sources;	///< bound sources
 												///< first object always global
 		
 		std::string printMsg;	///< used to build a print message

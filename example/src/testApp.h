@@ -1,11 +1,11 @@
-#ifndef _TEST_APP
-#define _TEST_APP
+#pragma once
 
 #include "ofMain.h"
 
-#include "ofxPd.h"
+#include "AppCore.h"
 
-class testApp : public ofBaseApp, public ofxPdListener {
+/// a desktop os app wrapper
+class testApp : public ofBaseApp{
 
 	public:
 
@@ -24,18 +24,5 @@ class testApp : public ofBaseApp, public ofxPdListener {
 		void audioReceived(float * input, int bufferSize, int nChannels);
 		void audioRequested(float * output, int bufferSize, int nChannels);
 		
-		// pd callbacks
-		void printReceived(const std::string& message);
-		
-		void bangReceived(const std::string& dest);
-		void floatReceived(const std::string& dest, float value);
-		void symbolReceived(const std::string& dest, const std::string& symbol);
-		void listReceived(const std::string& dest, const List& list);
-		void messageReceived(const std::string& dest, const std::string& msg, const List& list);
-		
-		void noteReceived(const int channel, const int pitch, const int velocity);
-		
-		ofxPd pd;
+		AppCore core;
 };
-
-#endif
