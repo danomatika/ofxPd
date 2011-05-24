@@ -8,7 +8,8 @@ void testApp::setup() {
 	// setup OF sound stream
 	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlockSize(), 4);
 
-	core.setup();
+	// setup the app core
+	core.setup(2, 2, 44100, 1);
 }
 
 //--------------------------------------------------------------

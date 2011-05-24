@@ -8,7 +8,8 @@ class AppCore : public ofxPdListener {
 
 	public:
 
-		void setup();
+		void setup(const int numInChannels, const int numOutChannels,
+				   const int sampleRate, const int ticksPerBuffer);
 		void update();
 		void draw();
         void exit();

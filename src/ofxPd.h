@@ -23,7 +23,8 @@ class ofxPd {
 		virtual ~ofxPd();
         
         /// initialize resources
-		bool init(const int numInChannels, const int numOutChannels, const int sampleRate);
+		bool init(const int numInChannels, const int numOutChannels,
+				  const int sampleRate, const int ticksPerBuffer=32);
         
         /// clear resources
         void clear();

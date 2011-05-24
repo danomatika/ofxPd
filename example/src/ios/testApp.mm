@@ -18,9 +18,10 @@ void testApp::setup() {
 	ofBackground(127, 127, 127);
 	
 	// setup OF sound stream
-	ofSoundStreamSetup(0, 2, this, 44100, ofxPd::getBlockSize()*32, 4);
+	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlockSize()*32, 4);
 	
-	core.setup();
+	// setup the app core
+	core.setup(2, 2, 44100, 32);
 }
 
 //--------------------------------------------------------------

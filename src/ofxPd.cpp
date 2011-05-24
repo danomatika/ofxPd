@@ -51,9 +51,8 @@ ofxPd::~ofxPd() {
 }
 
 //--------------------------------------------------------------------
-bool ofxPd::init(const int numInChannels, 
-	const int numOutChannels,  const int sampleRate) {
-	
+bool ofxPd::init(const int numInChannels, const int numOutChannels, 
+				 const int sampleRate, const int ticksPerBuffer) {
 	clear();
 	
 	this->sampleRate = sampleRate;
@@ -84,7 +83,8 @@ bool ofxPd::init(const int numInChannels,
 	// init pd
 	_LOCK();
 	libpd_init();
-	if(libpd_init_audio(numInChannels, numOutChannels, sampleRate*2, 1) != 0) {
+	if(libpd_init_audio(numInChannels, numOutChannels,
+		sampleRate*2, ticksPerBuffer) != 0) {
 		_UNLOCK();
 		ofLog(OF_LOG_ERROR, "ofxPd: Could not init");
 		return false;

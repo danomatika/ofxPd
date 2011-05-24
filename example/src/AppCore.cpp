@@ -3,14 +3,15 @@
 #include <Poco/Path.h>
 
 //--------------------------------------------------------------
-void AppCore::setup() {
+void AppCore::setup(const int numInChannels, const int numOutChannels,
+				    const int sampleRate, const int ticksPerBuffer) {
 
 	ofSetFrameRate(30);
 	//ofSetLogLevel(OF_LOG_VERBOSE);
 	
 	cout << Poco::Path::current() << endl;
 	
-	pd.init(2, 2, 44100);
+	pd.init(numInChannels, numOutChannels, sampleRate, ticksPerBuffer);
 	
 	pd.addSource("toOF");
 	pd.addSource("env");
