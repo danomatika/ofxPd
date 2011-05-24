@@ -84,7 +84,7 @@ bool ofxPd::init(const int numInChannels, const int numOutChannels,
 	_LOCK();
 	libpd_init();
 	if(libpd_init_audio(numInChannels, numOutChannels,
-		sampleRate*2, ticksPerBuffer) != 0) {
+		sampleRate, ticksPerBuffer) != 0) {
 		_UNLOCK();
 		ofLog(OF_LOG_ERROR, "ofxPd: Could not init");
 		return false;

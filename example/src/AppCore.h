@@ -8,14 +8,20 @@ class AppCore : public ofxPdListener {
 
 	public:
 
+		// main
 		void setup(const int numInChannels, const int numOutChannels,
 				   const int sampleRate, const int ticksPerBuffer);
 		void update();
 		void draw();
         void exit();
 
+		// do something
+		void playTone(int pitch);
+		
+		// input callbacks
 		void keyPressed(int key);
 		
+		// audio callbacks
 		void audioReceived(float * input, int bufferSize, int nChannels);
 		void audioRequested(float * output, int bufferSize, int nChannels);
 		

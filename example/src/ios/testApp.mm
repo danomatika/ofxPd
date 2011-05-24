@@ -17,11 +17,11 @@ void testApp::setup() {
 	
 	ofBackground(127, 127, 127);
 	
-	// setup OF sound stream
-	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlockSize()*32, 4);
-	
 	// setup the app core
-	core.setup(2, 2, 44100, 32);
+	core.setup(0, 2, 44100, 8);
+	
+	// setup OF sound stream
+	ofSoundStreamSetup(2, 0, this, 44100, ofxPd::getBlockSize()*8, 2);
 }
 
 //--------------------------------------------------------------
@@ -41,7 +41,7 @@ void testApp::exit() {
 
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch) {
-
+	core.playTone(60);
 }
 
 //--------------------------------------------------------------
@@ -85,3 +85,11 @@ void testApp::touchCancelled(ofTouchEventArgs& args) {
 
 }
 
+//--------------------------------------------------------------
+void testApp::audioReceived(float * input, int bufferSize, int nChannels) {
+	core.audioReceived(input, bufferSize, nChannels);
+}
+
+void testApp::audioRequested(float * output, int bufferSize, int nChannels) {
+	core.audioRequested(output, bufferSize, nChannels);
+}

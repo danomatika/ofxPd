@@ -11,7 +11,10 @@ void AppCore::setup(const int numInChannels, const int numOutChannels,
 	
 	cout << Poco::Path::current() << endl;
 	
-	pd.init(numInChannels, numOutChannels, sampleRate, ticksPerBuffer);
+	if(!pd.init(numInChannels, numOutChannels, sampleRate, ticksPerBuffer)) {
+		ofLog(OF_LOG_ERROR, "Could not init pd");
+		OF_EXIT_APP(1);
+	}
 	
 	pd.addSource("toOF");
 	pd.addSource("env");
@@ -49,20 +52,25 @@ void AppCore::draw() {}
 void AppCore::exit() {}
 
 //--------------------------------------------------------------
+void AppCore::playTone(int pitch) {
+	pd << StartList("tone") << "pitch" << pitch << Finish() << Bang("tone");
+}
+
+//--------------------------------------------------------------
 void AppCore::keyPressed (int key) {
 
 	switch(key) {
 	
 		case 'a':
-			pd << StartList("tone") << "pitch" << 60 << Finish() << Bang("tone");
+			playTone(60);
 			break;
 			
 		case 's':
-			pd << StartList("tone") << "pitch" << 61 << Finish() << Bang("tone");
+			playTone(61);
 			break;
 			
 		case 'd':
-			pd << StartList("tone") << "pitch" << 62 << Finish() << Bang("tone");
+			playTone(62);
 			break;
 			
 		case 'e':
