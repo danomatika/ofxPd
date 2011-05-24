@@ -51,7 +51,7 @@ ofxPd::~ofxPd() {
 }
 
 //--------------------------------------------------------------------
-bool ofxPd::init(const int numInChannels, const int numOutChannels, 
+bool ofxPd::init(const int numOutChannels, const int numInChannels, 
 				 const int sampleRate, const int ticksPerBuffer) {
 	clear();
 	

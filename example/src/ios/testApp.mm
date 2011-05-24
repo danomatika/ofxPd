@@ -18,7 +18,7 @@ void testApp::setup() {
 	ofBackground(127, 127, 127);
 	
 	// setup the app core
-	core.setup(0, 2, 44100, 8);
+	core.setup(2, 0, 44100, 8);
 	
 	// setup OF sound stream
 	ofSoundStreamSetup(2, 0, this, 44100, ofxPd::getBlockSize()*8, 2);

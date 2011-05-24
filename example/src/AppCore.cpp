@@ -3,7 +3,7 @@
 #include <Poco/Path.h>
 
 //--------------------------------------------------------------
-void AppCore::setup(const int numInChannels, const int numOutChannels,
+void AppCore::setup(const int numOutChannels, const int numInChannels,
 				    const int sampleRate, const int ticksPerBuffer) {
 
 	ofSetFrameRate(30);
@@ -11,7 +11,7 @@ void AppCore::setup(const int numInChannels, const int numOutChannels,
 	
 	cout << Poco::Path::current() << endl;
 	
-	if(!pd.init(numInChannels, numOutChannels, sampleRate, ticksPerBuffer)) {
+	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
 		ofLog(OF_LOG_ERROR, "Could not init pd");
 		OF_EXIT_APP(1);
 	}

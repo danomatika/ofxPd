@@ -9,7 +9,7 @@ class AppCore : public ofxPdListener {
 	public:
 
 		// main
-		void setup(const int numInChannels, const int numOutChannels,
+		void setup(const int numOutChannels, const int numInChannels,
 				   const int sampleRate, const int ticksPerBuffer);
 		void update();
 		void draw();
