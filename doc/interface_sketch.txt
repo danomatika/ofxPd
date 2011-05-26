@@ -165,3 +165,27 @@ pd.unsubscribe(listener, "source1");	// unsubscribe listener to "test'
 pd.unsubscribe(listener);	// unsubscribes listener from all sources, global
 pd.removeListener(listener);		// removes listener from global space
 
+
+ofxPdMsg msg;
+msg.makeBang();
+pd.sendMsg(msg);		// bang, empty message
+
+msg.makeFloat(float);
+pd.sendMsg(msg);		// float
+msg.clear();
+
+msg.
+
+List list;
+list << 100 << 292.99 << 'c' << "string";
+pd.sendList("test", list);
+pd.sendMsg("test", "pd", list);
+pd.clear();
+
+ofxPdBundle bundle;
+bundle.add(msg);
+
+ofxPdMidiMsg midi;
+msp << StartMidi() << 0x90 << 0x3c << 0x40 << FinishBytes(); 
+pd.sendMidi(midi);
+

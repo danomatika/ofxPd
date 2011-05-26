@@ -68,7 +68,7 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 	libpd_banghook = (t_libpd_banghook) _bang;
 	libpd_floathook = (t_libpd_floathook) _float;
 	libpd_symbolhook = (t_libpd_symbolhook) _symbol;
-	libpd_listhook = (t_libpd_listhook) _symbol;
+	libpd_listhook = (t_libpd_listhook) _list;
 	libpd_messagehook = (t_libpd_messagehook) _message;
 	
 	libpd_noteonhook = (t_libpd_noteonhook) _noteon;
@@ -858,18 +858,41 @@ void ofxPd::_list(const char* source, int argc, t_atom* argv)
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: list: %s", source);
 	
+	List list((string) source);
+	
 	for(int i = 0; i < argc; i++) {
 		
 		t_atom a = argv[i];  
 		
 		if(a.a_type == A_FLOAT) {  
-			float x = a.a_w.w_float;  
-			ofLog(OF_LOG_VERBOSE, "ofxPd: %d", x); 
+			float f = a.a_w.w_float;
+			list.addFloat(f);
+			ofLog(OF_LOG_VERBOSE, "ofxPd:\t%f", f);
 		}
 		else if(a.a_type == A_SYMBOL) {  
-			char *s = a.a_w.w_symbol->s_name;  
-			ofLog(OF_LOG_VERBOSE, "ofxPd: %s", s);  
+			char* s = a.a_w.w_symbol->s_name;
+			list.addSymbol((string) s); 
+			ofLog(OF_LOG_VERBOSE, "ofxPd:\t%s", s);  
 		}
+	}
+	
+	set<ofxPdListener*>::iterator l_iter;
+	set<ofxPdListener*>* listeners;
+	
+	// send to global listeners
+	map<string,Source>::iterator g_iter;
+	g_iter = pdPtr->sources.find("");
+	listeners = &g_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->listReceived((string) source, list);
+	}
+	
+	// send to subscribed listeners
+	map<string,Source>::iterator s_iter;
+	s_iter = pdPtr->sources.find((string) source);
+	listeners = &s_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->listReceived((string) source, list);
 	}
 }
 
@@ -877,18 +900,41 @@ void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *a
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: message: %s %s", source, symbol);
 	
-	for(int i = 0; i < argc; i++) {  
+	List list((string) source);
+	
+	for(int i = 0; i < argc; i++) {
 		
 		t_atom a = argv[i];  
 		
 		if(a.a_type == A_FLOAT) {  
-			float x = a.a_w.w_float;  
-			ofLog(OF_LOG_VERBOSE, "ofxPd: %d", x); 
+			float f = a.a_w.w_float;
+			list.addFloat(f);
+			ofLog(OF_LOG_VERBOSE, "ofxPd:\t%f", f); 
 		}
 		else if(a.a_type == A_SYMBOL) {  
-			char *s = a.a_w.w_symbol->s_name;  
-			ofLog(OF_LOG_VERBOSE, "ofxPd: %s", s);  
+			char* s = a.a_w.w_symbol->s_name;
+			list.addSymbol((string) s); 
+			ofLog(OF_LOG_VERBOSE, "ofxPd:\t%s", s);  
 		}
+	}
+	
+	set<ofxPdListener*>::iterator l_iter;
+	set<ofxPdListener*>* listeners;
+	
+	// send to global listeners
+	map<string,Source>::iterator g_iter;
+	g_iter = pdPtr->sources.find("");
+	listeners = &g_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->messageReceived((string) source, (string) symbol, list);
+	}
+	
+	// send to subscribed listeners
+	map<string,Source>::iterator s_iter;
+	s_iter = pdPtr->sources.find((string) source);
+	listeners = &s_iter->second.listeners;
+	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
+		(*l_iter)->messageReceived((string) source, (string) symbol, list);
 	}
 }
 

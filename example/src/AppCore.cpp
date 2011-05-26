@@ -116,11 +116,11 @@ void AppCore::symbolReceived(const std::string& dest, const std::string& symbol)
 }
 
 void AppCore::listReceived(const std::string& dest, const List& list) {
-	cout << "list " << dest << ": " << endl;
+	cout << "list " << dest << ": " << list.toString() << endl;
 }
 
 void AppCore::messageReceived(const std::string& dest, const std::string& msg, const List& list) {
-	cout << "message " << dest << ": " << msg << endl;
+	cout << "message " << dest << ": " << msg << list.toString() << endl;
 }
 
 void AppCore::noteReceived(const int channel, const int pitch, const int velocity) {

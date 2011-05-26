@@ -1,10 +1,18 @@
 #pragma once
 
-#include <string>
+#include "ofMain.h"
 
-///
-/// ofxPd stream interface message objects
-///
+/// \section ofxPd message types
+
+enum ofxPdMsgType {
+	OFX_PD_BANG,
+	OFX_PD_FLOAT,
+	OFX_PD_SYMBOL,
+	OFX_PD_LIST,
+	OFX_PD_MESSAGE
+};
+
+/// \section ofxPd stream interface message objects
 
 /// bang event
 struct Bang {
@@ -32,33 +40,52 @@ struct Symbol : public Bang {
 		Bang(dest), symbol(symbol) {}
 };
 
-class ofxPd;
-
-// a received compound message
-class List {
+/// list, a compound message
+class List : public Bang {
 
 	public:
 
-		const unsigned int len();	// number of items
-		const std::string& types();	// OSC style type string ie "fssfffs"
+		List(const std::string& dest) : Bang(dest) {}
+	
+		/// \section Read
 
-		// check type
-		const bool isFloat(const unsigned int index);
-		const bool isSymbol(const unsigned int index);
+		/// check type
+		bool isFloat(const unsigned int index) const;
+		bool isSymbol(const unsigned int index) const;
 
-		// get item as type
-		const float asFloat(const unsigned int index);
-		const std::string& asSymbol(const unsigned int index);
+		/// get item as type
+		float asFloat(const unsigned int index) const;
+		std::string asSymbol(const unsigned int index) const;
 
-	protected:
+		/// \section Write
+		
+		void addFloat(const float value);
+		void addSymbol(const std::string& symbol);
+		
+		/// \section Util
+		
+		const unsigned int len() const;		///< number of items
+		const std::string& types() const;	///< OSC style type string ie "fsfs"
+		void clear(); 						///< clear all objects
 
-		List(const std::string& dest, const unsigned int length, const t_atom *items);
+		/// get list as a string
+		std::string toString() const;
+
+		/// print to ostream
+		friend std::ostream& operator<<(std::ostream& os, const List& from);
 
 	private:
 
-		std::string typeString;
-		const unsigned int length;
-		const t_atom *items;
+		std::string typeString;	///< OSC style type string
+		
+		// object wrapper
+		struct MsgObject {
+			ofxPdMsgType type;
+			float value;
+			std::string symbol;
+		};
+		
+		std::vector<MsgObject> objects;	///< list objects
 };
 
 /// start a list
@@ -77,10 +104,8 @@ struct StartMessage : public Bang {
 			Bang(dest), msg(msg) {}
 };
 
-///
-/// ofxPd stream interface midi objects
+/// /section ofxPd stream interface midi objects
 /// ref: http://www.gweep.net/~prefect/eng/reference/protocol/midispec.html
-///
 
 /// send a note on/off event (set vel = 0 for noteoff)
 struct Note {

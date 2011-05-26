@@ -37,7 +37,7 @@
 #X obj 189 91 route pitch bang;
 #X obj 28 121 metro 2000;
 #X obj 368 171 metro 5000;
-#X obj 10 247 s toOF;
+#X obj 22 270 s toOF;
 #X obj 325 266 s toOF;
 #X obj 336 234 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
@@ -45,6 +45,7 @@
 #X obj 123 126 *~ 0.2;
 #X obj 189 192 phasor~ 200;
 #X msg 280 178 0 200;
+#X msg 82 329 \; toOF kaa 1 2.3 fkfk;
 #X connect 0 0 35 0;
 #X connect 2 0 41 0;
 #X connect 4 0 5 0;
@@ -77,6 +78,8 @@
 #X connect 26 0 27 0;
 #X connect 27 0 28 0;
 #X connect 29 0 30 0;
+#X connect 29 0 37 0;
+#X connect 29 0 44 0;
 #X connect 32 0 31 0;
 #X connect 33 0 34 0;
 #X connect 34 0 20 0;
