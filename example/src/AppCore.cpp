@@ -30,6 +30,10 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	pd.dspOn();
 	
+	
+	
+	cout << endl << "BEGIN Patch Test" << endl;
+	
 	// open patch
 	Patch patch = pd.openPatch("test.pd");
 	cout << patch << endl;
@@ -42,18 +46,46 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	patch = pd.openPatch("test.pd");
 	cout << patch << endl;
 	
+	cout << "FINISH Patch Test" << endl;
+	
+	
+	
+	cout << endl << "BEGIN Message Test" << endl;
+	
 	// test basic atoms
 	pd.sendBang("fromOF");
 	pd.sendFloat("fromOF", 100);
 	pd.sendSymbol("fromOF", "test string");
 	
-	// play a tone by sending a list
-	// [list tone pitch 72 (
-	pd.startList("tone");
-		pd.addSymbol("pitch");
-		pd.addFloat(72);
+	// send a list
+	pd.startList("fromOF");
+		pd.addFloat(1.23);
+		pd.addSymbol("a symbol");
 	pd.finish();
-	pd.sendBang("tone");
+	
+	// send a message to the $0 reciever ie $0-toOF
+	pd.startList(patch.dollarZeroStr()+"-fromOF");
+		pd.addFloat(1.23);
+		pd.addSymbol("a symbol");
+	pd.finish();
+	
+	cout << "FINISH Message Test" << endl;
+	
+	
+	cout << endl << "BEGIN MIDI Test" << endl;
+	
+	pd.sendNote(60);
+	pd.sendControlChange(100, 64);
+	pd.sendProgramChange(100);
+	pd.sendPitchBend(2000);
+	pd.sendAftertouch(100);
+	pd.sendPolyAftertouch(64, 100);
+	pd.sendMidiByte(0xEF);
+	
+	cout << "FINISH MIDI Test" << endl;
+	
+	
+	cout << endl << "BEGIN Array Test" << endl;
 	
 	// array check length
 	cout << "array1 len: " << pd.getArrayLen("array1") << endl;
@@ -87,6 +119,24 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	for(int i = 0; i < array1.size(); ++i)
 		cout << array1[i] << " ";
 	cout << endl;
+
+	cout << "FINISH Array Test" << endl;
+
+
+	
+	cout << endl << "BEGIN PD Test" << endl;
+	pd.sendSymbol("fromOF", "test");
+	cout << "FINISH PD Test" << endl << endl;
+	
+	
+	
+	// play a tone by sending a list
+	// [list tone pitch 72 (
+	pd.startList("tone");
+		pd.addSymbol("pitch");
+		pd.addFloat(72);
+	pd.finish();
+	pd.sendBang("tone");
 }
 
 //--------------------------------------------------------------
@@ -149,31 +199,55 @@ void AppCore::audioRequested(float * output, int bufferSize, int nChannels) {
 
 //--------------------------------------------------------------
 void AppCore::printReceived(const std::string& message) {
-	cout << "print: " << message << endl;
+	cout << message << endl;
 }
-		
+
+//--------------------------------------------------------------		
 void AppCore::bangReceived(const std::string& dest) {
-	cout << "bang " << dest << endl;
+	cout << "OF: bang " << dest << endl;
 }
 
 void AppCore::floatReceived(const std::string& dest, float value) {
-	cout << "float " << dest << ": " << value << endl;
+	cout << "OF: float " << dest << ": " << value << endl;
 }
 
 void AppCore::symbolReceived(const std::string& dest, const std::string& symbol) {
-	cout << "symbol " << dest << ": " << symbol << endl;
+	cout << "OF: symbol " << dest << ": " << symbol << endl;
 }
 
 void AppCore::listReceived(const std::string& dest, const List& list) {
-	cout << "list " << dest << ": " << list.toString() << endl;
-	cout << "\t " << list.types() << endl;
+	cout << "OF: list " << dest << ": " << list.toString() << list.types() << endl;
 }
 
 void AppCore::messageReceived(const std::string& dest, const std::string& msg, const List& list) {
-	cout << "message " << dest << ": " << msg << " " << list.toString() << endl;
-	cout << "\t " << list.types() << endl;
+	cout << "OF: msg " << dest << ": " << msg << " " << list.toString() << list.types() << endl;
 }
 
+//--------------------------------------------------------------
 void AppCore::noteReceived(const int channel, const int pitch, const int velocity) {
-	cout << "note: " << channel << " " << pitch << " " << velocity << endl;
+	cout << "OF: note: " << channel << " " << pitch << " " << velocity << endl;
+}
+
+void AppCore::controlChangeReceived(const int channel, const int controller, const int value) {
+	cout << "OF: cc: " << channel << " " << controller << " " << value << endl;
+}
+
+void AppCore::programChangeReceived(const int channel, const int value) {
+	cout << "OF: pgm: " << channel << " " << value << endl;
+}
+
+void AppCore::pitchBendReceived(const int channel, const int value) {
+	cout << "OF: bend: " << channel << " " << value << endl;
+}
+
+void AppCore::aftertouchReceived(const int channel, const int value) {
+	cout << "OF: touch: " << channel << " " << value << endl;
+}
+
+void AppCore::polyAftertouchReceived(const int channel, const int pitch, const int value) {
+	cout << "OF: polytouch: " << channel << " " << pitch << " " << value << endl;
+}
+
+void AppCore::midiByteReceived(const int port, const int byte) {
+	cout << "OF: midibyte: " << port << " 0x" << std::hex << byte << std::dec << endl;
 }

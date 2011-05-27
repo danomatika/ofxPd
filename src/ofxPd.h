@@ -44,7 +44,7 @@ class ofxPd {
 		Patch openPatch(const std::string& patch);
 		
 		/// close a patch, takes the patch's basename (filename without extension)
-		void closePatch(const std::string& name);
+		void closePatch(const std::string& patch);
 		
 		/// close a path, takes a patch object
 		/// clears the given Patch object
@@ -116,7 +116,7 @@ class ofxPd {
 		void finish();
 		
 		/// midi
-		void sendNote(const int pitch, const int velocity, const int channel=0);
+		void sendNote(const int pitch, const int velocity=64, const int channel=0);
 		void sendControlChange(const int controller, const int value, const int channel=0);
 		void sendProgramChange(const int value, const int channel=0);
 		void sendPitchBend(const int value, const int channel=0);
@@ -176,13 +176,31 @@ class ofxPd {
 		/// \section Array Access
 		
 		/// get pd array length
+		/// returns 0 if array not found
 		int getArrayLen(const std::string& arrayName);
 		
 		/// read from a pd array
-		bool readArray(const std::string& arrayName, std::vector<float>& dest, int readLen=-1, int offset=0);
+		///
+		/// resizes given vector to readLen, checks readLen and offset
+		///
+		/// returns true on success, false on failure
+		///
+		/// calling without setting readLen and offset reads the whole array:
+		///
+		/// vector<float> array1;
+		/// readArray("array1", array1); 
+		///
+		bool readArray(const std::string& arrayName, std::vector<float>& dest,
+												int readLen=-1, int offset=0);
 		
 		/// write to a pd array
-		bool writeArray(const std::string& arrayName, std::vector<float>& source, int writeLen=-1, int offset=0);
+		///
+		/// calling without setting writeLen and offset writes the whole array:
+		///
+		/// writeArray("array1", array1); 
+		///
+		bool writeArray(const std::string& arrayName, std::vector<float>& source,
+													int writeLen=-1, int offset=0);
 		
 		/// clear array and set to a specific value
 		void clearArray(const std::string& arrayName, int value=0);
@@ -192,7 +210,7 @@ class ofxPd {
 		/// get the blocksize of pd (sample length per channel)
 		static int getBlockSize();
 		
-		/// sections Audio Processing Callbacks
+		/// \section Audio Processing Callbacks
 		
 		/// the libpd processing is done in the audioOut callback
 		virtual void audioIn(float * input, int bufferSize, int nChannels);

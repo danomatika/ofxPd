@@ -776,8 +776,8 @@ bool ofxPd::readArray(const std::string& arrayName, std::vector<float>& dest, in
 	}
 	
 	// resize if necessary
-	if(dest.size() != arrayLen) {
-		dest.resize(arrayLen, 0);
+	if(dest.size() != readLen) {
+		dest.resize(readLen, 0);
 	}
 	
 	_LOCK();
