@@ -44,7 +44,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	// read array
 	std::vector<float> array1;
-	pd.readArray("array1", array1);
+	pd.readArray("array1", array1);	// sets array to correct size
 	cout << "array1 ";
 	for(int i = 0; i < array1.size(); ++i)
 		cout << array1[i] << " ";
@@ -54,6 +54,16 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	for(int i = 0; i < array1.size(); ++i)
 		array1[i] = i;
 	pd.writeArray("array1", array1);
+	
+	// ready array
+	pd.readArray("array1", array1);
+	cout << "array1 ";
+	for(int i = 0; i < array1.size(); ++i)
+		cout << array1[i] << " ";
+	cout << endl;
+	
+	// clear array
+	pd.clearArray("array1", 10);
 	
 	// ready array
 	pd.readArray("array1", array1);

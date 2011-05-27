@@ -810,6 +810,26 @@ bool ofxPd::writeArray(const std::string& arrayName, std::vector<float>& source,
 	return true;
 }
 
+void ofxPd::clearArray(const std::string& arrayName, int value) {
+
+	_LOCK();
+	int arrayLen = libpd_arraysize(arrayName.c_str());
+	_UNLOCK();
+	if(arrayLen < 0) {
+		ofLog(OF_LOG_WARNING, "ofxPd: Cannot clear unknown array \"%s\"", arrayName.c_str());
+		return;
+	}
+	
+	std::vector<float> array;
+	array.resize(arrayLen, value);
+	
+	_LOCK();
+	if(libpd_write_array(arrayName.c_str(), 0, &array[0], arrayLen) < 0) {
+		ofLog(OF_LOG_ERROR, "ofxPd: libpd_write_array failed while clearing array \"%s\"", arrayName.c_str());
+	}
+	_UNLOCK();
+}
+
 //----------------------------------------------------------
 int ofxPd::getBlockSize() {
 	_LOCK();

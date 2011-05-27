@@ -173,6 +173,9 @@ class ofxPd {
 		/// write to a pd array
 		bool writeArray(const std::string& arrayName, std::vector<float>& source, int writeLen=-1, int offset=0);
 		
+		/// clear array and set to a specific value
+		void clearArray(const std::string& arrayName, int value=0);
+		
 		/// \section Utils
 		
 		/// get the blocksize of pd (sample length per channel)
