@@ -162,7 +162,18 @@ class ofxPd {
 		/// is a message currently in progress?
         inline bool isMsgInProgress() {return bMsgInProgress;}
 		
-		/// Utils
+		/// \section Array Access
+		
+		/// get pd array length
+		int getArrayLen(const std::string& arrayName);
+		
+		/// read from a pd array
+		bool readArray(const std::string& arrayName, std::vector<float>& dest, int readLen=-1, int offset=0);
+		
+		/// write to a pd array
+		bool writeArray(const std::string& arrayName, std::vector<float>& source, int writeLen=-1, int offset=0);
+		
+		/// \section Utils
 		
 		/// get the blocksize of pd (sample length per channel)
 		static int getBlockSize();

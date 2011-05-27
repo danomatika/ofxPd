@@ -718,6 +718,99 @@ ofxPd& ofxPd::operator<<(const Finish& var) {
 }
 
 //----------------------------------------------------------
+int ofxPd::getArrayLen(const std::string& arrayName) {
+	_LOCK();
+	int len = libpd_arraysize(arrayName.c_str());
+	_UNLOCK();
+	if(len < 0) {
+		ofLog(OF_LOG_WARNING, "ofxPd: Cannot get size of unknown array \"%s\"", arrayName.c_str());
+		return 0;
+	}
+	return len;
+}
+		
+bool ofxPd::readArray(const std::string& arrayName, std::vector<float>& dest, int readLen, int offset) {
+	
+	_LOCK();
+	int arrayLen = libpd_arraysize(arrayName.c_str());
+	_UNLOCK();
+	if(arrayLen < 0) {
+		ofLog(OF_LOG_WARNING, "ofxPd: Cannot read unknown array \"%s\"", arrayName.c_str());
+		return false;
+	}
+	
+	// full array len?
+	if(readLen < 0) {
+		readLen = arrayLen;
+	}
+	// check read len
+	else if(readLen > arrayLen) {
+		ofLog(OF_LOG_WARNING, "ofxPd: Given read len %d > len %d of array \"%s\"",
+			readLen, arrayLen, arrayName.c_str());
+		return false;
+	}
+	
+	// check offset
+	if(offset+readLen > arrayLen) {
+		ofLog(OF_LOG_WARNING, "ofxPd: Given read len and offset > len %d of array \"%s\"",
+			readLen, arrayName.c_str());
+		return false;
+	}
+	
+	// resize if necessary
+	if(dest.size() != arrayLen) {
+		dest.resize(arrayLen, 0);
+	}
+	
+	_LOCK();
+	if(libpd_read_array(&dest[0], arrayName.c_str(), offset, readLen) < 0) {
+		_UNLOCK();
+		ofLog(OF_LOG_ERROR, "ofxPd: libpd_read_array failed for array \"%s\"", arrayName.c_str());
+		return false;
+	}
+	_UNLOCK();
+	return true;
+}
+		
+bool ofxPd::writeArray(const std::string& arrayName, std::vector<float>& source, int writeLen, int offset) {
+
+	_LOCK();
+	int arrayLen = libpd_arraysize(arrayName.c_str());
+	_UNLOCK();
+	if(arrayLen < 0) {
+		ofLog(OF_LOG_WARNING, "ofxPd: Cannot write to unknown array \"%s\"", arrayName.c_str());
+		return false;
+	}
+	
+	// full array len?
+	if(writeLen < 0) {
+		writeLen = arrayLen;
+	}
+	// check write len
+	else if(writeLen > arrayLen) {
+		ofLog(OF_LOG_WARNING, "ofxPd: Given write len %d > len %d of array \"%s\"",
+			writeLen, arrayLen, arrayName.c_str());
+		return false;
+	}
+	
+	// check offset
+	if(offset+writeLen > arrayLen) {
+		ofLog(OF_LOG_WARNING, "ofxPd: Given write len and offset > len %d of array \"%s\"",
+			writeLen, arrayName.c_str());
+		return false;
+	}
+	
+	_LOCK();
+	if(libpd_write_array(arrayName.c_str(), offset, &source[0], writeLen) < 0) {
+		_UNLOCK();
+		ofLog(OF_LOG_ERROR, "ofxPd: libpd_write_array failed for array \"%s\"", arrayName.c_str());
+		return false;
+	}
+	_UNLOCK();
+	return true;
+}
+
+//----------------------------------------------------------
 int ofxPd::getBlockSize() {
 	_LOCK();
 	int bs = libpd_blocksize();

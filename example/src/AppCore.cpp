@@ -38,6 +38,29 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 		pd.addFloat(72);
 	pd.finish();
 	pd.sendBang("tone");
+	
+	// array check length
+	cout << "array1 len: " << pd.getArrayLen("array1") << endl;
+	
+	// read array
+	std::vector<float> array1;
+	pd.readArray("array1", array1);
+	cout << "array1 ";
+	for(int i = 0; i < array1.size(); ++i)
+		cout << array1[i] << " ";
+	cout << endl;
+	
+	// write array
+	for(int i = 0; i < array1.size(); ++i)
+		array1[i] = i;
+	pd.writeArray("array1", array1);
+	
+	// ready array
+	pd.readArray("array1", array1);
+	cout << "array1 ";
+	for(int i = 0; i < array1.size(); ++i)
+		cout << array1[i] << " ";
+	cout << endl;
 }
 
 //--------------------------------------------------------------
@@ -117,10 +140,12 @@ void AppCore::symbolReceived(const std::string& dest, const std::string& symbol)
 
 void AppCore::listReceived(const std::string& dest, const List& list) {
 	cout << "list " << dest << ": " << list.toString() << endl;
+	cout << "\t " << list.types() << endl;
 }
 
 void AppCore::messageReceived(const std::string& dest, const std::string& msg, const List& list) {
-	cout << "message " << dest << ": " << msg << list.toString() << endl;
+	cout << "message " << dest << ": " << msg << " " << list.toString() << endl;
+	cout << "\t " << list.types() << endl;
 }
 
 void AppCore::noteReceived(const int channel, const int pitch, const int velocity) {
