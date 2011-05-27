@@ -81,6 +81,7 @@
 		30566D9A138809770011FDF9 /* x_qlist.c in Sources */ = {isa = PBXBuildFile; fileRef = 30566D51138809770011FDF9 /* x_qlist.c */; };
 		30566D9B138809770011FDF9 /* x_time.c in Sources */ = {isa = PBXBuildFile; fileRef = 30566D52138809770011FDF9 /* x_time.c */; };
 		305E23DA137B487C000C49E7 /* ofxPd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 305E238E137B487C000C49E7 /* ofxPd.cpp */; };
+		3087B3C7138EE37D005221D1 /* ofxPdTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3087B3C5138EE37D005221D1 /* ofxPdTypes.cpp */; };
 		309C857C138C2CCE00638A71 /* AppCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 309C857A138C2CCE00638A71 /* AppCore.cpp */; };
 		E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE0A90E8CC67C009D7055 /* GLee.a */; };
 		E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE2E30E8CC69C009D7055 /* rtAudio.a */; };
@@ -255,6 +256,8 @@
 		305E238E137B487C000C49E7 /* ofxPd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPd.cpp; sourceTree = "<group>"; };
 		305E238F137B487C000C49E7 /* ofxPd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPd.h; sourceTree = "<group>"; };
 		305E2390137B487C000C49E7 /* ofxPdListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPdListener.h; sourceTree = "<group>"; };
+		3087B3C5138EE37D005221D1 /* ofxPdTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPdTypes.cpp; sourceTree = "<group>"; };
+		3087B3C6138EE37D005221D1 /* ofxPdTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPdTypes.h; sourceTree = "<group>"; };
 		309C857A138C2CCE00638A71 /* AppCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppCore.cpp; sourceTree = "<group>"; };
 		309C857B138C2CCE00638A71 /* AppCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppCore.h; sourceTree = "<group>"; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
@@ -508,6 +511,8 @@
 			isa = PBXGroup;
 			children = (
 				30566CE8138809770011FDF9 /* pd */,
+				3087B3C5138EE37D005221D1 /* ofxPdTypes.cpp */,
+				3087B3C6138EE37D005221D1 /* ofxPdTypes.h */,
 				305E238E137B487C000C49E7 /* ofxPd.cpp */,
 				305E238F137B487C000C49E7 /* ofxPd.h */,
 				305E2390137B487C000C49E7 /* ofxPdListener.h */,
@@ -970,6 +975,7 @@
 				30566D9A138809770011FDF9 /* x_qlist.c in Sources */,
 				30566D9B138809770011FDF9 /* x_time.c in Sources */,
 				309C857C138C2CCE00638A71 /* AppCore.cpp in Sources */,
+				3087B3C7138EE37D005221D1 /* ofxPdTypes.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
