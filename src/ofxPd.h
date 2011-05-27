@@ -29,17 +29,28 @@ class ofxPd {
         /// clear resources
         void clear();
 		
+		/// \section Search Path
+		
 		/// add to the pd search path
 		void addToSearchPath(const std::string& path);
 		
 		/// clear the current pd search path
 		void clearSearchPath();
 		
-		/// open a patch, take a absolute or relative path (in data folder)
-		void openPatch(const std::string& patch);
+		/// \section Patch
+		
+		/// open a patch, takes a absolute or relative path (in data folder)
+		/// returns a Patch object
+		Patch openPatch(const std::string& patch);
 		
 		/// close a patch, takes the patch's basename (filename without extension)
 		void closePatch(const std::string& name);
+		
+		/// close a path, takes a patch object
+		/// clears the given Patch object
+		void closePatch(Patch& patch);
+		
+		/// \section Dsp Control
 		
 		// turn on/off digital signal processing
 		void dspOn();

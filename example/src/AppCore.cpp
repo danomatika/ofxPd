@@ -16,8 +16,11 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 		OF_EXIT_APP(1);
 	}
 	
+	// add recieve source names
 	pd.addSource("toOF");
 	pd.addSource("env");
+	
+	// add listener
 	pd.addListener(*this);
 	pd.subscribe(*this);			// listen to everything
 	pd.unsubscribe(*this, "env");	// don't listen to "env"
@@ -26,13 +29,26 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	//pd.unsubscribe(*this);		// don't listen to anything
 	
 	pd.dspOn();
-	pd.openPatch("test.pd");
 	
+	// open patch
+	Patch patch = pd.openPatch("test.pd");
+	cout << patch << endl;
+	
+	// close patch
+	pd.closePatch(patch);
+	cout << patch << endl;
+	
+	// open patch
+	patch = pd.openPatch("test.pd");
+	cout << patch << endl;
+	
+	// test basic atoms
 	pd.sendBang("fromOF");
 	pd.sendFloat("fromOF", 100);
 	pd.sendSymbol("fromOF", "test string");
 	
-	
+	// play a tone by sending a list
+	// [list tone pitch 72 (
 	pd.startList("tone");
 		pd.addSymbol("pitch");
 		pd.addFloat(72);

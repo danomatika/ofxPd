@@ -2,6 +2,49 @@
 
 #include "ofMain.h"
 
+/// \section ofxPd Patch
+
+class Patch {
+
+	public:
+
+		Patch();
+		Patch(void* handle, int dollarZero, const std::string& filename, const std::string& path);
+			
+		/// data access
+		void* handle()				const	{return _handle;}
+		int dollarZero()			const	{return _dollarZero;}
+		std::string filename()		const	{return _filename;}
+		std::string path()			const	{return _path;}
+		
+		/// get dollarZero as a string
+		std::string dollarZeroStr()	const	{return _dollarZeroStr;}
+			
+		/// is the patch pointer valid?
+		bool isValid() const;
+		
+		/// clear data in this object (does not close patch!)
+		void clear();
+
+		/// copy constructor
+		Patch(const Patch& from);
+
+        /// copy operator
+        void operator=(const Patch& from);
+		
+		/// print to ostream
+		friend std::ostream& operator<<(std::ostream& os, const Patch& from);
+
+	private:
+	
+		void* _handle;				///< patch handle pointer
+		int _dollarZero;			///< the unique patch id, ie $0
+		std::string _dollarZeroStr;	///< $0 as a string
+		
+		std::string _filename;	///< filename
+		std::string _path;		///< full path
+};
+
 /// \section ofxPd message types
 
 enum ofxPdMsgType {

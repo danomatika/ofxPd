@@ -124,6 +124,7 @@ void ofxPd::clear() {
 	clearSources();
 }
 
+//--------------------------------------------------------------------
 void ofxPd::addToSearchPath(const std::string& path) {
 	_LOCK();
 	libpd_add_to_search_path(path.c_str());
@@ -136,10 +137,11 @@ void ofxPd::clearSearchPath() {
 	_UNLOCK();
 }
 
+//--------------------------------------------------------------------
 //
 //	references http://pocoproject.org/docs/Poco.Path.html
 //
-void ofxPd::openPatch(const std::string& patch) {
+Patch ofxPd::openPatch(const std::string& patch) {
 
 	Poco::Path path(ofToDataPath(patch));
 	string folder = path.parent().toString();
@@ -149,24 +151,29 @@ void ofxPd::openPatch(const std::string& patch) {
 		folder.erase(folder.end()-1);
 	}
 	
-	ofLog(OF_LOG_VERBOSE, "ofxPd: Opening filename: "+path.getFileName()+
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Opening patch: "+path.getFileName()+
 						  " path: "+folder);
 
 	// [; pd open file folder(
 	_LOCK();
-	libpd_start_message();
-	libpd_add_symbol(path.getFileName().c_str());
-	libpd_add_symbol(folder.c_str());
-	libpd_finish_message("pd", "open");
+	void* handle = libpd_openfile(path.getFileName().c_str(), folder.c_str());
+	if(handle == NULL) {
+		_UNLOCK();
+		ofLog(OF_LOG_ERROR, "ofxPd: Opening patch \"%s\" failed", path.getFileName().c_str());
+		return Patch();
+	}
+	int dollarZero = libpd_getdollarzero(handle);
 	_UNLOCK();
+	
+	return Patch(handle, dollarZero, path.getFileName(), folder);
 }
 
-void ofxPd::closePatch(const std::string& name) {
+void ofxPd::closePatch(const std::string& patch) {
 
-	ofLog(OF_LOG_VERBOSE, "ofxPd: Closing name: "+name);
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Closing patch: "+patch);
 
 	// [; pd-name menuclose 1(
-	string patchname = (string) "pd-"+name;
+	string patchname = (string) "pd-"+patch;
 	_LOCK();
 	libpd_start_message();
 	libpd_add_float(1.0f);
@@ -174,6 +181,17 @@ void ofxPd::closePatch(const std::string& name) {
 	_UNLOCK();
 }
 
+void ofxPd::closePatch(Patch& patch) {
+	
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Closing patch: "+patch.filename());
+	
+	_LOCK();
+	libpd_closefile(patch.handle());
+	_UNLOCK();
+	patch.clear();
+}	
+
+//--------------------------------------------------------------------
 void ofxPd::dspOn() {
 
 	ofLog(OF_LOG_VERBOSE, "ofxPd: Dsp on");
