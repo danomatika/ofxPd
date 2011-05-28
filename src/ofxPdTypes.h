@@ -153,71 +153,70 @@ struct StartMessage : public Bang {
 /// send a note on/off event (set vel = 0 for noteoff)
 struct Note {
 
-	const int channel;	///< hannel (0-15)
-	const int pitch;	///< pitch (0-127)
-	const int velocity;	///< velocity (0-127)
+	const int channel;	///< channel (1 - 16 * dev#)
+	const int pitch;	///< pitch (0 - 127)
+	const int velocity;	///< velocity (0 - 127)
 	
-	explicit Note(const int pitch, const int velocity=64, const int channel=0) :
+	explicit Note(const int pitch, const int velocity=64, const int channel=1) :
 		pitch(pitch), velocity(velocity), channel(channel) {}
 };
 
 /// change a control value aka send a CC message
 struct ControlChange {
 
-	const int channel;		///< channel (0-15)
-	const int controller;	///< controller (0-127)
-	const int value;		///< value (0-127)
+	const int channel;		///< channel (1 - 16 * dev#)
+	const int controller;	///< controller (0 - 127)
+	const int value;		///< value (0 - 127)
 	
-	explicit ControlChange(const int controller, const int value, const int channel=0) :
+	explicit ControlChange(const int controller, const int value, const int channel=1) :
 		controller(controller), value(value), channel(channel) {}
 };
 
 /// change a program value (ie an instrument)
 struct ProgramChange {
 
-	const int channel;	///< channel (0-15)
-	const int value;	///< value (0-127)
+	const int channel;	///< channel (1 - 16 * dev#)
+	const int value;	///< value (0 - 127)
 	
-	explicit ProgramChange(const int value, const int channel=0) :
+	explicit ProgramChange(const int value, const int channel=1) :
 		value(value), channel(channel) {}
 };
 
 /// change the pitch bend value
 struct PitchBend {
 
-	const int channel;	///< channel (0-15)
-	const int value;	///< value (-8192 to 8192)
+	const int channel;	///< channel (1 - 16 * dev#)
+	const int value;	///< value (-8192 - 8192)
 	
-	explicit PitchBend(const int value, const int channel=0) :
+	explicit PitchBend(const int value, const int channel=1) :
 		value(value), channel(channel) {}
 };
 
 /// change an aftertouch value
 struct Aftertouch {
 
-	const int channel;	///< channel (0-15)
-	const int value;	///< value (0-127)
+	const int channel;	///< channel (1 - 16 * dev#)
+	const int value;	///< value (0 - 127)
 	
-	explicit Aftertouch(const int value, const int channel=0) :
+	explicit Aftertouch(const int value, const int channel=1) :
 		value(value), channel(channel) {}
 };
 
 /// change a poly aftertouch value
 struct PolyAftertouch {
 
-	const int channel;	///< channel (0-15)
-	const int pitch;	///< controller (0-127)
-	const int value;	///< value (0-127)
+	const int channel;	///< channel (1 - 16 * dev#)
+	const int pitch;	///< controller (0 - 127)
+	const int value;	///< value (0 - 127)
 	
-	explicit PolyAftertouch(const int pitch, const int value, const int channel=0) :
+	explicit PolyAftertouch(const int pitch, const int value, const int channel=1) :
 		pitch(pitch), value(value), channel(channel) {}
 };
 
 /// start a raw midi byte stream
 struct StartMidi {
 
-	const int port; 	///< pd midi port, dev# * 16 + channel (0-15)
-						/// so dev #2, chan 3 = 16 + 3 = 19
+	const int port; 	///< raw portmidi port, see http://en.wikipedia.org/wiki/PortMidi
 	
 	explicit StartMidi(const int port=0) : port(port) {}
 };
@@ -225,8 +224,7 @@ struct StartMidi {
 /// start a raw sysex byte stream
 struct StartSysEx {
 
-	const int port; 	///< pd midi port, dev# * 16 + channel (0-15)
-						/// so dev #2, chan 3 = 16 + 3 = 19
+	const int port; 	///< raw portmidi port
 	
 	explicit StartSysEx(const int port=0) : port(port) {}
 };
@@ -234,8 +232,7 @@ struct StartSysEx {
 /// start a sys realtime byte stream
 struct StartSysRealtime {
 
-	const int port; 	///< pd midi port, dev# * 16 + channel (0-15)
-						/// so dev #2, chan 3 = 16 + 3 = 19
+	const int port; 	///< raw portmidi port
 	
 	explicit StartSysRealtime(const int port=0) : port(port) {}
 };

@@ -496,37 +496,37 @@ void ofxPd::finish() {
 //----------------------------------------------------------
 void ofxPd::sendNote(const int pitch, const int velocity, const int channel) {
 	_LOCK();
-	libpd_noteon(channel, pitch, velocity);
+	libpd_noteon(channel-1, pitch, velocity);
 	_UNLOCK();
 }
 
 void ofxPd::sendControlChange(const int control, const int value, int channel) {
 	_LOCK();
-	libpd_controlchange(channel, control, value);
+	libpd_controlchange(channel-1, control, value);
 	_UNLOCK();
 }
 
 void ofxPd::sendProgramChange(int program, const int channel) {
 	_LOCK();
-	libpd_programchange(channel, program);
+	libpd_programchange(channel-1, program);
 	_UNLOCK();
 }
 
 void ofxPd::sendPitchBend(const int value, const int channel) {
 	_LOCK();
-	libpd_pitchbend(channel, value);
+	libpd_pitchbend(channel-1, value);
 	_UNLOCK();
 }
 
 void ofxPd::sendAftertouch(const int value, const int channel) {
 	_LOCK();
-	libpd_aftertouch(channel, value);
+	libpd_aftertouch(channel-1, value);
 	_UNLOCK();
 }
 
 void ofxPd::sendPolyAftertouch(int note, int value, const int channel) {
 	_LOCK();
-	libpd_polyaftertouch(channel, note, value);
+	libpd_polyaftertouch(channel-1, note, value);
 	_UNLOCK();
 }
 
@@ -657,32 +657,32 @@ ofxPd& ofxPd::operator<<(const std::string& var) {
 
 //----------------------------------------------------------
 ofxPd& ofxPd::operator<<(const Note& var) {
-	libpd_noteon(var.channel, var.pitch, var.velocity);
+	libpd_noteon(var.channel-1, var.pitch, var.velocity);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const ControlChange& var) {
-	libpd_controlchange(var.channel, var.controller, var.value);
+	libpd_controlchange(var.channel-1, var.controller, var.value);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const ProgramChange& var) {
-	libpd_programchange(var.channel, var.value);
+	libpd_programchange(var.channel-1, var.value);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const PitchBend& var) {
-	libpd_pitchbend(var.channel, var.value);
+	libpd_pitchbend(var.channel-1, var.value);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const Aftertouch& var) {
-	libpd_aftertouch(var.channel, var.value);
+	libpd_aftertouch(var.channel-1, var.value);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const PolyAftertouch& var) {
-	libpd_polyaftertouch(var.channel, var.pitch, var.value);
+	libpd_polyaftertouch(var.channel-1, var.pitch, var.value);
 	return *this;
 }
 
@@ -1069,8 +1069,8 @@ void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *a
 	}
 }
 
-void ofxPd::_noteon(int channel, int pitch, int velocity)
-{
+void ofxPd::_noteon(int channel, int pitch, int velocity) {
+	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: note: %d %d %d", channel, pitch, velocity);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
@@ -1080,8 +1080,8 @@ void ofxPd::_noteon(int channel, int pitch, int velocity)
 	}
 }
 
-void ofxPd::_controlchange(int channel, int controller, int value)
-{
+void ofxPd::_controlchange(int channel, int controller, int value) {
+	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: control change: %d %d %d", channel, controller, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
@@ -1091,8 +1091,8 @@ void ofxPd::_controlchange(int channel, int controller, int value)
 	}
 }
 
-void ofxPd::_programchange(int channel, int value)
-{
+void ofxPd::_programchange(int channel, int value) {
+	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: program change: %d %d", channel, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
@@ -1102,8 +1102,8 @@ void ofxPd::_programchange(int channel, int value)
 	}
 }
 
-void ofxPd::_pitchbend(int channel, int value)
-{
+void ofxPd::_pitchbend(int channel, int value) {
+	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: pitchbend: %d %d", channel, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
@@ -1113,8 +1113,8 @@ void ofxPd::_pitchbend(int channel, int value)
 	}
 }
 
-void ofxPd::_aftertouch(int channel, int value)
-{
+void ofxPd::_aftertouch(int channel, int value) {
+	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: aftertouch: %d %d", channel, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
@@ -1125,7 +1125,7 @@ void ofxPd::_aftertouch(int channel, int value)
 }
 
 void ofxPd::_polyaftertouch(int channel, int pitch, int value) {
-
+	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: polyaftertouch: %d %d %d", channel, pitch, value);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
@@ -1136,7 +1136,7 @@ void ofxPd::_polyaftertouch(int channel, int pitch, int value) {
 }
 
 void ofxPd::_midibyte(int port, int byte) {
-	
+
 	ofLog(OF_LOG_VERBOSE, "ofxPd: midibyte: %d %d", port, byte);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;

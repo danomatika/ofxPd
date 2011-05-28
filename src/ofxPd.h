@@ -116,17 +116,32 @@ class ofxPd {
 		void finish();
 		
 		/// midi
-		void sendNote(const int pitch, const int velocity=64, const int channel=0);
-		void sendControlChange(const int controller, const int value, const int channel=0);
-		void sendProgramChange(const int value, const int channel=0);
-		void sendPitchBend(const int value, const int channel=0);
-		void sendAftertouch(const int value, const int channel=0);
-		void sendPolyAftertouch(const int pitch, const int value, const int channel=0);		
+		///
+		/// send midi messages, any out of range messages will be silently ignored
+		///
+		/// number ranges:
+		/// pitch 		0 - 127
+		/// velocity	0 - 127
+		/// channel		1 - 16 * dev# (dev #0: 1-16, dev #1: 17-32, etc)
+		/// control value	0 - 127
+		/// program value	0 - 127
+		/// bend value		-8192 - 8191
+		/// touch value		0 - 127
+		///
+		/// note: in pd, [bendin] returns a range of 0 - 16383 while [bendout]
+		///       returns a range of -8192 - 8192
+		///
+		void sendNote(const int pitch, const int velocity=64, const int channel=1);
+		void sendControlChange(const int controller, const int value, const int channel=1);
+		void sendProgramChange(const int value, const int channel=1);
+		void sendPitchBend(const int value, const int channel=1);
+		void sendAftertouch(const int value, const int channel=1);
+		void sendPolyAftertouch(const int pitch, const int value, const int channel=1);		
 		
 		/// raw midi bytes
 		///
-		/// port is the pd midi out port, dev# * 16 + channel (0-15)
-		/// so chan 3 on midi out dev #2 is 16 + 3 = 19
+		/// value is a raw midi byte value 0 - 255
+		/// port is the raw port audio port #, see http://en.wikipedia.org/wiki/PortMidi 
 		///
 		void sendMidiByte(const int value, const int port=0);
 		void sendSysExByte(const int value, const int port=0);

@@ -74,13 +74,23 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	cout << endl << "BEGIN MIDI Test" << endl;
 	
+	// send functions
 	pd.sendNote(60);
 	pd.sendControlChange(100, 64);
 	pd.sendProgramChange(100);
 	pd.sendPitchBend(2000);
 	pd.sendAftertouch(100);
 	pd.sendPolyAftertouch(64, 100);
-	pd.sendMidiByte(0xEF);
+	pd.sendMidiByte(239, 1);
+	pd.sendSysExByte(239, 1);
+	pd.sendSysRealtimeByte(239, 1);
+	
+	// stream
+	pd << Note(60) << ControlChange(100, 64) << PitchBend(2000)
+	   << Aftertouch(100) << PolyAftertouch(64, 100)
+	   << StartMidi(1) << 239 << Finish()
+	   << StartSysEx(1) << 239 << Finish()
+	   << StartSysRealtime(1) << 239 << Finish();
 	
 	cout << "FINISH MIDI Test" << endl;
 	
@@ -249,5 +259,5 @@ void AppCore::polyAftertouchReceived(const int channel, const int pitch, const i
 }
 
 void AppCore::midiByteReceived(const int port, const int byte) {
-	cout << "OF: midibyte: " << port << " 0x" << std::hex << byte << std::dec << endl;
+	cout << "OF: midibyte: " << port << " " << byte << endl;
 }
