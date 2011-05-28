@@ -13,20 +13,8 @@ using namespace std;
 // pointer for static member functions
 ofxPd* pdPtr = NULL;
 
-
-#ifdef TARGET_LINUX
-
-#include <pthread.h>
-static pthread_mutex_t mutex;
-#define _LOCK() pthread_mutex_lock(&mutex)
-#define _UNLOCK() pthread_mutex_unlock( &mutex )
-
-#else
-
-#define _LOCK()
-#define _UNLOCK()
-
-#endif
+#define _LOCK() pdPtr->mutex.lock()
+#define _UNLOCK() pdPtr->mutex.unlock()
 
 
 //--------------------------------------------------------------------
@@ -35,18 +23,11 @@ ofxPd::ofxPd() {
 	bPdInited = false;
 	inputBuffer = NULL;
 	clear();
-
-#ifdef TARGET_LINUX
-	pthread_mutex_init( &mutex, NULL );
-#endif
 }
 
 //--------------------------------------------------------------------
 ofxPd::~ofxPd() {
     clear();
-#ifdef TARGET_LINUX
-	pthread_mutex_destroy( &mutex );
-#endif
 	sources.clear();
 }
 
