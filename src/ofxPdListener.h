@@ -25,11 +25,11 @@ class ofxPdListener {
 		
 		/// midi
 		virtual void noteReceived(const int channel, const int pitch, const int velocity) {}
-		virtual void controlChangeReceived(const int channel, const int controller, const int value) {}
-		virtual void programChangeReceived(const int channel, const int value) {}
-		virtual void pitchBendReceived(const int channel, const int value) {}
-		virtual void aftertouchReceived(const int channel, const int value) {}
-		virtual void polyAftertouchReceived(const int channel, const int pitch, const int value) {}
+		virtual void ctlReceived(const int channel, const int controller, const int value) {}
+		virtual void pgmReceived(const int channel, const int value) {}
+		virtual void bendReceived(const int channel, const int value) {}
+		virtual void touchReceived(const int channel, const int value) {}
+		virtual void polyTouchReceived(const int channel, const int pitch, const int value) {}
 		
 		/// raw midi byte
 		virtual void midiByteReceived(const int port, const int byte) {}

@@ -76,21 +76,21 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	// send functions
 	pd.sendNote(60);
-	pd.sendControlChange(100, 64);
-	pd.sendProgramChange(100);
-	pd.sendPitchBend(2000);
-	pd.sendAftertouch(100);
-	pd.sendPolyAftertouch(64, 100);
+	pd.sendCtl(100, 64);
+	pd.sendPgm(100);
+	pd.sendBend(2000);
+	pd.sendTouch(100);
+	pd.sendPolyTouch(64, 100);
 	pd.sendMidiByte(239, 1);
 	pd.sendSysExByte(239, 1);
-	pd.sendSysRealtimeByte(239, 1);
+	pd.sendSysRTByte(239, 1);
 	
 	// stream
-	pd << Note(60) << ControlChange(100, 64) << PitchBend(2000)
-	   << Aftertouch(100) << PolyAftertouch(64, 100)
+	pd << Note(60) << Ctl(100, 64) << Bend(2000)
+	   << Touch(100) << PolyTouch(64, 100)
 	   << StartMidi(1) << 239 << Finish()
 	   << StartSysEx(1) << 239 << Finish()
-	   << StartSysRealtime(1) << 239 << Finish();
+	   << StartSysRT(1) << 239 << Finish();
 	
 	cout << "FINISH MIDI Test" << endl;
 	
@@ -238,23 +238,23 @@ void AppCore::noteReceived(const int channel, const int pitch, const int velocit
 	cout << "OF: note: " << channel << " " << pitch << " " << velocity << endl;
 }
 
-void AppCore::controlChangeReceived(const int channel, const int controller, const int value) {
-	cout << "OF: cc: " << channel << " " << controller << " " << value << endl;
+void AppCore::ctlReceived(const int channel, const int controller, const int value) {
+	cout << "OF: ctl: " << channel << " " << controller << " " << value << endl;
 }
 
-void AppCore::programChangeReceived(const int channel, const int value) {
+void AppCore::pgmReceived(const int channel, const int value) {
 	cout << "OF: pgm: " << channel << " " << value << endl;
 }
 
-void AppCore::pitchBendReceived(const int channel, const int value) {
+void AppCore::bendReceived(const int channel, const int value) {
 	cout << "OF: bend: " << channel << " " << value << endl;
 }
 
-void AppCore::aftertouchReceived(const int channel, const int value) {
+void AppCore::touchReceived(const int channel, const int value) {
 	cout << "OF: touch: " << channel << " " << value << endl;
 }
 
-void AppCore::polyAftertouchReceived(const int channel, const int pitch, const int value) {
+void AppCore::polyTouchReceived(const int channel, const int pitch, const int value) {
 	cout << "OF: polytouch: " << channel << " " << pitch << " " << value << endl;
 }
 

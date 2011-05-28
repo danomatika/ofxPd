@@ -426,7 +426,7 @@ void ofxPd::startList(const std::string& dest) {
 	msgDest = dest;
 }
 
-void ofxPd::startMessage(const std::string& dest, const std::string& msg) {
+void ofxPd::startMsg(const std::string& dest, const std::string& msg) {
 	
 	if(bMsgInProgress) {
     	ofLog(OF_LOG_ERROR, "ofxPd: Can not start message, message in progress");
@@ -500,31 +500,31 @@ void ofxPd::sendNote(const int pitch, const int velocity, const int channel) {
 	_UNLOCK();
 }
 
-void ofxPd::sendControlChange(const int control, const int value, int channel) {
+void ofxPd::sendCtl(const int control, const int value, int channel) {
 	_LOCK();
 	libpd_controlchange(channel-1, control, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendProgramChange(int program, const int channel) {
+void ofxPd::sendPgm(int program, const int channel) {
 	_LOCK();
 	libpd_programchange(channel-1, program);
 	_UNLOCK();
 }
 
-void ofxPd::sendPitchBend(const int value, const int channel) {
+void ofxPd::sendBend(const int value, const int channel) {
 	_LOCK();
 	libpd_pitchbend(channel-1, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendAftertouch(const int value, const int channel) {
+void ofxPd::sendTouch(const int value, const int channel) {
 	_LOCK();
 	libpd_aftertouch(channel-1, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendPolyAftertouch(int note, int value, const int channel) {
+void ofxPd::sendPolyTouch(int note, int value, const int channel) {
 	_LOCK();
 	libpd_polyaftertouch(channel-1, note, value);
 	_UNLOCK();
@@ -543,7 +543,7 @@ void ofxPd::sendSysExByte(const int value, const int port) {
 	_UNLOCK();
 }
 
-void ofxPd::sendSysRealtimeByte(const int value, const int port) {
+void ofxPd::sendSysRTByte(const int value, const int port) {
 	_LOCK();
 	libpd_sysrealtime(port, value);
 	_UNLOCK();
@@ -592,8 +592,8 @@ ofxPd& ofxPd::operator<<(const StartList& var) {
     return *this;
 }
 
-ofxPd& ofxPd::operator<<(const StartMessage& var) {
-	startMessage(var.dest, var.msg);
+ofxPd& ofxPd::operator<<(const StartMsg& var) {
+	startMsg(var.dest, var.msg);
     return *this;
 }
 
@@ -661,27 +661,27 @@ ofxPd& ofxPd::operator<<(const Note& var) {
 	return *this;
 }
 
-ofxPd& ofxPd::operator<<(const ControlChange& var) {
+ofxPd& ofxPd::operator<<(const Ctl& var) {
 	libpd_controlchange(var.channel-1, var.controller, var.value);
 	return *this;
 }
 
-ofxPd& ofxPd::operator<<(const ProgramChange& var) {
+ofxPd& ofxPd::operator<<(const Pgm& var) {
 	libpd_programchange(var.channel-1, var.value);
 	return *this;
 }
 
-ofxPd& ofxPd::operator<<(const PitchBend& var) {
+ofxPd& ofxPd::operator<<(const Bend& var) {
 	libpd_pitchbend(var.channel-1, var.value);
 	return *this;
 }
 
-ofxPd& ofxPd::operator<<(const Aftertouch& var) {
+ofxPd& ofxPd::operator<<(const Touch& var) {
 	libpd_aftertouch(var.channel-1, var.value);
 	return *this;
 }
 
-ofxPd& ofxPd::operator<<(const PolyAftertouch& var) {
+ofxPd& ofxPd::operator<<(const PolyTouch& var) {
 	libpd_polyaftertouch(var.channel-1, var.pitch, var.value);
 	return *this;
 }
@@ -715,7 +715,7 @@ ofxPd& ofxPd::operator<<(const StartSysEx& var) {
 	return *this;
 }
 
-ofxPd& ofxPd::operator<<(const StartSysRealtime& var) {
+ofxPd& ofxPd::operator<<(const StartSysRT& var) {
 
 	if(bMsgInProgress) {
 		ofLog(OF_LOG_ERROR, "ofxPd: Can not start SysRealtime stream, message in progress");
@@ -1087,7 +1087,7 @@ void ofxPd::_controlchange(int channel, int controller, int value) {
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
 	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->controlChangeReceived(channel, controller, value);
+		(*iter)->ctlReceived(channel, controller, value);
 	}
 }
 
@@ -1098,7 +1098,7 @@ void ofxPd::_programchange(int channel, int value) {
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
 	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->programChangeReceived(channel, value);
+		(*iter)->pgmReceived(channel, value);
 	}
 }
 
@@ -1109,7 +1109,7 @@ void ofxPd::_pitchbend(int channel, int value) {
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
 	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->pitchBendReceived(channel, value);
+		(*iter)->bendReceived(channel, value);
 	}
 }
 
@@ -1120,7 +1120,7 @@ void ofxPd::_aftertouch(int channel, int value) {
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
 	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->aftertouchReceived(channel, value);
+		(*iter)->touchReceived(channel, value);
 	}
 }
 
@@ -1131,7 +1131,7 @@ void ofxPd::_polyaftertouch(int channel, int pitch, int value) {
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
 	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->polyAftertouchReceived(channel, pitch, value);
+		(*iter)->polyTouchReceived(channel, pitch, value);
 	}
 }
 

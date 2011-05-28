@@ -35,11 +35,11 @@ class AppCore : public ofxPdListener {
 		void messageReceived(const std::string& dest, const std::string& msg, const List& list);
 		
 		void noteReceived(const int channel, const int pitch, const int velocity);
-		void controlChangeReceived(const int channel, const int controller, const int value);
-		void programChangeReceived(const int channel, const int value);
-		void pitchBendReceived(const int channel, const int value);
-		void aftertouchReceived(const int channel, const int value);
-		void polyAftertouchReceived(const int channel, const int pitch, const int value);
+		void ctlReceived(const int channel, const int controller, const int value);
+		void pgmReceived(const int channel, const int value);
+		void bendReceived(const int channel, const int value);
+		void touchReceived(const int channel, const int value);
+		void polyTouchReceived(const int channel, const int pitch, const int value);
 		
 		void midiByteReceived(const int port, const int byte);
 		

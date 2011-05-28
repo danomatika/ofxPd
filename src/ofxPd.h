@@ -110,7 +110,7 @@ class ofxPd {
 		
 		/// compound messages
 		void startList(const std::string& dest);
-		void startMessage(const std::string& dest, const std::string& msg);
+		void startMsg(const std::string& dest, const std::string& msg);
 		void addFloat(const float value);
 		void addSymbol(const std::string& symbol);
 		void finish();
@@ -132,11 +132,11 @@ class ofxPd {
 		///       returns a range of -8192 - 8192
 		///
 		void sendNote(const int pitch, const int velocity=64, const int channel=1);
-		void sendControlChange(const int controller, const int value, const int channel=1);
-		void sendProgramChange(const int value, const int channel=1);
-		void sendPitchBend(const int value, const int channel=1);
-		void sendAftertouch(const int value, const int channel=1);
-		void sendPolyAftertouch(const int pitch, const int value, const int channel=1);		
+		void sendCtl(const int controller, const int value, const int channel=1);
+		void sendPgm(const int value, const int channel=1);
+		void sendBend(const int value, const int channel=1);
+		void sendTouch(const int value, const int channel=1);
+		void sendPolyTouch(const int pitch, const int value, const int channel=1);		
 		
 		/// raw midi bytes
 		///
@@ -145,7 +145,7 @@ class ofxPd {
 		///
 		void sendMidiByte(const int value, const int port=0);
 		void sendSysExByte(const int value, const int port=0);
-		void sendSysRealtimeByte(const int value, const int port=0);
+		void sendSysRTByte(const int value, const int port=0);
 		
 		/// \section Sending Stream Interface
 		
@@ -156,7 +156,7 @@ class ofxPd {
 		
 		/// compound messages
 		ofxPd& operator<<(const StartList& var);
-		ofxPd& operator<<(const StartMessage& var);
+		ofxPd& operator<<(const StartMsg& var);
         
 		/// add a float to the message
 		ofxPd& operator<<(const bool var);
@@ -171,16 +171,16 @@ class ofxPd {
 		
 		/// midi
 		ofxPd& operator<<(const Note& var);
-		ofxPd& operator<<(const ControlChange& var);
-		ofxPd& operator<<(const ProgramChange& var);
-		ofxPd& operator<<(const PitchBend& var);
-		ofxPd& operator<<(const Aftertouch& var);
-		ofxPd& operator<<(const PolyAftertouch& var);
+		ofxPd& operator<<(const Ctl& var);
+		ofxPd& operator<<(const Pgm& var);
+		ofxPd& operator<<(const Bend& var);
+		ofxPd& operator<<(const Touch& var);
+		ofxPd& operator<<(const PolyTouch& var);
 		
 		/// compound raw midi bytes
 		ofxPd& operator<<(const StartMidi& var);
 		ofxPd& operator<<(const StartSysEx& var);
-		ofxPd& operator<<(const StartSysRealtime& var);
+		ofxPd& operator<<(const StartSysRT& var);
 		
 		/// finish a compound message
         ofxPd& operator<<(const Finish& var);

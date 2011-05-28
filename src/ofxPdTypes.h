@@ -138,12 +138,12 @@ struct StartList : public Bang {
 };
 
 /// start a typed message
-struct StartMessage : public Bang {
+struct StartMsg : public Bang {
 
 	const std::string msg; ///< target msg at the dest
 
     explicit
-		StartMessage(const std::string& dest, const std::string& msg) :
+		StartMsg(const std::string& dest, const std::string& msg) :
 			Bang(dest), msg(msg) {}
 };
 
@@ -162,54 +162,54 @@ struct Note {
 };
 
 /// change a control value aka send a CC message
-struct ControlChange {
+struct Ctl {
 
 	const int channel;		///< channel (1 - 16 * dev#)
 	const int controller;	///< controller (0 - 127)
 	const int value;		///< value (0 - 127)
 	
-	explicit ControlChange(const int controller, const int value, const int channel=1) :
+	explicit Ctl(const int controller, const int value, const int channel=1) :
 		controller(controller), value(value), channel(channel) {}
 };
 
 /// change a program value (ie an instrument)
-struct ProgramChange {
+struct Pgm {
 
 	const int channel;	///< channel (1 - 16 * dev#)
 	const int value;	///< value (0 - 127)
 	
-	explicit ProgramChange(const int value, const int channel=1) :
+	explicit Pgm(const int value, const int channel=1) :
 		value(value), channel(channel) {}
 };
 
 /// change the pitch bend value
-struct PitchBend {
+struct Bend {
 
 	const int channel;	///< channel (1 - 16 * dev#)
 	const int value;	///< value (-8192 - 8192)
 	
-	explicit PitchBend(const int value, const int channel=1) :
+	explicit Bend(const int value, const int channel=1) :
 		value(value), channel(channel) {}
 };
 
 /// change an aftertouch value
-struct Aftertouch {
+struct Touch {
 
 	const int channel;	///< channel (1 - 16 * dev#)
 	const int value;	///< value (0 - 127)
 	
-	explicit Aftertouch(const int value, const int channel=1) :
+	explicit Touch(const int value, const int channel=1) :
 		value(value), channel(channel) {}
 };
 
 /// change a poly aftertouch value
-struct PolyAftertouch {
+struct PolyTouch {
 
 	const int channel;	///< channel (1 - 16 * dev#)
 	const int pitch;	///< controller (0 - 127)
 	const int value;	///< value (0 - 127)
 	
-	explicit PolyAftertouch(const int pitch, const int value, const int channel=1) :
+	explicit PolyTouch(const int pitch, const int value, const int channel=1) :
 		pitch(pitch), value(value), channel(channel) {}
 };
 
@@ -230,11 +230,11 @@ struct StartSysEx {
 };
 
 /// start a sys realtime byte stream
-struct StartSysRealtime {
+struct StartSysRT {
 
 	const int port; 	///< raw portmidi port
 	
-	explicit StartSysRealtime(const int port=0) : port(port) {}
+	explicit StartSysRT(const int port=0) : port(port) {}
 };
 
 ///
