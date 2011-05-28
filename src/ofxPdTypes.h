@@ -45,16 +45,6 @@ class Patch {
 		std::string _path;		///< full path
 };
 
-/// \section ofxPd message types
-
-enum ofxPdMsgType {
-	OFX_PD_BANG,
-	OFX_PD_FLOAT,
-	OFX_PD_SYMBOL,
-	OFX_PD_LIST,
-	OFX_PD_MESSAGE
-};
-
 /// \section ofxPd stream interface message objects
 
 /// bang event
@@ -121,9 +111,15 @@ class List : public Bang {
 
 		std::string typeString;	///< OSC style type string
 		
+		// object type
+		enum MsgType {
+			FLOAT,
+			SYMBOL
+		};
+		
 		// object wrapper
 		struct MsgObject {
-			ofxPdMsgType type;
+			MsgType type;
 			float value;
 			std::string symbol;
 		};

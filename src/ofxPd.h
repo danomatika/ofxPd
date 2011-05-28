@@ -177,12 +177,12 @@ class ofxPd {
 		ofxPd& operator<<(const Touch& var);
 		ofxPd& operator<<(const PolyTouch& var);
 		
-		/// compound raw midi bytes
+		/// compound raw midi byte stream
 		ofxPd& operator<<(const StartMidi& var);
 		ofxPd& operator<<(const StartSysEx& var);
 		ofxPd& operator<<(const StartSysRT& var);
 		
-		/// finish a compound message
+		/// finish a compound message or byte stream
         ofxPd& operator<<(const Finish& var);
 		
 		/// is a message currently in progress?

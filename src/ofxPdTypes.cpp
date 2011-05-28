@@ -54,14 +54,14 @@ std::ostream& operator<<(std::ostream& os, const Patch& from) {
 //----------------------------------------------------------
 bool List::isFloat(const unsigned int index) const {
 	if(index < objects.size())
-		if(objects[index].type == OFX_PD_FLOAT)
+		if(objects[index].type == List::FLOAT)
 			return true;
 	return false;
 }
 
 bool List::isSymbol(const unsigned int index) const {
 	if(index < objects.size())
-		if(objects[index].type == OFX_PD_SYMBOL)
+		if(objects[index].type == List::SYMBOL)
 			return true;
 	return false;
 }
@@ -86,7 +86,7 @@ std::string List::asSymbol(const unsigned int index) const {
 //----------------------------------------------------------
 void List::addFloat(const float value) {
 	MsgObject o;
-	o.type = OFX_PD_FLOAT;
+	o.type = List::FLOAT;
 	o.value = value;
 	objects.push_back(o);
 	typeString += 'f';
@@ -94,7 +94,7 @@ void List::addFloat(const float value) {
 
 void List::addSymbol(const std::string& symbol) {
 	MsgObject o;
-	o.type = OFX_PD_SYMBOL;
+	o.type = List::SYMBOL;
 	o.symbol = symbol;
 	objects.push_back(o);
 	typeString += 's';
