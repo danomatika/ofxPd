@@ -194,7 +194,6 @@ void AppCore::keyPressed (int key) {
 		default:
 			break;
 	}
-
 }
 
 //--------------------------------------------------------------
@@ -226,7 +225,17 @@ void AppCore::symbolReceived(const std::string& dest, const std::string& symbol)
 }
 
 void AppCore::listReceived(const std::string& dest, const List& list) {
-	cout << "OF: list " << dest << ": " << list.toString() << list.types() << endl;
+	cout << "OF: list " << dest << ": ";
+	
+	// step through the list
+	for(int i = 0; i < list.len(); ++i) {
+		if(list.isFloat(i))
+			cout << list.asFloat(i) << " ";
+		else if(list.isSymbol(i))
+			cout << list.asSymbol(i) << " ";
+	}
+	
+	cout << list.types() << endl;
 }
 
 void AppCore::messageReceived(const std::string& dest, const std::string& msg, const List& list) {

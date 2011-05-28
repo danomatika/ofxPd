@@ -109,6 +109,14 @@ class ofxPd {
 		void sendSymbol(const std::string& dest, const std::string& symbol);
 		
 		/// compound messages
+		///
+		/// pd.startList("test");	// "test" is the reciever name in pd
+		/// pd.addSymbol("hello");
+		/// pd.addFloat(1.23);
+		/// pd.finish();
+		///
+		/// sends [list hello 1.23( -> [r test]
+		/// 
 		void startList(const std::string& dest);
 		void startMsg(const std::string& dest, const std::string& msg);
 		void addFloat(const float value);
@@ -150,11 +158,19 @@ class ofxPd {
 		/// \section Sending Stream Interface
 		
 		/// single messages
+		///
+		/// pd << Bang("test"); /// "test" is the reciever name in pd
+		/// pd << Float("test", 100);
+		/// pd << Symbol("test", "a symbol");
+		///
 		ofxPd& operator<<(const Bang& var);
 		ofxPd& operator<<(const Float& var);
 		ofxPd& operator<<(const Symbol& var);
 		
 		/// compound messages
+		///
+		/// pd << StartList("test") << 100 << 1.2 << "a symbol" << Finish();
+		///
 		ofxPd& operator<<(const StartList& var);
 		ofxPd& operator<<(const StartMsg& var);
         
@@ -170,6 +186,11 @@ class ofxPd {
         ofxPd& operator<<(const std::string& var);
 		
 		/// midi
+		///
+		/// pd << Note(64) << Note(64, 60) << Note(64, 60, 1);
+		/// pd << Ctl(100, 64) << Pgm(100, 1) << Bend(2000, 1);
+		/// pd << Touch(127, 1) << PolyTouch(64, 127, 1);
+		///
 		ofxPd& operator<<(const Note& var);
 		ofxPd& operator<<(const Ctl& var);
 		ofxPd& operator<<(const Pgm& var);
@@ -178,6 +199,10 @@ class ofxPd {
 		ofxPd& operator<<(const PolyTouch& var);
 		
 		/// compound raw midi byte stream
+		///
+		/// pd << StartMidi() << 0xEF << 0x45 << Finish();
+		/// pd << StartSysEx() << 0xE7 << 0x45 << 0x56 << 0x17 << Finish();
+		///
 		ofxPd& operator<<(const StartMidi& var);
 		ofxPd& operator<<(const StartSysEx& var);
 		ofxPd& operator<<(const StartSysRT& var);
