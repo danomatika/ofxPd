@@ -421,6 +421,8 @@ void ofxPd::startList(const std::string& dest) {
 
 	_LOCK();	
 	libpd_start_message();
+	_UNLOCK();
+	
 	bMsgInProgress = true;
 	msgType = LIST;
 	msgDest = dest;
@@ -435,6 +437,8 @@ void ofxPd::startMsg(const std::string& dest, const std::string& msg) {
 
 	_LOCK();	
 	libpd_start_message();
+	_UNLOCK();
+	
 	bMsgInProgress = true;
 	msgType = MSG;
 	msgDest = dest;
@@ -453,7 +457,9 @@ void ofxPd::addFloat(const float value) {
 		return;
 	}
 	
+	_LOCK();
 	libpd_add_float(value);
+	_UNLOCK();
 }
 
 void ofxPd::addSymbol(const std::string& symbol) {
@@ -468,7 +474,9 @@ void ofxPd::addSymbol(const std::string& symbol) {
 		return;
 	}
 	
+	_LOCK();
 	libpd_add_symbol(symbol.c_str());
+	_UNLOCK();
 }
 
 void ofxPd::finish() {
@@ -481,14 +489,17 @@ void ofxPd::finish() {
 	switch(msgType) {
 		
 		case LIST:
+			_LOCK();
 			libpd_finish_list(msgDest.c_str());
+			_UNLOCK();
 			break;
 		
 		case MSG:
+			_LOCK();
 			libpd_finish_message(msgDest.c_str(), msgMsg.c_str());
+			_UNLOCK();
 			break;
 	}
-	_UNLOCK();
 	
 	bMsgInProgress = false;
 }
@@ -557,7 +568,7 @@ ofxPd& ofxPd::operator<<(const Bang& var) {
 		return *this;
 	}
 	
-	libpd_bang(var.dest.c_str());
+	sendBang(var.dest.c_str());
     
     return *this;
 }
@@ -569,7 +580,7 @@ ofxPd& ofxPd::operator<<(const Float& var) {
 		return *this;
 	}
 	
-	libpd_float(var.dest.c_str(), var.value);
+	sendFloat(var.dest.c_str(), var.value);
     
     return *this;
 }
@@ -581,7 +592,7 @@ ofxPd& ofxPd::operator<<(const Symbol& var) {
 		return *this;
 	}
 	
-	libpd_symbol(var.dest.c_str(), var.symbol.c_str());
+	sendSymbol(var.dest.c_str(), var.symbol.c_str());
     
     return *this;
 }
@@ -612,15 +623,15 @@ ofxPd& ofxPd::operator<<(const int var) {
 			break;
 			
 		case MIDI:
-			libpd_midibyte(midiPort, var);
+			sendMidiByte(midiPort, var);
 			break;
 			
 		case SYSEX:
-			libpd_sysex(midiPort, var);
+			sendSysExByte(midiPort, var);
 			break;
 			
 		case SYSRT:
-			libpd_sysrealtime(midiPort, var);
+			sendSysRTByte(midiPort, var);
 			break;
 	}
 
@@ -657,32 +668,32 @@ ofxPd& ofxPd::operator<<(const std::string& var) {
 
 //----------------------------------------------------------
 ofxPd& ofxPd::operator<<(const Note& var) {
-	libpd_noteon(var.channel-1, var.pitch, var.velocity);
+	sendNote(var.pitch, var.velocity, var.channel);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const Ctl& var) {
-	libpd_controlchange(var.channel-1, var.controller, var.value);
+	sendCtl(var.controller, var.value, var.channel);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const Pgm& var) {
-	libpd_programchange(var.channel-1, var.value);
+	sendPgm(var.value, var.channel);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const Bend& var) {
-	libpd_pitchbend(var.channel-1, var.value);
+	sendBend(var.value, var.channel);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const Touch& var) {
-	libpd_aftertouch(var.channel-1, var.value);
+	sendTouch(var.value, var.channel);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const PolyTouch& var) {
-	libpd_polyaftertouch(var.channel-1, var.pitch, var.value);
+	sendPolyTouch(var.pitch, var.value, var.channel);
 	return *this;
 }
 
