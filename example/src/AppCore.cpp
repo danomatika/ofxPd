@@ -173,16 +173,44 @@ void AppCore::keyPressed (int key) {
 		case 'a':
 			playTone(60);
 			break;
-			
-		case 's':
+		case 'w':
 			playTone(61);
 			break;
-			
-		case 'd':
+		case 's':
 			playTone(62);
 			break;
-			
 		case 'e':
+			playTone(63);
+			break;
+		case 'd':
+			playTone(64);
+			break;
+		case 'f':
+			playTone(65);
+			break;
+		case 't':
+			playTone(66);
+			break;
+		case 'g':
+			playTone(67);
+			break;
+		case 'y':
+			playTone(68);
+			break;
+		case 'h':
+			playTone(69);
+			break;
+		case 'u':
+			playTone(70);
+			break;
+		case 'j':
+			playTone(71);
+			break;
+		case 'k':
+			playTone(72);
+			break;
+			
+		case ' ':
 			if(pd.isSubscribed(*this, "env")) {
 				pd.unsubscribe(*this, "env");
 			}
