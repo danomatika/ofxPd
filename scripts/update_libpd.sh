@@ -19,6 +19,9 @@ rm libpd/pure-data/extra/makefile.subdir
 rm libpd/libpd_wrapper/z_jni.c
 rm libpd/libpd_wrapper/z_jni.h
 
+# copy license
+cp -v libpd/LICENSE.txt ../src/pd
+
 # copy sources
 cp -Rv libpd/pure-data ../src/pd
 cp -Rv libpd/libpd_wrapper ../src/pd
