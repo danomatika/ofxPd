@@ -17,11 +17,15 @@ void testApp::setup() {
 	
 	ofBackground(127, 127, 127);
 	
+	// the number if libpd ticks per buffer,
+	// used to compute the audio buffer len: tpb * blocksize (always 64)
+	int ticksPerBuffer = 8;	// 8 * 64 = buffer len of 1024
+	
 	// setup the app core
-	core.setup(2, 0, 44100, 8);
+	core.setup(2, 1, 44100, ticksPerBuffer);
 	
 	// setup OF sound stream
-	ofSoundStreamSetup(2, 0, this, 44100, ofxPd::getBlockSize()*8, 2);
+	ofSoundStreamSetup(2, 1, this, 44100, ofxPd::getBlockSize()*ticksPerBuffer, 3);
 }
 
 //--------------------------------------------------------------

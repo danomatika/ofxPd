@@ -24,6 +24,16 @@ class ofxPd {
 		virtual ~ofxPd();
         
         /// initialize resources
+		///
+		/// set the audio latency by setting the libpd ticks per buffer:
+		/// ticks per buffer * lib pd block size (always 64)
+		///
+		/// ie 4 ticks per buffer * 64 = buffer len of 512
+		///
+		/// the lower the number of ticks, the faster the audio processing
+		/// if you experience audio dropouts (audible clicks), increase the
+		/// ticks per buffer
+		///
 		bool init(const int numOutChannels, const int numInChannels,
 				  const int sampleRate, const int ticksPerBuffer=32);
         
@@ -262,6 +272,7 @@ class ofxPd {
 		bool bPdInited;						///< is pd inited?
 
 		int sampleRate;						///< the audio sample rate
+		int ticksPerBuffer;					///< how many pd blocks per buffer frame
 		int numInChannels, numOutChannels;	///< number of channels in/out
 		float *inputBuffer;  				///< interleaved input audio buffer
 		

@@ -37,11 +37,12 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 	clear();
 	
 	this->sampleRate = sampleRate;
+	this->ticksPerBuffer = ticksPerBuffer;
 	this->numInChannels = numInChannels;
 	this->numOutChannels = numOutChannels;
 	
 	// allocate buffers
-	inputBuffer = new float[numInChannels*getBlockSize()];
+	inputBuffer = new float[numInChannels*ticksPerBuffer*getBlockSize()];
 	
 	// attach callbacks
 	libpd_printhook = (t_libpd_printhook) _print;
@@ -93,6 +94,7 @@ void ofxPd::clear() {
 	bPdInited = false;
 	
 	sampleRate = 0;
+	ticksPerBuffer = 0;
 	numInChannels = 0;
 	numOutChannels = 0;
 	inputBuffer = NULL;
@@ -851,10 +853,12 @@ int ofxPd::getBlockSize() {
 //----------------------------------------------------------
 void ofxPd::audioIn(float * input, int bufferSize, int nChannels) {
 	
+	cout << "size " << bufferSize << " " << ticksPerBuffer*getBlockSize() << endl;
+	
 	try {
 	_LOCK();
-		if ( inputBuffer )
-			memcpy(inputBuffer, input, bufferSize*nChannels);
+		if(inputBuffer)
+			memcpy(inputBuffer, input, bufferSize*nChannels*sizeof(float));
 	_UNLOCK();
 	}
 	catch (...) {

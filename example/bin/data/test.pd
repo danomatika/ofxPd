@@ -1,4 +1,4 @@
-#N canvas 95 300 337 279 10;
+#N canvas 650 344 337 279 10;
 #X obj 230 242 dac~;
 #N canvas 369 98 675 256 test 0;
 #N canvas 0 22 450 300 (subpatch) 0;
@@ -94,7 +94,7 @@
 #X connect 2 0 3 0;
 #X connect 3 0 1 0;
 #X connect 4 0 5 0;
-#X restore 206 165 pd sines;
+#X restore 229 164 pd sines;
 #N canvas 0 22 296 405 tone 0;
 #X obj 144 237 line~;
 #X obj 56 279 *~;
@@ -134,7 +134,7 @@
 #X connect 14 0 16 0;
 #X connect 15 0 1 0;
 #X connect 17 0 0 0;
-#X restore 273 165 pd tone;
+#X restore 273 193 pd tone;
 #X obj 196 24 r \$0-fromOF;
 #X obj 196 56 print PD dollar zero;
 #X obj 27 22 r fromOF;
@@ -249,6 +249,19 @@
 #X connect 8 0 10 0;
 #X connect 9 0 11 0;
 #X restore 66 179 pd test message;
+#N canvas 554 232 235 238 delay 0;
+#X obj 35 22 inlet~;
+#X obj 35 197 outlet~;
+#X obj 35 167 delread~ \$0-delay1;
+#X obj 35 55 delwrite~ \$0-delay1 5000;
+#X msg 35 137 1000;
+#X obj 35 107 loadbang;
+#X connect 0 0 3 0;
+#X connect 2 0 1 0;
+#X connect 4 0 2 0;
+#X connect 5 0 4 0;
+#X restore 172 191 pd delay;
+#X obj 172 165 adc~;
 #X connect 3 0 0 0;
 #X connect 3 0 0 1;
 #X connect 4 0 0 0;
@@ -262,3 +275,6 @@
 #X connect 10 2 15 0;
 #X connect 12 0 13 0;
 #X connect 13 0 9 0;
+#X connect 16 0 0 0;
+#X connect 16 0 0 1;
+#X connect 17 0 16 0;
