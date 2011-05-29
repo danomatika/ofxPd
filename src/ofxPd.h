@@ -2,9 +2,9 @@
 
 #include <map>
 #include <set>
-#include <z_libpd.h>
 #include <Poco/Mutex.h>
 
+#include "z_libpd.h"
 #include "ofxPdListener.h"
 
 #ifndef HAVE_UNISTD_H
