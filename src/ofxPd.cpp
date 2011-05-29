@@ -852,9 +852,6 @@ int ofxPd::getBlockSize() {
 
 //----------------------------------------------------------
 void ofxPd::audioIn(float * input, int bufferSize, int nChannels) {
-	
-	cout << "size " << bufferSize << " " << ticksPerBuffer*getBlockSize() << endl;
-	
 	try {
 	_LOCK();
 		if(inputBuffer)
@@ -868,7 +865,6 @@ void ofxPd::audioIn(float * input, int bufferSize, int nChannels) {
 }
 
 void ofxPd::audioOut(float * output, int bufferSize, int nChannels) {
-	
 	_LOCK();
 	if(libpd_process_float(inputBuffer, output) != 0) {
 		ofLog(OF_LOG_ERROR, (string) "ofxPd: could not process output buffer, " +
