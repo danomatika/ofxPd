@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2011 Dan Wilcox <danomatika@gmail.com>
+ *
+ * BSD Simplified License.
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
+ *
+ * See https://github.com/danomatika/ofxPd for documentation
+ *
+ * This project uses libpd, copyrighted by Miller Puckette and others using the
+ * "Standard Improved BSD License". See the file "LICENSE.txt" in src/pd.
+ *
+ * See http://gitorious.org/pdlib/pages/Libpd for documentation
+ *
+ */
 #pragma once
 
 #include <map>

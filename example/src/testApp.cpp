@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2011 Dan Wilcox <danomatika@gmail.com>
+ *
+ * BSD Simplified License.
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
+ *
+ * See https://github.com/danomatika/ofxPd for documentation
+ *
+ */
 #include "testApp.h"
 
 #include <Poco/Path.h>
@@ -10,10 +20,10 @@ void testApp::setup() {
 	int ticksPerBuffer = 4;	// 4 * 64 = buffer len of 512
 
 	// setup OF sound stream
-	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlockSize()*ticksPerBuffer, 4);
+	ofSoundStreamSetup(2, 2, this, 96000, ofxPd::getBlockSize()*ticksPerBuffer, 4);
 
 	// setup the app core
-	core.setup(2, 2, 44100, ticksPerBuffer);
+	core.setup(2, 2, 96000, ticksPerBuffer);
 }
 
 //--------------------------------------------------------------

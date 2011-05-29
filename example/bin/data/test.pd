@@ -1,4 +1,4 @@
-#N canvas 650 344 337 279 10;
+#N canvas 650 344 351 307 10;
 #X obj 230 242 dac~;
 #N canvas 369 98 675 256 test 0;
 #N canvas 0 22 450 300 (subpatch) 0;
@@ -262,6 +262,16 @@
 #X connect 5 0 4 0;
 #X restore 172 191 pd delay;
 #X obj 172 165 adc~;
+#N canvas 742 363 375 145 license 0;
+#X text 8 15 Copyright (c) 2011 Dan Wilcox <danomatika@gmail.com>;
+#X text 10 64 For information on usage and redistribution \, and for
+a DISCLAIMER OF ALL WARRANTIES \, see the file \, "LICENSE.txt \, "
+in this distribution.;
+#X text 9 40 BSD Simplified License;
+#X text 10 116 See https://github.com/danomatika/ofxPd for documentation
+;
+#X restore 27 280 pd license;
+#X text 190 282 Dan Wilcox 2011 BSD;
 #X connect 3 0 0 0;
 #X connect 3 0 0 1;
 #X connect 4 0 0 0;

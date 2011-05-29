@@ -1,23 +1,27 @@
 ofxPd: a Pure Data addon
 ===================================
 
-[Dan Wilcox](danomatika.com) 2011
+Copyright (c) [Dan Wilcox](danomatika.com) 2011
+
+BSD Simplified License.
+For information on usage and redistribution, and for a DISCLAIMER OF ALL
+WARRANTIES, see the file, "LICENSE.txt," in this distribution.
+
+See https://github.com/danomatika/ofxPd for documentation
 
 DESCRIPTION
 -----------
 
-ofxPd is an Open Frameworks addon for running an instance of the Pure Data audio enviornment within an OpenFrameworks application.
+ofxPd is an Open Frameworks addon for running an instance of the Pure Data audio enviornment within an OpenFrameworks application. Audio, messages, and [MIDI]() events can be passed to and from pure data patches and the library is thread safe.
 
 [Pure Data](http://pure-data.info/) is a graphical patching enviornment for audio and multimedia (note: the gui and graphics features are not within the scope of this addon) 
 
 [OpenFrameworks](http://www.openframeworks.cc/) is a cross platform open source toolkit for creative coding in C++
 
-WARNING: Code is working, but still being actively developed.
-
 BUILD REQUIREMENTS
 ------------------
 
-To use ofxPd, first you need to download and install Open Frameworks. ofxPdExample-beta.xcodeproj is developed against the latest version of Open Frameworks on github, while ofxPdExample.xcodeproj will work with the 0062 release.
+To use ofxPd, first you need to download and install Open Frameworks. ofxPdExample-beta.xcodeproj is developed against the latest version of Open Frameworks on github, while ofxPdExample.xcodeproj will work with the 0062 release. ofxPdExample-ios-beta.xcodeproj is an iOS project for OF 007 which may or may not build as OF 007 is unstable at the time of this writing.
 
 [github repository])https://github.com/openframeworks/openFrameworks)
 
@@ -94,5 +98,3 @@ Create an account, clone or fork the repo, then request a push/merge.
 
 If you find any bugs or suggestions please log them to GitHub as well.
 
-FUTURE IDEAS/IMPROVEMENTS
--------------------------
