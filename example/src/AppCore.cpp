@@ -38,8 +38,11 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	//pd.subscribe(*this, "toOF");	// listen to "toOF"
 	//pd.unsubscribe(*this);		// don't listen to anything
 	
-	pd.dspOn();
+	// add the data/pd folder to the search path
+	pd.addToSearchPath("pd");
 	
+	// audio processing on
+	pd.dspOn();
 	
 	
 	cout << endl << "BEGIN Patch Test" << endl;

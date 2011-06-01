@@ -58,6 +58,8 @@ class ofxPd {
 		/// \section Search Path
 		
 		/// add to the pd search path
+		/// takes an absolute or relative path (in data folder)
+		/// note: fails silently if path not found
 		void addToSearchPath(const std::string& path);
 		
 		/// clear the current pd search path
@@ -65,7 +67,7 @@ class ofxPd {
 		
 		/// \section Patch
 		
-		/// open a patch, takes a absolute or relative path (in data folder)
+		/// open a patch, takes an absolute or relative path (in data folder)
 		/// returns a Patch object
 		Patch openPatch(const std::string& patch);
 		

@@ -124,8 +124,9 @@ void ofxPd::clear() {
 
 //--------------------------------------------------------------------
 void ofxPd::addToSearchPath(const std::string& path) {
+	Poco::Path fullPath(ofToDataPath(path));
 	_LOCK();
-	libpd_add_to_search_path(path.c_str());
+	libpd_add_to_search_path(fullPath.toString().c_str());
 	_UNLOCK();
 }
 		
