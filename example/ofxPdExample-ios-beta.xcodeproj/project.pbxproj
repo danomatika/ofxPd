@@ -11,6 +11,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		3069A947138AD46A000B9B90 /* test.pd in Resources */ = {isa = PBXBuildFile; fileRef = 3069A946138AD46A000B9B90 /* test.pd */; };
+		306E9D03139709F100C510BA /* test_abs.pd in Resources */ = {isa = PBXBuildFile; fileRef = 306E9D02139709F100C510BA /* test_abs.pd */; };
 		30CE88461392C31200DBF125 /* ofxPd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30CE87D51392C31200DBF125 /* ofxPd.cpp */; };
 		30CE88471392C31200DBF125 /* ofxPdTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30CE87D81392C31200DBF125 /* ofxPdTypes.cpp */; };
 		30CE88481392C31200DBF125 /* s_libpdmidi.c in Sources */ = {isa = PBXBuildFile; fileRef = 30CE87DC1392C31200DBF125 /* s_libpdmidi.c */; };
@@ -155,6 +156,7 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		3069A946138AD46A000B9B90 /* test.pd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.pd; sourceTree = "<group>"; };
+		306E9D02139709F100C510BA /* test_abs.pd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_abs.pd; sourceTree = "<group>"; };
 		30CE87D51392C31200DBF125 /* ofxPd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPd.cpp; sourceTree = "<group>"; };
 		30CE87D61392C31200DBF125 /* ofxPd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPd.h; sourceTree = "<group>"; };
 		30CE87D71392C31200DBF125 /* ofxPdListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPdListener.h; sourceTree = "<group>"; };
@@ -424,6 +426,14 @@
 			name = "core frameworks";
 			sourceTree = "<group>";
 		};
+		306E9D01139709F100C510BA /* pd */ = {
+			isa = PBXGroup;
+			children = (
+				306E9D02139709F100C510BA /* test_abs.pd */,
+			);
+			path = pd;
+			sourceTree = "<group>";
+		};
 		30CE87D41392C31200DBF125 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -675,6 +685,7 @@
 		BB24DD8B10DA77E000E9C588 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				306E9D01139709F100C510BA /* pd */,
 				3069A946138AD46A000B9B90 /* test.pd */,
 				BB24DD8C10DA77E000E9C588 /* Default.png */,
 				BB24DD8D10DA77E000E9C588 /* Icon.png */,
@@ -1018,6 +1029,7 @@
 				30CE885C1392C31200DBF125 /* rev3~-help.pd in Resources */,
 				30CE885D1392C31200DBF125 /* rev3~.pd in Resources */,
 				30CE885E1392C31200DBF125 /* stdout-help.pd in Resources */,
+				306E9D03139709F100C510BA /* test_abs.pd in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
