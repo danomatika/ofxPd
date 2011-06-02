@@ -16,7 +16,8 @@
 void AppCore::setup(const int numOutChannels, const int numInChannels,
 				    const int sampleRate, const int ticksPerBuffer) {
 
-	ofSetFrameRate(30);
+	ofSetFrameRate(60);
+	ofSetVerticalSync(true);
 	//ofSetLogLevel(OF_LOG_VERBOSE);
 	
 	cout << Poco::Path::current() << endl;
@@ -165,10 +166,24 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 //--------------------------------------------------------------
 void AppCore::update() {
 	ofBackground(100, 100, 100);
+	
+	// update scope array from pd
+	pd.readArray("scope", scopeArray);
 }
 
 //--------------------------------------------------------------
-void AppCore::draw() {}
+void AppCore::draw() {
+
+	// draw scope
+	ofSetColor(0, 255, 0);
+	ofSetRectMode(OF_RECTMODE_CENTER);
+	float x = 0, y = ofGetHeight()/2;
+	float w = ofGetWidth() / (float) scopeArray.size(), h = ofGetHeight()/2;
+	for(int i = 0; i < scopeArray.size()-1; ++i) {
+		ofLine(x, y+scopeArray[i]*h, x+w, y+scopeArray[i+1]*h);
+		x += w;
+	}
+}
 
 //--------------------------------------------------------------
 void AppCore::exit() {}

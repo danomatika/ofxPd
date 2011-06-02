@@ -54,4 +54,5 @@ class AppCore : public ofxPdListener {
 		void midiByteReceived(const int port, const int byte);
 		
 		ofxPd pd;
+		vector<float> scopeArray;
 };
