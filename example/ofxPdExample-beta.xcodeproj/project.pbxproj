@@ -1030,7 +1030,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					../../../libs/glew/include/GL,
+					../../../libs/glew/include,
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"../../../libs/openFrameworks/**",
 					../../../libs/freetype/include/,
@@ -1180,7 +1180,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					../../../libs/glew/include/GL,
+					../../../libs/glew/include,
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"../../../libs/openFrameworks/**",
 					../../../libs/freetype/include/,
@@ -1252,7 +1252,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					../../../libs/glew/include/GL,
+					../../../libs/glew/include,
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"../../../libs/openFrameworks/**",
 					../../../libs/freetype/include/,
