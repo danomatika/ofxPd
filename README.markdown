@@ -52,6 +52,14 @@ you need to change the Base SDK to 10.6: Project > Edit Project Settings
 
 RtAudio will hang on app exit in OF 0062. The only way to fix this is to make a small edit to the OF 0062 core by editing `/lib/openFrameworks/sound/ofSoundStream.cpp` and commenting line 143 so close() is not called.
 
+### Notes
+
+#### Sample Rate
+
+The sample rate is set to 44100 when initializing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
+
+For example: The default sample rate on Mac OSX is 96000. Running the app at 44100 results in double the playback pitch while initing ofxPd at 96000 gives the correct pitch.
+
 ### How to Create a New ofxPd Project
 
 To develop your own project based on ofxPd, simply copy the example project and rename it. You probably want to put it in your apps folder, for example, after copying:
