@@ -1,0 +1,26 @@
+<install>
+    <version>1.0</version>
+    <author>Dan Wilcox</author>
+    <author_website>http://danomatika.com</author_website>
+    <code_url>https://github.com/danomatika/ofxPd</code_url>
+    <site_url>https://github.com/danomatika/ofxPd</site_url>
+    <download_url>https://github.com/danomatika/ofxPd/zipball/master</download_url>
+    <forum_url>http://forum.openframeworks.cc/index.php/topic,6492.0.html</forum_url>
+    <supported_os>
+    		<win>n</win>
+    		<mac>y</mac>
+    		<linux>y</linux>
+    	</supported_os>
+    <has_example>y</has_example>
+    	<description><![CDATA[
+            Run an instance of the Pure Data audio environment within an OF app. Audio, messages, and MIDI events can be passed to and from pure data patches and the library is thread safe.   
+    ]]></description>
+    <add>
+		<include>
+			<path></path>
+		</include>
+		<link>
+			<lib os="win_cb|xcode" compiler="mingw"></lib>
+		</link>
+	</add>
+</install>
