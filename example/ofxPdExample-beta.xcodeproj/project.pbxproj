@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		301C2B3412EAEF7E0050A107 /* PocoFoundation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2427B10CC5B66004149E2 /* PocoFoundation.a */; };
+		303505DF13DD0A7500B19493 /* cairo-script-interpreter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 303505D613DD0A7500B19493 /* cairo-script-interpreter.a */; };
+		303505E013DD0A7500B19493 /* cairo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 303505D713DD0A7500B19493 /* cairo.a */; };
+		303505E113DD0A7500B19493 /* pixman-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 303505D813DD0A7500B19493 /* pixman-1.a */; };
 		30566CA71388085D0011FDF9 /* tess2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30566CA61388085D0011FDF9 /* tess2.a */; };
 		305E222C137B3548000C49E7 /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 307E6255137B156F00E35DAD /* openFrameworksDebug.a */; };
 		30CE875F1392C1F000DBF125 /* ofxPd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30CE86EE1392C1F000DBF125 /* ofxPd.cpp */; };
@@ -138,6 +141,26 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		303505C113DD0A7500B19493 /* cairo-deprecated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-deprecated.h"; sourceTree = "<group>"; };
+		303505C213DD0A7500B19493 /* cairo-features.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-features.h"; sourceTree = "<group>"; };
+		303505C313DD0A7500B19493 /* cairo-pdf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-pdf.h"; sourceTree = "<group>"; };
+		303505C413DD0A7500B19493 /* cairo-ps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-ps.h"; sourceTree = "<group>"; };
+		303505C513DD0A7500B19493 /* cairo-quartz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-quartz.h"; sourceTree = "<group>"; };
+		303505C613DD0A7500B19493 /* cairo-script-interpreter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-script-interpreter.h"; sourceTree = "<group>"; };
+		303505C713DD0A7500B19493 /* cairo-svg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-svg.h"; sourceTree = "<group>"; };
+		303505C813DD0A7500B19493 /* cairo-version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-version.h"; sourceTree = "<group>"; };
+		303505C913DD0A7500B19493 /* cairo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cairo.h; sourceTree = "<group>"; };
+		303505CB13DD0A7500B19493 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
+		303505CC13DD0A7500B19493 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
+		303505CD13DD0A7500B19493 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
+		303505CF13DD0A7500B19493 /* pixman-version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "pixman-version.h"; sourceTree = "<group>"; };
+		303505D013DD0A7500B19493 /* pixman.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pixman.h; sourceTree = "<group>"; };
+		303505D113DD0A7500B19493 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
+		303505D213DD0A7500B19493 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
+		303505D313DD0A7500B19493 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
+		303505D613DD0A7500B19493 /* cairo-script-interpreter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "cairo-script-interpreter.a"; sourceTree = "<group>"; };
+		303505D713DD0A7500B19493 /* cairo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = cairo.a; sourceTree = "<group>"; };
+		303505D813DD0A7500B19493 /* pixman-1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "pixman-1.a"; sourceTree = "<group>"; };
 		30566CA31388085D0011FDF9 /* tesselator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tesselator.h; sourceTree = "<group>"; };
 		30566CA61388085D0011FDF9 /* tess2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = tess2.a; sourceTree = "<group>"; };
 		307E6250137B156F00E35DAD /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -315,12 +338,91 @@
 				301C2B3412EAEF7E0050A107 /* PocoFoundation.a in Frameworks */,
 				EAB6F83212ED94B60025041E /* glew.a in Frameworks */,
 				30566CA71388085D0011FDF9 /* tess2.a in Frameworks */,
+				303505DF13DD0A7500B19493 /* cairo-script-interpreter.a in Frameworks */,
+				303505E013DD0A7500B19493 /* cairo.a in Frameworks */,
+				303505E113DD0A7500B19493 /* pixman-1.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		303505BE13DD0A7500B19493 /* cairo */ = {
+			isa = PBXGroup;
+			children = (
+				303505BF13DD0A7500B19493 /* include */,
+				303505D413DD0A7500B19493 /* lib */,
+			);
+			name = cairo;
+			path = ../../../libs/cairo;
+			sourceTree = SOURCE_ROOT;
+		};
+		303505BF13DD0A7500B19493 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				303505C013DD0A7500B19493 /* cairo */,
+				303505CA13DD0A7500B19493 /* libpng15 */,
+				303505CE13DD0A7500B19493 /* pixman-1 */,
+				303505D113DD0A7500B19493 /* png.h */,
+				303505D213DD0A7500B19493 /* pngconf.h */,
+				303505D313DD0A7500B19493 /* pnglibconf.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		303505C013DD0A7500B19493 /* cairo */ = {
+			isa = PBXGroup;
+			children = (
+				303505C113DD0A7500B19493 /* cairo-deprecated.h */,
+				303505C213DD0A7500B19493 /* cairo-features.h */,
+				303505C313DD0A7500B19493 /* cairo-pdf.h */,
+				303505C413DD0A7500B19493 /* cairo-ps.h */,
+				303505C513DD0A7500B19493 /* cairo-quartz.h */,
+				303505C613DD0A7500B19493 /* cairo-script-interpreter.h */,
+				303505C713DD0A7500B19493 /* cairo-svg.h */,
+				303505C813DD0A7500B19493 /* cairo-version.h */,
+				303505C913DD0A7500B19493 /* cairo.h */,
+			);
+			path = cairo;
+			sourceTree = "<group>";
+		};
+		303505CA13DD0A7500B19493 /* libpng15 */ = {
+			isa = PBXGroup;
+			children = (
+				303505CB13DD0A7500B19493 /* png.h */,
+				303505CC13DD0A7500B19493 /* pngconf.h */,
+				303505CD13DD0A7500B19493 /* pnglibconf.h */,
+			);
+			path = libpng15;
+			sourceTree = "<group>";
+		};
+		303505CE13DD0A7500B19493 /* pixman-1 */ = {
+			isa = PBXGroup;
+			children = (
+				303505CF13DD0A7500B19493 /* pixman-version.h */,
+				303505D013DD0A7500B19493 /* pixman.h */,
+			);
+			path = "pixman-1";
+			sourceTree = "<group>";
+		};
+		303505D413DD0A7500B19493 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				303505D513DD0A7500B19493 /* osx */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		303505D513DD0A7500B19493 /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				303505D613DD0A7500B19493 /* cairo-script-interpreter.a */,
+				303505D713DD0A7500B19493 /* cairo.a */,
+				303505D813DD0A7500B19493 /* pixman-1.a */,
+			);
+			path = osx;
+			sourceTree = "<group>";
+		};
 		30566CA11388085D0011FDF9 /* tess2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -701,6 +803,7 @@
 		E45BEED60E8CCB34009D7055 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				303505BE13DD0A7500B19493 /* cairo */,
 				30566CA11388085D0011FDF9 /* tess2 */,
 				E45BE0480E8CC657009D7055 /* core libraries */,
 				E45BE5980E8CC70C009D7055 /* core frameworks */,
@@ -1054,8 +1157,14 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../libs/glew/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../libs/cairo/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../libs/cairo/lib/vs2010\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../../../libs/cairo/lib/win_cb\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../libs/freeimage/lib/osx\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../libs/fmodex/lib/osx\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../libs/FreeImage/lib/osx\"";
@@ -1204,8 +1313,14 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../libs/freeimage/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/../../../libs/cairo/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/../../../libs/cairo/lib/vs2010\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$(SRCROOT)/../../../libs/cairo/lib/win_cb\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../libs/fmodex/lib/osx\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../libs/FreeImage/lib/osx\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../../libs/glew/lib/osx\"";
@@ -1276,8 +1391,14 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../libs/glew/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../libs/cairo/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../libs/cairo/lib/vs2010\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../../../libs/cairo/lib/win_cb\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../libs/freeimage/lib/osx\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../libs/fmodex/lib/osx\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../libs/FreeImage/lib/osx\"";
