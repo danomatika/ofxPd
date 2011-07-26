@@ -8,7 +8,7 @@ BSD Simplified License.
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "LICENSE.txt," in this distribution.
 
-See https://github.com/danomatika/ofxPd for documentation
+See https://github.com/danomatika/ofxPd for documentation as well as the [OF forum post on ofxPd](http://forum.openframeworks.cc/index.php?topic=6492.0)
 
 DESCRIPTION
 -----------
