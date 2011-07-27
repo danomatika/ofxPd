@@ -10,6 +10,11 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		3035069213DD10FE00B19493 /* freetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3035069113DD10FE00B19493 /* freetype.a */; };
+		3035069413DD110C00B19493 /* freeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3035069313DD110C00B19493 /* freeimage.a */; };
+		303506F113DD13D100B19493 /* cairo-script-interpreter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 303506E813DD13D100B19493 /* cairo-script-interpreter.a */; };
+		303506F213DD13D100B19493 /* cairo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 303506E913DD13D100B19493 /* cairo.a */; };
+		303506F313DD13D100B19493 /* pixman-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 303506EA13DD13D100B19493 /* pixman-1.a */; };
 		3069A947138AD46A000B9B90 /* test.pd in Resources */ = {isa = PBXBuildFile; fileRef = 3069A946138AD46A000B9B90 /* test.pd */; };
 		306E9D03139709F100C510BA /* test_abs.pd in Resources */ = {isa = PBXBuildFile; fileRef = 306E9D02139709F100C510BA /* test_abs.pd */; };
 		30CE88461392C31200DBF125 /* ofxPd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30CE87D51392C31200DBF125 /* ofxPd.cpp */; };
@@ -125,11 +130,9 @@
 		BB47D9141363594C0057C702 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB47D9131363594C0057C702 /* CoreMedia.framework */; };
 		BB47D9161363598C0057C702 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB47D9151363598C0057C702 /* AVFoundation.framework */; };
 		BBE5EAB80F49AD8400F28951 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBE5EAB70F49AD8400F28951 /* AudioToolbox.framework */; };
-		E434BF6512477ED500452519 /* freeimage-iphone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E434BF6412477ED500452519 /* freeimage-iphone.a */; };
-		E434BF7312477FBA00452519 /* freetype-iphone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E434BF7212477FBA00452519 /* freetype-iphone.a */; };
 		E496D5B11252C8210098A2B3 /* glu-iphone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E496D5AF1252C8210098A2B3 /* glu-iphone.a */; };
 		E496D5B21252C8210098A2B3 /* glu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E496D5B01252C8210098A2B3 /* glu.a */; };
-		E49BCC7A12554CD6009F19D0 /* libofxiPhone_macosx_Debug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E49BCC5012554B6A009F19D0 /* libofxiPhone_macosx_Debug.a */; };
+		E49BCC7A12554CD6009F19D0 /* libofxiPhone_iphoneos_Debug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E49BCC5012554B6A009F19D0 /* libofxiPhone_iphoneos_Debug.a */; };
 		E4A823A412561BE3002F86A2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4A823A312561BE3002F86A2 /* CoreGraphics.framework */; };
 /* End PBXBuildFile section */
 
@@ -155,6 +158,28 @@
 		1D6058910D05DD3D006BFB54 /* ofxPdExampleIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ofxPdExampleIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		3035069113DD10FE00B19493 /* freetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = freetype.a; sourceTree = "<group>"; };
+		3035069313DD110C00B19493 /* freeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = freeimage.a; sourceTree = "<group>"; };
+		303506D313DD13D100B19493 /* cairo-deprecated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-deprecated.h"; sourceTree = "<group>"; };
+		303506D413DD13D100B19493 /* cairo-features.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-features.h"; sourceTree = "<group>"; };
+		303506D513DD13D100B19493 /* cairo-pdf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-pdf.h"; sourceTree = "<group>"; };
+		303506D613DD13D100B19493 /* cairo-ps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-ps.h"; sourceTree = "<group>"; };
+		303506D713DD13D100B19493 /* cairo-quartz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-quartz.h"; sourceTree = "<group>"; };
+		303506D813DD13D100B19493 /* cairo-script-interpreter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-script-interpreter.h"; sourceTree = "<group>"; };
+		303506D913DD13D100B19493 /* cairo-svg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-svg.h"; sourceTree = "<group>"; };
+		303506DA13DD13D100B19493 /* cairo-version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cairo-version.h"; sourceTree = "<group>"; };
+		303506DB13DD13D100B19493 /* cairo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cairo.h; sourceTree = "<group>"; };
+		303506DD13DD13D100B19493 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
+		303506DE13DD13D100B19493 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
+		303506DF13DD13D100B19493 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
+		303506E113DD13D100B19493 /* pixman-version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "pixman-version.h"; sourceTree = "<group>"; };
+		303506E213DD13D100B19493 /* pixman.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pixman.h; sourceTree = "<group>"; };
+		303506E313DD13D100B19493 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
+		303506E413DD13D100B19493 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
+		303506E513DD13D100B19493 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
+		303506E813DD13D100B19493 /* cairo-script-interpreter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "cairo-script-interpreter.a"; sourceTree = "<group>"; };
+		303506E913DD13D100B19493 /* cairo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = cairo.a; sourceTree = "<group>"; };
+		303506EA13DD13D100B19493 /* pixman-1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "pixman-1.a"; sourceTree = "<group>"; };
 		3069A946138AD46A000B9B90 /* test.pd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.pd; sourceTree = "<group>"; };
 		306E9D02139709F100C510BA /* test_abs.pd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_abs.pd; sourceTree = "<group>"; };
 		30CE87D51392C31200DBF125 /* ofxPd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPd.cpp; sourceTree = "<group>"; };
@@ -334,8 +359,6 @@
 		DA7851271105C039007EFC90 /* glu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glu.h; sourceTree = "<group>"; };
 		DA7851281105C039007EFC90 /* gluos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gluos.h; sourceTree = "<group>"; };
 		DA9275451387D39B00BA21A9 /* tesselator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tesselator.h; sourceTree = "<group>"; };
-		E434BF6412477ED500452519 /* freeimage-iphone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "freeimage-iphone.a"; path = "../../../libs/FreeImage/lib/iphone/freeimage-iphone.a"; sourceTree = SOURCE_ROOT; };
-		E434BF7212477FBA00452519 /* freetype-iphone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "freetype-iphone.a"; path = "../../../libs/freetype/lib/iphone/freetype-iphone.a"; sourceTree = SOURCE_ROOT; };
 		E496D5AF1252C8210098A2B3 /* glu-iphone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "glu-iphone.a"; path = "../../../libs/glu/lib/iphone/glu-iphone.a"; sourceTree = SOURCE_ROOT; };
 		E496D5B01252C8210098A2B3 /* glu.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = glu.a; path = ../../../libs/glu/lib/iphone/glu.a; sourceTree = SOURCE_ROOT; };
 		E49BCC4812554B69009F19D0 /* iPhone+OF Lib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "iPhone+OF Lib.xcodeproj"; path = "../../../libs/openFrameworksCompiled/project/iphone/iPhone+OF Lib.xcodeproj"; sourceTree = SOURCE_ROOT; };
@@ -347,7 +370,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E49BCC7A12554CD6009F19D0 /* libofxiPhone_macosx_Debug.a in Frameworks */,
+				E49BCC7A12554CD6009F19D0 /* libofxiPhone_iphoneos_Debug.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -360,8 +383,6 @@
 				5E25689910ED26CC00A9501C /* PocoNet.a in Frameworks */,
 				5E25689A10ED26CC00A9501C /* PocoUtil.a in Frameworks */,
 				5E25689B10ED26CC00A9501C /* PocoXML.a in Frameworks */,
-				E434BF6512477ED500452519 /* freeimage-iphone.a in Frameworks */,
-				E434BF7312477FBA00452519 /* freetype-iphone.a in Frameworks */,
 				E496D5B11252C8210098A2B3 /* glu-iphone.a in Frameworks */,
 				E496D5B21252C8210098A2B3 /* glu.a in Frameworks */,
 				E4A823A412561BE3002F86A2 /* CoreGraphics.framework in Frameworks */,
@@ -370,6 +391,11 @@
 				BB47D9141363594C0057C702 /* CoreMedia.framework in Frameworks */,
 				BB47D9161363598C0057C702 /* AVFoundation.framework in Frameworks */,
 				30DF482E13897C4900FBE57C /* tess2.a in Frameworks */,
+				3035069213DD10FE00B19493 /* freetype.a in Frameworks */,
+				3035069413DD110C00B19493 /* freeimage.a in Frameworks */,
+				303506F113DD13D100B19493 /* cairo-script-interpreter.a in Frameworks */,
+				303506F213DD13D100B19493 /* cairo.a in Frameworks */,
+				303506F313DD13D100B19493 /* pixman-1.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,6 +450,82 @@
 				5326AEA710A23A0500278DE6 /* CoreLocation.framework */,
 			);
 			name = "core frameworks";
+			sourceTree = "<group>";
+		};
+		303506D013DD13D100B19493 /* cairo */ = {
+			isa = PBXGroup;
+			children = (
+				303506D113DD13D100B19493 /* include */,
+				303506E613DD13D100B19493 /* lib */,
+			);
+			name = cairo;
+			path = ../../../libs/cairo;
+			sourceTree = SOURCE_ROOT;
+		};
+		303506D113DD13D100B19493 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				303506D213DD13D100B19493 /* cairo */,
+				303506DC13DD13D100B19493 /* libpng15 */,
+				303506E013DD13D100B19493 /* pixman-1 */,
+				303506E313DD13D100B19493 /* png.h */,
+				303506E413DD13D100B19493 /* pngconf.h */,
+				303506E513DD13D100B19493 /* pnglibconf.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		303506D213DD13D100B19493 /* cairo */ = {
+			isa = PBXGroup;
+			children = (
+				303506D313DD13D100B19493 /* cairo-deprecated.h */,
+				303506D413DD13D100B19493 /* cairo-features.h */,
+				303506D513DD13D100B19493 /* cairo-pdf.h */,
+				303506D613DD13D100B19493 /* cairo-ps.h */,
+				303506D713DD13D100B19493 /* cairo-quartz.h */,
+				303506D813DD13D100B19493 /* cairo-script-interpreter.h */,
+				303506D913DD13D100B19493 /* cairo-svg.h */,
+				303506DA13DD13D100B19493 /* cairo-version.h */,
+				303506DB13DD13D100B19493 /* cairo.h */,
+			);
+			path = cairo;
+			sourceTree = "<group>";
+		};
+		303506DC13DD13D100B19493 /* libpng15 */ = {
+			isa = PBXGroup;
+			children = (
+				303506DD13DD13D100B19493 /* png.h */,
+				303506DE13DD13D100B19493 /* pngconf.h */,
+				303506DF13DD13D100B19493 /* pnglibconf.h */,
+			);
+			path = libpng15;
+			sourceTree = "<group>";
+		};
+		303506E013DD13D100B19493 /* pixman-1 */ = {
+			isa = PBXGroup;
+			children = (
+				303506E113DD13D100B19493 /* pixman-version.h */,
+				303506E213DD13D100B19493 /* pixman.h */,
+			);
+			path = "pixman-1";
+			sourceTree = "<group>";
+		};
+		303506E613DD13D100B19493 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				303506E713DD13D100B19493 /* osx */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		303506E713DD13D100B19493 /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				303506E813DD13D100B19493 /* cairo-script-interpreter.a */,
+				303506E913DD13D100B19493 /* cairo.a */,
+				303506EA13DD13D100B19493 /* pixman-1.a */,
+			);
+			path = osx;
 			sourceTree = "<group>";
 		};
 		306E9D01139709F100C510BA /* pd */ = {
@@ -723,7 +825,7 @@
 		BB24DDD110DA784F00E9C588 /* iphone */ = {
 			isa = PBXGroup;
 			children = (
-				E434BF6412477ED500452519 /* freeimage-iphone.a */,
+				3035069313DD110C00B19493 /* freeimage.a */,
 			);
 			path = iphone;
 			sourceTree = "<group>";
@@ -825,7 +927,7 @@
 		BB24DE1210DA785000E9C588 /* iphone */ = {
 			isa = PBXGroup;
 			children = (
-				E434BF7212477FBA00452519 /* freetype-iphone.a */,
+				3035069113DD10FE00B19493 /* freetype.a */,
 			);
 			path = iphone;
 			sourceTree = "<group>";
@@ -868,6 +970,7 @@
 		BB3F144E0F4C6BF200A33527 /* core libraries */ = {
 			isa = PBXGroup;
 			children = (
+				303506D013DD13D100B19493 /* cairo */,
 				5E25686A10ED26BE00A9501C /* poco */,
 				BB24DDCD10DA784F00E9C588 /* FreeImage */,
 				BB24DDDD10DA785000E9C588 /* freetype */,
@@ -925,7 +1028,7 @@
 		E49BCC4912554B69009F19D0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E49BCC5012554B6A009F19D0 /* libofxiPhone_macosx_Debug.a */,
+				E49BCC5012554B6A009F19D0 /* libofxiPhone_iphoneos_Debug.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -993,10 +1096,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		E49BCC5012554B6A009F19D0 /* libofxiPhone_macosx_Debug.a */ = {
+		E49BCC5012554B6A009F19D0 /* libofxiPhone_iphoneos_Debug.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libofxiPhone_macosx_Debug.a;
+			path = libofxiPhone_iphoneos_Debug.a;
 			remoteRef = E49BCC4F12554B6A009F19D0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1173,9 +1276,15 @@
 					"\"$(SRCROOT)/../../../libs/poco/lib/osx\"",
 					"\"$(SRCROOT)/../../../libs/tess2/lib/osx\"",
 					"\"$(SRCROOT)/../../../libs/tess2/lib/iphone\"",
+					"\"$(SRCROOT)/../../../libs/freetype/lib/iphone\"",
+					"\"$(SRCROOT)/../../../libs/FreeImage/lib/iphone\"",
+					"\"$(SRCROOT)/../../../libs/cairo/lib/osx\"",
+					"\"$(SRCROOT)/../../../libs/cairo/lib/vs2010\"",
+					"\"$(SRCROOT)/../../../libs/cairo/lib/win_cb\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
+					"-DUSEAPI_DUMMY",
 					"-DHAVE_UNISTD_H",
 					"-DPD",
 					"-dynamiclib",
@@ -1212,9 +1321,15 @@
 					"\"$(SRCROOT)/../../../libs/poco/lib/osx\"",
 					"\"$(SRCROOT)/../../../libs/tess2/lib/osx\"",
 					"\"$(SRCROOT)/../../../libs/tess2/lib/iphone\"",
+					"\"$(SRCROOT)/../../../libs/freetype/lib/iphone\"",
+					"\"$(SRCROOT)/../../../libs/FreeImage/lib/iphone\"",
+					"\"$(SRCROOT)/../../../libs/cairo/lib/osx\"",
+					"\"$(SRCROOT)/../../../libs/cairo/lib/vs2010\"",
+					"\"$(SRCROOT)/../../../libs/cairo/lib/win_cb\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
+					"-DUSEAPI_DUMMY",
 					"-DHAVE_UNISTD_H",
 					"-DPD",
 					"-dynamiclib",
@@ -1387,9 +1502,15 @@
 					"\"$(SRCROOT)/../../../libs/poco/lib/osx\"",
 					"\"$(SRCROOT)/../../../libs/tess2/lib/osx\"",
 					"\"$(SRCROOT)/../../../libs/tess2/lib/iphone\"",
+					"\"$(SRCROOT)/../../../libs/freetype/lib/iphone\"",
+					"\"$(SRCROOT)/../../../libs/FreeImage/lib/iphone\"",
+					"\"$(SRCROOT)/../../../libs/cairo/lib/osx\"",
+					"\"$(SRCROOT)/../../../libs/cairo/lib/vs2010\"",
+					"\"$(SRCROOT)/../../../libs/cairo/lib/win_cb\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
+					"-DUSEAPI_DUMMY",
 					"-DHAVE_UNISTD_H",
 					"-DPD",
 					"-dynamiclib",
