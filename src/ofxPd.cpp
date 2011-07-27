@@ -31,7 +31,6 @@ ofxPd* pdPtr = NULL;
 #define _LOCK() pdPtr->mutex.lock()
 #define _UNLOCK() pdPtr->mutex.unlock()
 
-
 //--------------------------------------------------------------------
 ofxPd::ofxPd() {
 	pdPtr = this;
@@ -94,6 +93,7 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 			<< " samplerate: " << sampleRate
 			<< " channels in: " << numInChannels
 			<< " out: " << numOutChannels
+			<< " ticks: " << ticksPerBuffer
 			<< " blocksize: " << getBlockSize();
 	ofLog(OF_LOG_VERBOSE, "ofxPd: "+status.str());
 

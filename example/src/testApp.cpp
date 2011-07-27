@@ -17,7 +17,7 @@ void testApp::setup() {
 
 	// the number if libpd ticks per buffer,
 	// used to compute the audio buffer len: tpb * blocksize (always 64)
-	int ticksPerBuffer = 4;	// 4 * 64 = buffer len of 512
+	int ticksPerBuffer = 8;	// 8 * 64 = buffer len of 512
 
 	// setup OF sound stream
 	ofSoundStreamSetup(2, 2, this, 44100, ofxPd::getBlockSize()*ticksPerBuffer, 4);

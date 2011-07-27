@@ -19,21 +19,21 @@ void testApp::setup() {
 	// initialize the accelerometer
 	ofxAccelerometer.setup();
 	
-	//iPhoneAlerts will be sent to this.
+	// iPhoneAlerts will be sent to this
 	ofxiPhoneAlerts.addListener(this);
 	
-	//If you want a landscape oreintation 
-	//iPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
+	// if you want a landscape orientation 
+	// ofxiPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
 	
 	ofBackground(127, 127, 127);
 	
 	// the number if libpd ticks per buffer,
 	// used to compute the audio buffer len: tpb * blocksize (always 64)
-	int ticksPerBuffer = 8;	// 8 * 64 = buffer len of 1024
+	int ticksPerBuffer = 8;	// 8 * 64 = buffer len of 512
 	
 	// setup the app core
 	core.setup(2, 1, 44100, ticksPerBuffer);
-	
+
 	// setup OF sound stream
 	ofSoundStreamSetup(2, 1, this, 44100, ofxPd::getBlockSize()*ticksPerBuffer, 3);
 }
@@ -92,7 +92,6 @@ void testApp::gotMemoryWarning() {
 void testApp::deviceOrientationChanged(int newOrientation) {
 
 }
-
 
 //--------------------------------------------------------------
 void testApp::touchCancelled(ofTouchEventArgs& args) {
