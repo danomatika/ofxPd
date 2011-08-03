@@ -23,7 +23,7 @@
 #include "ofxPdListener.h"
 
 #ifndef HAVE_UNISTD_H
-#pragma warning You need to define HAVE_UNISTD_H in your project build settings!
+#warning You need to define HAVE_UNISTD_H in your project build settings!
 #endif
 
 ///
