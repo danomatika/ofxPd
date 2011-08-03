@@ -23,7 +23,7 @@ USER_LDFLAGS = --export-dynamic
 # use this to add system libraries for example:
 # USER_LIBS = -lpango
 
-USER_LIBS = -ldl -lm
+USER_LIBS = -ldl -lm -ljack
 
 
 # change this to add different compiler optimizations to your project
