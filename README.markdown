@@ -50,7 +50,16 @@ you need to change the Base SDK to 10.6: Project > Edit Project Settings
 
 #### RtAudio Hang on Exit in 0062
 
-RtAudio will hang on app exit in OF 0062. The only way to fix this is to make a small edit to the OF 0062 core by editing `/lib/openFrameworks/sound/ofSoundStream.cpp` and commenting line 143 so close() is not called.
+RtAudio will hang on app exit in OF 0062. The only way to fix this is to make a small edit to the OF 0062 core by editing `lib/openFrameworks/sound/ofSoundStream.cpp` and commenting line 143 so close() is not called.
+
+#### Distorted Sound on iOS in 007
+
+There's a bug in the 007 release that causes disorted sound due to a typo when assigning a pointer. Edit `lib/openFrameworks/sound/ofxiPhoneSoundStream.mm` and change line 171 from
+<pre>soundOutput = soundOutput;</pre>
+to
+<pre>soundOutputPtr = soundOutput;</pre>
+
+Hopefully this will be fixed in the official release soon. [Fix from JonBro](https://github.com/openframeworks/openFrameworks/pull/690).
 
 ### Notes
 
