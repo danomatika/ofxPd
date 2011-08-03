@@ -24,13 +24,13 @@ BUILD REQUIREMENTS
 
 To use ofxPd, first you need to download and install Open Frameworks. ofxPdExample-beta.xcodeproj is developed against the latest version of Open Frameworks on github, while ofxPdExample.xcodeproj will work with the 0062 release. ofxPdExample-ios-beta.xcodeproj is an iOS project for OF 007 which may or may not build as OF 007 is unstable at the time of this writing.
 
-[github repository](https://github.com/openframeworks/openFrameworks)
+[OF github repository](https://github.com/openframeworks/openFrameworks)
 
 Currently, ofxPd is being developed on Mac OSX. You will need to install Xcode from the Mac Developer Tools.
 
 On Linux, you can use the Makefile and/or Codeblocks project files (without the "_win" suffix).
 
-On Win, you will need Codeblocks+MiniGW ([download)](Get Codeblocks from http://www.codeblocks.org/downloads/26)) and the Win Codeblocks OF package ([download](http://www.openframeworks.cc/download)). Use the Codeblocsk projects files with the "_win" suffix. 
+On Win, you will need [Codeblocks+MiniGW](Get Codeblocks from http://www.codeblocks.org/downloads/26) and the [Win Codeblocks OF package](http://www.openframeworks.cc/download). Use the Codeblocsk projects files with the "_win" suffix. 
 
 BUILD AND INSTALLATION
 ----------------------
@@ -120,9 +120,11 @@ You will also need to include some additional C Flags for building the libpd sou
 * edit addons.make in your project folder and add the following line to the end of the file: 
 	<pre>ofxPd</pre>
 * edit config.make in your project folder and change the lines for USER_CFLAGS, USER_LDFLAGS and USER_LIBS to:
-	<pre>USER_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -shared</pre>
-	<pre>USER_LDFLAGS = --export-dynamic</pre>
-	<pre>USER_LIBS = -ldl -lm</pre>
+	<pre>
+	USER_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -shared
+	USER_LDFLAGS = --export-dynamic
+	USER_LIBS = -ldl -lm
+	</pre>
 
 #### For Codeblocks (Win):
 
@@ -135,18 +137,24 @@ You will also need to include some additional C Flags for building the libpd sou
 	* select "Build options..."
 	* make sure the project name is selected in the tree (not release or debug)
 	* select the "Compiler settings" tab, add the following to the "#defines" tab:
-	<pre>HAVE_UNISTD_H</pre>
-	<pre>USEAPI_DUMMY</pre>
-	<pre>MSW</pre>
-	<pre>PD</pre>
-	<pre>PD_INTERNAL</pre>
+	<pre>
+	HAVE_UNISTD_H
+	USEAPI_DUMMY
+	MSW
+	PD
+	PD_INTERNAL
+	</pre>
 	* select the "Search diectories" tab, click add the search paths:
-	<pre>..\..\..\addons\ofxPd\src</pre>
-	<pre>..\..\..\addons\ofxPd\src\pd\pure-data\src</pre>
-	<pre>..\..\..\addons\ofxPd\src\pd\libpd_wrapper</pre>
+	<pre>
+	..\\..\\..\addons\ofxPd\src
+	..\\..\\..\addons\ofxPd\src\pd\pure-data\src
+	..\\..\\..\addons\ofxPd\src\pd\libpd_wrapper
+	</pre>
 	* select the Linker settings" tab, add the following libraries:
-	<pre>m</pre>
-	<pre>pthread</pre>
+	<pre>
+	m
+	pthread
+	</pre>
 	
 DEVELOPING
 ----------
@@ -156,4 +164,3 @@ You can help develop ofxPd on GitHub: [https://github.com/danomatika/ofxPd](http
 Create an account, clone or fork the repo, then request a push/merge.
 
 If you find any bugs or suggestions please log them to GitHub as well.
-
