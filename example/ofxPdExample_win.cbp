@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ofxPdExample" />
+		<Option makefile="makefile" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="src\;" />
+		<Build>
+			<Target title="release">
+				<Option output="bin\$(PROJECT_NAME)" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj\release" />
+				<Option external_deps="..\..\..\libs\openFrameworksCompiled\lib\win_cb\openFrameworks.lib;" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="../../../libs/openFrameworksCompiled/lib/win_cb/openFrameworks.lib" />
+				</Linker>
+			</Target>
+			<Target title="debug">
+				<Option output="bin\$(PROJECT_NAME)_DEBUG" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj\debug\" />
+				<Option external_deps="..\..\..\libs\openFrameworksCompiled\lib\win_cb\openFrameworksDebug.lib;" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="../../../libs/openFrameworksCompiled/lib/win_cb/openFrameworksDebug.lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wno-multichar" />
+			<Add option="-DHAVE_UNISTD_H" />
+			<Add option="-DUSEAPI_DUMMY" />
+			<Add option="-DMSW" />
+			<Add option="-DPD" />
+			<Add option="-DPD_INTERNAL" />
+			<Add directory="..\..\..\libs\glu\include" />
+			<Add directory="..\..\..\libs\freetype\include" />
+			<Add directory="..\..\..\libs\freetype\include\freetype2" />
+			<Add directory="..\..\..\libs\FreeImage\include" />
+			<Add directory="..\..\..\libs\quicktime\include" />
+			<Add directory="..\..\..\libs\rtAudio\include" />
+			<Add directory="..\..\..\libs\fmodex\include" />
+			<Add directory="..\..\..\libs\videoInput\include" />
+			<Add directory="..\..\..\libs\glew\include" />
+			<Add directory="..\..\..\libs\glut\include" />
+			<Add directory="..\..\..\libs\openFrameworks" />
+			<Add directory="..\..\..\libs\openFrameworks\3d" />
+			<Add directory="..\..\..\libs\openFrameworks\app" />
+			<Add directory="..\..\..\libs\openFrameworks\communication" />
+			<Add directory="..\..\..\libs\openFrameworks\events" />
+			<Add directory="..\..\..\libs\openFrameworks\gl" />
+			<Add directory="..\..\..\libs\openFrameworks\graphics" />
+			<Add directory="..\..\..\libs\openFrameworks\math" />
+			<Add directory="..\..\..\libs\openFrameworks\sound" />
+			<Add directory="..\..\..\libs\openFrameworks\types" />
+			<Add directory="..\..\..\libs\openFrameworks\utils" />
+			<Add directory="..\..\..\libs\openFrameworks\video" />
+			<Add directory="..\..\..\libs\poco\include" />
+			<Add directory="..\..\..\libs\tess2\include" />
+			<Add directory="..\..\..\libs\cairo\include\cairo" />
+			<Add directory="..\..\..\addons\ofx3DModelLoader\src" />
+			<Add directory="..\..\..\addons\ofx3DModelLoader\src\3DS" />
+			<Add directory="..\..\..\addons\ofxDirList\src" />
+			<Add directory="..\..\..\addons\ofxNetwork\src" />
+			<Add directory="..\..\..\addons\ofxOpenCv\src" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib\win_cb" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib\osx" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2010" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib\iphone" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib\linux64" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib\android" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib\linux" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib\android\armeabi-v7a" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\lib\android\armeabi" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\objdetect" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ml" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\calib3d" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\features2d" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib" />
+			<Add directory="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy" />
+			<Add directory="..\..\..\addons\ofxOsc\src" />
+			<Add directory="..\..\..\addons\ofxOsc\libs" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\lib" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\include" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\lib\win_cb" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\lib\osx" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\lib\vs2010" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\lib\iphone" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\lib\linux64" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\lib\android" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\lib\linux" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\lib\android\arm7" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\include\ip" />
+			<Add directory="..\..\..\addons\ofxOsc\libs\oscpack\include\osc" />
+			<Add directory="..\..\..\addons\ofxThread\src" />
+			<Add directory="..\..\..\addons\ofxVectorGraphics\src" />
+			<Add directory="..\..\..\addons\ofxVectorGraphics\libs" />
+			<Add directory="..\..\..\addons\ofxVectorMath\src" />
+			<Add directory="..\..\..\addons\ofxXmlSettings\src" />
+			<Add directory="..\..\..\addons\ofxXmlSettings\libs" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\src" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\include" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\win_cb" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\osx" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\vs2010" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\iphone" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\linux64" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\android" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\linux" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\android\armeabi-v7a" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\android\armeabi" />
+			<Add directory="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\include\Compiler" />
+			<Add directory="..\..\..\addons\ofxThreadedImageLoader\src" />
+			<Add directory="..\..\..\addons\ofxPd\src\pd\pure-data\src" />
+			<Add directory="..\..\..\addons\ofxPd\src\pd\libpd_wrapper" />
+			<Add directory="..\..\..\addons\ofxPd\src" />
+		</Compiler>
+		<Linker>
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_legacy220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_haartraining_engine.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_features2d220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_calib3d220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_objdetect220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_imgproc220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_video220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_highgui220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_ml220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_core220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_lapack.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_flann220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_contrib220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libopencv_gpu220.a" />
+			<Add option="../../../addons/ofxOpenCv/libs/opencv/lib/win_cb/libzlib.a" />
+			<Add option="../../../addons/ofxOsc/libs/oscpack/lib/win_cb/oscpack.a" />
+			<Add option="../../../addons/ofxAssimpModelLoader/libs/assimp/lib/win_cb/libassimp.dll" />
+			<Add library="..\..\..\libs\FreeImage\lib\win_cb\FreeImage.lib" />
+			<Add library="..\..\..\libs\rtAudio\lib\win_cb\librtaudio.a" />
+			<Add library="..\..\..\libs\quicktime\lib\win_cb\qtmlClient.lib" />
+			<Add library="..\..\..\libs\cairo\lib\win_cb\libcairo.a" />
+			<Add library="..\..\..\libs\cairo\lib\win_cb\libpixman-1.a" />
+			<Add library="..\..\..\libs\freetype\lib\win_cb\libfreetype.a" />
+			<Add library="..\..\..\libs\glut\lib\win_cb\libglut.a" />
+			<Add library="..\..\..\libs\videoInput\lib\win_cb\videoInputLib.a" />
+			<Add library="..\..\..\libs\fmodex\lib\win_cb\libfmodex.a" />
+			<Add library="..\..\..\libs\glew\lib\win_cb\glew32s.lib" />
+			<Add library="..\..\..\libs\glu\lib\win_cb\glu32.lib" />
+			<Add library="..\..\..\libs\poco\lib\win_cb\libPocoNetmt.a" />
+			<Add library="..\..\..\libs\poco\lib\win_cb\libPocoUtilmt.a" />
+			<Add library="..\..\..\libs\poco\lib\win_cb\libPocoXMLmt.a" />
+			<Add library="..\..\..\libs\poco\lib\win_cb\libPocoFoundationmt.a" />
+			<Add library="..\..\..\libs\tess2\lib\win_cb\libtess2.a" />
+			<Add library="opengl32" />
+			<Add library="gdi32" />
+			<Add library="msimg32" />
+			<Add library="glu32" />
+			<Add library="dsound" />
+			<Add library="winmm" />
+			<Add library="dxguid" />
+			<Add library="strmiids" />
+			<Add library="uuid" />
+			<Add library="ole32" />
+			<Add library="oleaut32" />
+			<Add library="setupapi" />
+			<Add library="wsock32" />
+			<Add library="ws2_32" />
+			<Add library="Iphlpapi" />
+			<Add library="m" />
+			<Add library="pthread" />
+		</Linker>
+		<ExtraCommands>
+			<Add after='xcopy /e /i /y &quot;$(PROJECT_DIR)..\..\..\export\win_cb\*.dll&quot;  &quot;$(PROJECT_DIR)bin&quot;' />
+			<Add after='cmd /c if not exist &quot;$(PROJECT_DIR)bin/data&quot; mkdir &quot;$(PROJECT_DIR)bin/data&quot;' />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="..\..\..\addons\ofxPd\src\ofxPd.cpp" />
+		<Unit filename="..\..\..\addons\ofxPd\src\ofxPd.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\ofxPdListener.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\ofxPdTypes.cpp" />
+		<Unit filename="..\..\..\addons\ofxPd\src\ofxPdTypes.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\s_libpdmidi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\x_libpdreceive.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\x_libpdreceive.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\z_libpd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\z_libpd.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\extra\bonk~\bonk~.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\extra\choice\choice.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\extra\fiddle~\fiddle~.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\extra\loop~\loop~.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\extra\lrshift~\lrshift~.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\extra\pique\pique.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\extra\sigmund~\sigmund~.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\extra\stdout\stdout.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_arithmetic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_array.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_ctl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_dac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_delay.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_fft.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_fft_mayer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_fftroutine.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_global.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_math.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_misc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_osc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_resample.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_soundfile.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_ugen.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_all_guis.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_all_guis.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_array.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_bang.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_canvas.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_canvas.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_editor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_graph.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_guiconnect.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_hdial.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_hslider.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_io.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_mycanvas.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_numbox.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_readwrite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_rtext.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_scalar.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_text.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_toggle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_traversal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_vdial.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_vslider.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_vumeter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_atom.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_binbuf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_class.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_conf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_fixed.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_glob.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_imp.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_memory.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_obj.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_pd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_pd.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_sched.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_audio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_audio_dummy.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_file.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_inter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_loader.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_path.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_print.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_stuff.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_utf8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_utf8.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_acoustics.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_arithmetic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_connective.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_gui.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_interface.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_list.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_midi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_misc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_net.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_qlist.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_time.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\AppCore.cpp">
+			<Option virtualFolder="src\" />
+		</Unit>
+		<Unit filename="src\AppCore.h">
+			<Option virtualFolder="src\" />
+		</Unit>
+		<Unit filename="src\main.cpp">
+			<Option virtualFolder="src\" />
+		</Unit>
+		<Unit filename="src\testApp.cpp">
+			<Option virtualFolder="src\" />
+		</Unit>
+		<Unit filename="src\testApp.h">
+			<Option virtualFolder="src\" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
