@@ -28,7 +28,9 @@ To use ofxPd, first you need to download and install Open Frameworks. ofxPdExamp
 
 Currently, ofxPd is being developed on Mac OSX. You will need to install Xcode from the Mac Developer Tools.
 
-The code should work on other platforms, but requires platform specific project files to be built.
+On Linux, you can use the Makefile and/or Codeblocks project files.
+
+On Win, see the readme in the [feature-codeblocks-win branch](https://github.com/danomatika/ofxPd/tree/feature-codeblocks-win) which is currently being tested. 
 
 BUILD AND INSTALLATION
 ----------------------
