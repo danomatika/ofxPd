@@ -74,7 +74,13 @@ Then after renaming:
 openFrameworks/apps/myApps/myPdProject/
 </pre>
 
-On Mac, rename the project in XCode (do not rename the .xcodeproj file in Finder!): XCode Menu->Project->Rename
+#### For XCode:
+
+Rename the project in XCode (do not rename the .xcodeproj file in Finder!): XCode Menu->Project->Rename
+
+#### For Codeblocks:
+
+Rename the *.cbp and *workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
 
 ### Adding ofxpd to an Existing Project
 
