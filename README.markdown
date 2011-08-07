@@ -171,7 +171,7 @@ In order for the C++ compiler to find the function, we need to add our own decla
 extern "C" {
 	void zexy_setup();
 }
-</pre<
+</pre>
 
 The `extern "C"` keywords tell the compiler to look for a pure C function, not a C++ function. Make sure to include the "Externals.h" header file where you include "ofxPd.h". Add a setup function declaration ofr any other externals that need it here.
 
