@@ -93,7 +93,7 @@ Rename the project in XCode (do not rename the .xcodeproj file in Finder!): XCod
 
 Rename the *.cbp and *workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
 
-### Adding ofxpd to an Existing Project
+### Adding ofxPd to an Existing Project
 
 If you want to add ofxPd to another project, you need to make sure you include the src folder:
 <pre>
@@ -117,6 +117,70 @@ You will also need to include some additional C Flags for building the libpd sou
 	<pre>USER_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -shared</pre>
 	<pre>USER_LDFLAGS = --export-dynamic</pre>
 	<pre>USER_LIBS = -ldl -lm</pre>
+
+### Adding Pure Data external libraries to ofxPd
+
+ofxPd only includes the standard set of Pure Data objects as found in the "Vanilla" version of PD. If you wish to include an external library from Pd-Extended, etc you need to include the source files in your project and call the library setup function after intiializing ofxPd in order to load the lib.
+
+#### Adding external source files
+
+The source files for externals included with Pd-Extended can be found in the Pure Data Subversion repository on Sourceforge. It is recommended that you use the latest Pd-Extended release branch as it will be more stable then the development version. See http://puredata.info/docs/developer/GettingPdSource
+
+For example, if we want to include the zexy external in our project, we first download the sources files for the latest stable Pd-Extended (0.42 as of this writing) from the Subversion repository (make sure you have svn installed):
+<pre>svn checkout https://pure-data.svn.sourceforge.net/svnroot/pure-data/branches/pd-extended/0.42</pre>
+
+The external sources can be found in the `externals` folder. For instance, the zexy sources are in `externals/zexy/src/`. Copy the .h and .c files into your project folder. In my case I create an externals folder in src folder of my project, something like `myProject/src/externals/zexy`. Then add these files to your ofxPd project.
+
+Note: Some libraries may require external libraries of their own and/or special compile time definitions. Make sure you read the build documentation on the external and include these with your project. 
+
+Note: Some special objects included with Pd-Vanilla are not part of the libpd distribution for licensing reasons, mainly expr~, fiddle~, and sigmund~. The sources for these are found with the sources for Pd itself in the `pd/extra` folder in the Subverison repo.
+
+#### Calling the external setup function
+
+In order for libpd to use an external library, the library has to register itself on startup. This accomplished by calling the library's setup function which is named after the library followed by a "_setup" suffix: "library_setup()". The zexy setup function is simply "zexy_setup()". Call this setup function after initializing ofxPd in your app's setup() function:
+<pre>
+	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
+		ofLog(OF_LOG_ERROR, "Could not init pd");
+		OF_EXIT_APP(1);
+	}
+	
+	// load libs
+	zexy_setup();
+</pre>
+
+If all goes well, you should see some sort of print from the library as it initializes:
+<pre>
+[zexy] part of zexy-2.2.3 (compiled: Aug  7 2011)
+	Copyright (l) 1999-2008 IOhannes m zmölnig, forum::für::umläute & IEM
+[&&~] part of zexy-2.2.3 (compiled: Aug  7 2011)
+	Copyright (l) 1999-2008 IOhannes m zmölnig, forum::für::umläute & IEM
+[.] part of zexy-2.2.3 (compiled: Aug  7 2011)
+	Copyright (l) 1999-2008 IOhannes m zmölnig, forum::für::umläute & IEM
+[<~] part of zexy-2.2.3 (compiled: Aug  7 2011)
+...
+...
+...
+</pre>
+
+For C++ and some C libraries, this is all your need. The project should compile and the external load fine. However, some pure C libraries are not written with explicit C++ support in mind and, for arcane reasons best not delved into here, the C++ compiler will not be able to find the library's setup function.  This is the case with zexy and the compiler error looks like this:
+<pre>'zexy_setup' was not declared in this scope</pre>
+
+In order for the C++ compiler to find the function, we need to add our own declaration. This can be done in your app .cpp file, a project header file, etc. In order to keep things organized, I create an "Externals.h" header file and place it in `myProject/src/externals`. Here I declare the zexy_setup function using a special syntax:
+<pre>
+#pragma once
+
+extern "C" {
+	void zexy_setup();
+}
+</pre<
+
+The `extern "C"` keywords tell the compiler to look for a pure C function, not a C++ function. Make sure to include the "Externals.h" header file where you include "ofxPd.h". Add a setup function declaration ofr any other externals that need it here.
+
+#### External library licensing on iOS
+
+Apple's iOS and App Store policies forbid dynamically linking libraries. As such, you cannot include any GPL licensed externals as the GPL expressly requires dynamic linking. Submitting an app using a GPL library, such as expr~, is in violation of the GPL and will most likely result in your app being rejected from distribution in the App Store.
+
+GPL patches, however, are not in violation of GPL distribution policies and can be included. They are not compiled into an application binary and can be replaced by the user.
 
 DEVELOPING
 ----------
