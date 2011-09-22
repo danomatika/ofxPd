@@ -24,13 +24,13 @@ BUILD REQUIREMENTS
 
 To use ofxPd, first you need to download and install Open Frameworks. ofxPdExample-beta.xcodeproj is developed against the latest version of Open Frameworks on github, while ofxPdExample.xcodeproj will work with the 0062 release. ofxPdExample-ios-beta.xcodeproj is an iOS project for OF 007 which may or may not build as OF 007 is unstable at the time of this writing.
 
-[github repository](https://github.com/openframeworks/openFrameworks)
+[OF github repository](https://github.com/openframeworks/openFrameworks)
 
 Currently, ofxPd is being developed on Mac OSX. You will need to install Xcode from the Mac Developer Tools.
 
-On Linux, you can use the Makefile and/or Codeblocks project files.
+On Linux, you can use the Makefile and/or Codeblocks project files (without the "_win" suffix).
 
-On Win, see the readme in the [feature-codeblocks-win branch](https://github.com/danomatika/ofxPd/tree/feature-codeblocks-win) which is currently being tested. 
+On Win, you will need [Codeblocks+MiniGW](Get Codeblocks from http://www.codeblocks.org/downloads/26) and the [Win Codeblocks OF package](http://www.openframeworks.cc/download). Use the Codeblocsk projects files with the "_win" suffix. 
 
 BUILD AND INSTALLATION
 ----------------------
@@ -42,9 +42,9 @@ openframeworks/addons/ofxPd
 
 ### Bugs
 
-#### Undefined basic_ostream
+#### Undefined basic_ostream in XCode
 
-If you get the following [linker error](http://www.openframeworks.cc/forum/viewtopic.php?f=8&t=5344&p=26537&hilit=Undefined+symbol#p26537) in xcode:
+If you get the following [linker error](http://www.openframeworks.cc/forum/viewtopic.php?f=8&t=5344&p=26537&hilit=Undefined+symbol#p26537) in XCode:
 <pre>
 Undefined symbols: "std::basic_ostream<char, std::char_traits<char> ...
 </pre>
@@ -62,6 +62,12 @@ to
 <pre>soundOutputPtr = soundOutput;</pre>
 
 Hopefully this will be fixed in the official release soon. [Fix from JonBro](https://github.com/openframeworks/openFrameworks/pull/690).
+
+#### "verbose" redefinition in Win Codeblocks
+
+Currently, there is a static function in the videinput lib on Win that conflicts with a #define in the Pure Data sources. The easy fix, until the OF core is updated, is to comment out line 115 in `libs\videoInput\include\videoInput.h`.
+
+Note: This change hasn't been tested while using the ofVideoGrabber yet ... there is a slight chance it may cause a crash, be warned.
 
 ### Notes
 
@@ -89,7 +95,7 @@ openFrameworks/apps/myApps/myPdProject/
 
 Rename the project in XCode (do not rename the .xcodeproj file in Finder!): XCode Menu->Project->Rename
 
-#### For Codeblocks:
+#### For Codeblocks (Win & Linux):
 
 Rename the *.cbp and *workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
 
@@ -105,19 +111,51 @@ You will also need to include some additional C Flags for building the libpd sou
 #### For XCode:
 
 * create a new group "ofxPd" * drag these directories from ofxpd into this new group: ofxPd/src & ofxPd/libs
-* add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
+* add a search path to: `../../../addons/ofxPd/src/pd/pure-data/src` under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
 * under Targets->YourApp->Build->Other C Flags (make sure All Configurations and All Settings are selected), add
 	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -dynamiclib -ldl -lm</pre>
 
-#### For Linux:
+#### For Linux (Makefiles & Codeblocks):
 
 * edit addons.make in your project folder and add the following line to the end of the file: 
 	<pre>ofxPd</pre>
 * edit config.make in your project folder and change the lines for USER_CFLAGS, USER_LDFLAGS and USER_LIBS to:
-	<pre>USER_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -shared</pre>
-	<pre>USER_LDFLAGS = --export-dynamic</pre>
-	<pre>USER_LIBS = -ldl -lm</pre>
+	<pre>
+	USER_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -shared
+	USER_LDFLAGS = --export-dynamic
+	USER_LIBS = -ldl -lm
+	</pre>
 
+#### For Codeblocks (Win):
+
+* add the ofxPd sources to the project:
+	* right-click on your project in the project tree
+	* select "Add Files Recursively ..."
+	* navigate and choose the ofxPd/src folder
+* add defines, search paths, and libraries to link:
+	* right-click on your project in the project tree
+	* select "Build options..."
+	* make sure the project name is selected in the tree (not release or debug)
+	* select the "Compiler settings" tab, add the following to the "#defines" tab:
+	<pre>
+	HAVE_UNISTD_H
+	USEAPI_DUMMY
+	MSW
+	PD
+	PD_INTERNAL
+	</pre>
+	* select the "Search diectories" tab, click add the search paths:
+	<pre>
+	..\\..\\..\addons\ofxPd\src
+	..\\..\\..\addons\ofxPd\src\pd\pure-data\src
+	..\\..\\..\addons\ofxPd\src\pd\libpd_wrapper
+	</pre>
+	* select the Linker settings" tab, add the following libraries:
+	<pre>
+	m
+	pthread
+	</pre>
+	
 ### Adding Pure Data external libraries to ofxPd
 
 ofxPd only includes the standard set of Pure Data objects as found in the "Vanilla" version of PD. If you wish to include an external library from Pd-Extended, etc you need to include the source files in your project and call the library setup function after intiializing ofxPd in order to load the lib.
@@ -189,4 +227,3 @@ You can help develop ofxPd on GitHub: [https://github.com/danomatika/ofxPd](http
 Create an account, clone or fork the repo, then request a push/merge.
 
 If you find any bugs or suggestions please log them to GitHub as well.
-
