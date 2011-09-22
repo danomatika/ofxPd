@@ -22,7 +22,7 @@ ofxPd is an Open Frameworks addon for running an instance of the Pure Data audio
 BUILD REQUIREMENTS
 ------------------
 
-To use ofxPd, first you need to download and install Open Frameworks. ofxPdExample-beta.xcodeproj is developed against the latest version of Open Frameworks on github, while ofxPdExample.xcodeproj will work with the 0062 release. ofxPdExample-ios-beta.xcodeproj is an iOS project for OF 007 which may or may not build as OF 007 is unstable at the time of this writing.
+To use ofxPd, first you need to download and install Open Frameworks. Development is against the latest version of Open Frameworks on github. Checkout a tag if you need an earlier version.
 
 [OF github repository](https://github.com/openframeworks/openFrameworks)
 
