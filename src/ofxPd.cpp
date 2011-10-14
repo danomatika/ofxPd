@@ -37,6 +37,7 @@ ofxPd::ofxPd() {
 	bPdInited = false;
 	inputBuffer = NULL;
 	clear();
+    maxMsgLen = 32;
 }
 
 //--------------------------------------------------------------------
@@ -115,6 +116,7 @@ void ofxPd::clear() {
 	inputBuffer = NULL;
 	
 	bMsgInProgress = false;
+    curMsgLen = 0;
 	msgType = LIST;
 	midiPort = 0;
 	_UNLOCK();
@@ -174,7 +176,7 @@ void ofxPd::closePatch(const std::string& patch) {
 	// [; pd-name menuclose 1(
 	string patchname = (string) "pd-"+patch;
 	_LOCK();
-	libpd_start_message();
+	libpd_start_message(maxMsgLen);
 	libpd_add_float(1.0f);
 	libpd_finish_message(patchname.c_str(), "menuclose");
 	_UNLOCK();
@@ -197,7 +199,7 @@ void ofxPd::dspOn() {
 	
 	// [; pd dsp 1(
 	_LOCK();
-	libpd_start_message();
+	libpd_start_message(maxMsgLen);
 	libpd_add_float(1.0f);
 	libpd_finish_message("pd", "dsp");
 	_UNLOCK();
@@ -209,7 +211,7 @@ void ofxPd::dspOff() {
 	
 	// [; pd dsp 0(
 	_LOCK();
-	libpd_start_message();
+	libpd_start_message(maxMsgLen);
 	libpd_add_float(0.0f);
 	libpd_finish_message("pd", "dsp");
 	_UNLOCK();
@@ -419,7 +421,7 @@ void ofxPd::startList(const std::string& dest) {
 	}
 
 	_LOCK();	
-	libpd_start_message();
+	libpd_start_message(maxMsgLen);
 	_UNLOCK();
 	
 	bMsgInProgress = true;
@@ -435,7 +437,7 @@ void ofxPd::startMsg(const std::string& dest, const std::string& msg) {
 	}
 
 	_LOCK();	
-	libpd_start_message();
+	libpd_start_message(maxMsgLen);
 	_UNLOCK();
 	
 	bMsgInProgress = true;
@@ -455,10 +457,16 @@ void ofxPd::addFloat(const float value) {
     	ofLog(OF_LOG_ERROR, "ofxPd: Can not add float, midi message in progress");
 		return;
 	}
+    
+    if(curMsgLen+1 >= maxMsgLen) {
+        ofLog(OF_LOG_ERROR, "ofxPd: Can not add float, max msg len of %d reached", maxMsgLen);
+		return;
+    }
 	
 	_LOCK();
 	libpd_add_float(value);
 	_UNLOCK();
+    curMsgLen++;
 }
 
 void ofxPd::addSymbol(const std::string& symbol) {
@@ -469,13 +477,19 @@ void ofxPd::addSymbol(const std::string& symbol) {
 	}
 	
 	if(msgType != LIST && msgType != MSG) {
-    	ofLog(OF_LOG_ERROR, "ofxPd: Can not add float, midi message in progress");
+    	ofLog(OF_LOG_ERROR, "ofxPd: Can not add symbol, midi message in progress");
 		return;
 	}
 	
+    if(curMsgLen+1 >= maxMsgLen) {
+        ofLog(OF_LOG_ERROR, "ofxPd: Can not add symbol, max msg len of %d reached", maxMsgLen);
+		return;
+    }
+    
 	_LOCK();
 	libpd_add_symbol(symbol.c_str());
 	_UNLOCK();
+    curMsgLen++;
 }
 
 void ofxPd::finish() {
@@ -501,6 +515,7 @@ void ofxPd::finish() {
 	}
 	
 	bMsgInProgress = false;
+    curMsgLen = 0;
 }
 
 //----------------------------------------------------------
@@ -918,6 +933,15 @@ int ofxPd::getBlockSize() {
 	int bs = libpd_blocksize();
 	_UNLOCK();
 	return bs;
+}
+
+//----------------------------------------------------------
+void ofxPd::setMaxMsgLength(unsigned int len) {
+    maxMsgLen = len;
+}
+
+unsigned int ofxPd::getMaxMsgLength() {
+    return maxMsgLen;
 }
 
 //----------------------------------------------------------

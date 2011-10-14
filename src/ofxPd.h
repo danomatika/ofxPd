@@ -311,6 +311,10 @@ class ofxPd {
 		
 		/// get the blocksize of pd (sample length per channel)
 		static int getBlockSize();
+        
+        /// get/set the max length of messages and lists, default: 32
+        void setMaxMsgLength(unsigned int len);
+        unsigned int getMaxMsgLength();
 		
 		/// \section Audio Processing Callbacks
 		
@@ -328,6 +332,8 @@ class ofxPd {
 		float *inputBuffer;  				///< interleaved input audio buffer
 		
 		bool bMsgInProgress;				///< is a compound message being constructed?
+        int maxMsgLen;                      ///< maximum allowed message length
+        int curMsgLen;                      ///< the length of the current message
 		
 		/// compound message status
 		enum MsgType {

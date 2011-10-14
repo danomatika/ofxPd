@@ -22,6 +22,10 @@ void libpd_init(void);
 void libpd_clear_search_path(void);
 void libpd_add_to_search_path(const char *sym);
 
+void *libpd_openfile(const char *basename, const char *dirname);
+void libpd_closefile(void *p);
+int libpd_getdollarzero(void *p);
+
 int libpd_blocksize(void);
 int libpd_init_audio(int inChans, int outChans, int sampleRate, int tpb);
 int libpd_process_raw(float *inBuffer, float *outBuffer);
@@ -37,7 +41,13 @@ int libpd_write_array(const char *dest, int offset, float *src, int n);
 int libpd_bang(const char *recv);
 int libpd_float(const char *recv, float x);
 int libpd_symbol(const char *recv, const char *sym);
-int libpd_start_message(void);
+
+void libpd_set_float(t_atom *v, float x);
+void libpd_set_symbol(t_atom *v, const char *sym);
+int libpd_list(const char *recv, int argc, t_atom *argv);
+int libpd_message(const char *recv, const char *msg, int argc, t_atom *argv);
+
+int libpd_start_message(int max_length);
 void libpd_add_float(float x);
 void libpd_add_symbol(const char *sym);
 int libpd_finish_list(const char *recv);
@@ -47,9 +57,10 @@ int libpd_exists(const char *sym);
 void *libpd_bind(const char *sym);
 void libpd_unbind(void *p);
 
-void *libpd_openfile(const char *basename, const char *dirname);
-void libpd_closefile(void *p);
-int libpd_getdollarzero(void *p);
+#define libpd_is_float(a) ((a).a_type == A_FLOAT)
+#define libpd_is_symbol(a) ((a).a_type == A_SYMBOL)
+#define libpd_get_float(a) ((a).a_w.w_float)
+#define libpd_get_symbol(a) ((a).a_w.w_symbol->s_name)
 
 typedef void (*t_libpd_printhook)(const char *recv);
 typedef void (*t_libpd_banghook)(const char *recv);

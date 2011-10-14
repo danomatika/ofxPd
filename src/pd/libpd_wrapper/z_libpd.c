@@ -18,9 +18,11 @@
 #include "m_imp.h"
 #include "g_all_guis.h"
 
-#define MAXMSGLENGTH 32
-
+/* some missing prototypes... */
 void pd_init(void);
+void inmidi_byte(int, int);
+void inmidi_sysex(int, int);
+void inmidi_realtimein(int, int);
 
 t_libpd_printhook libpd_printhook = NULL;
 t_libpd_banghook libpd_banghook = NULL;
@@ -39,6 +41,9 @@ t_libpd_midibytehook libpd_midibytehook = NULL;
 
 static int ticks_per_buffer;
 
+static t_atom *argv = NULL, *curr;
+static int argm = 0, argc;
+
 static void *get_object(const char *s) {
   t_pd *x = gensym(s)->s_thing;
   return x;
@@ -46,6 +51,7 @@ static void *get_object(const char *s) {
 
 /* this is called instead of sys_main() to start things */
 void libpd_init(void) {
+  libpd_start_message(32); // allocate array for message assembly
   sys_printhook = (t_printhook) libpd_printhook;
   sys_soundin = NULL;
   sys_soundout = NULL;
@@ -92,28 +98,34 @@ int libpd_init_audio(int inChans, int outChans, int sampleRate, int tpb) {
 }
 
 int libpd_process_raw(float *inBuffer, float *outBuffer) {
-  size_t n_in = sys_inchannels*DEFDACBLKSIZE*sizeof(t_float);
-  size_t n_out = sys_outchannels*DEFDACBLKSIZE*sizeof(t_float);
-  memcpy(sys_soundin, inBuffer, n_in);
-  memset(sys_soundout, 0, n_out);
+  size_t n_in = sys_inchannels * DEFDACBLKSIZE;
+  size_t n_out = sys_outchannels * DEFDACBLKSIZE;
+  t_sample *p;
+  size_t i;
+  for (p = sys_soundin, i = 0; i < n_in; i++) {
+    *p++ = *inBuffer++;
+  }
+  memset(sys_soundout, 0, n_out * sizeof(t_sample));
   sched_tick(sys_time + sys_time_per_dsp_tick);
-  memcpy(outBuffer, sys_soundout, n_out);
+  for (p = sys_soundout, i = 0; i < n_out; i++) {
+    *outBuffer++ = *p++;
+  }
   return 0;
 }
 
-static const t_float float_to_short = SHRT_MAX,
-                   short_to_float = 1.0 / (t_float) SHRT_MAX;
+static const t_sample sample_to_short = SHRT_MAX,
+                   short_to_sample = 1.0 / (t_sample) SHRT_MAX;
 
 #define PROCESS(_x, _y) \
   int i, j, k; \
-  t_float *p0, *p1; \
+  t_sample *p0, *p1; \
   for (i = 0; i < ticks_per_buffer; i++) { \
     for (j = 0, p0 = sys_soundin; j < DEFDACBLKSIZE; j++, p0++) { \
       for (k = 0, p1 = p0; k < sys_inchannels; k++, p1 += DEFDACBLKSIZE) { \
         *p1 = *inBuffer++ _x; \
       } \
     } \
-    memset(sys_soundout, 0, sys_outchannels*DEFDACBLKSIZE*sizeof(t_float)); \
+    memset(sys_soundout, 0, sys_outchannels*DEFDACBLKSIZE*sizeof(t_sample)); \
     sched_tick(sys_time + sys_time_per_dsp_tick); \
     for (j = 0, p0 = sys_soundout; j < DEFDACBLKSIZE; j++, p0++) { \
       for (k = 0, p1 = p0; k < sys_outchannels; k++, p1 += DEFDACBLKSIZE) { \
@@ -124,7 +136,7 @@ static const t_float float_to_short = SHRT_MAX,
   return 0;
 
 int libpd_process_short(short *inBuffer, short *outBuffer) {
-  PROCESS(* short_to_float, * float_to_short)
+  PROCESS(* short_to_sample, * sample_to_short)
 }
 
 int libpd_process_float(float *inBuffer, float *outBuffer) {
@@ -144,28 +156,59 @@ int libpd_arraysize(const char *name) {
   return garray_npoints(garray);
 }
 
-#define PDMEMCPY(_x, _y) \
+#define MEMCPY(_x, _y) \
   GETARRAY \
   if (n < 0 || offset < 0 || offset + n > garray_npoints(garray)) return -2; \
-  float *vec = ((float *) garray_vec(garray)) + offset; \
-  memcpy(_x, _y, n * sizeof(float)); \
-  return 0;
+  t_word *vec = ((t_word *) garray_vec(garray)) + offset; \
+  int i; \
+  for (i = 0; i < n; i++) _x = _y;
 
 int libpd_read_array(float *dest, const char *name, int offset, int n) {
-  PDMEMCPY(dest, vec)
+  MEMCPY(*dest++, (vec++)->w_float)
+  return 0;
 }
 
 int libpd_write_array(const char *name, int offset, float *src, int n) {
-  PDMEMCPY(vec, src)
+  MEMCPY(*vec++, (t_word) *src++)
+  return 0;
 }
 
-static t_atom argv[MAXMSGLENGTH], *curr;
-static int argc;
+void libpd_set_float(t_atom *v, float x) {
+  SETFLOAT(v, x);
+}
 
-int libpd_start_message(void) {
+void libpd_set_symbol(t_atom *v, const char *sym) {
+  SETSYMBOL(v, gensym(sym));
+}
+
+int libpd_list(const char *recv, int n, t_atom *v) {
+  t_pd *dest = get_object(recv);
+  if (dest == NULL) return -1;
+  pd_list(dest, &s_list, n, v);
+  return 0;
+}
+
+int libpd_message(const char *recv, const char *msg, int n, t_atom *v) {
+  t_pd *dest = get_object(recv);
+  if (dest == NULL) return -1;
+  pd_typedmess(dest, gensym(msg), n, v);
+  return 0;
+}
+
+int libpd_start_message(int max_length) {
+  if (max_length > argm) {
+    t_atom *v = (t_atom *) malloc(max_length * sizeof(t_atom));
+    if (v) {
+      free(argv);
+      argv = v;
+      argm = max_length;
+    } else {
+      return -1;
+    }
+  }
   argc = 0;
   curr = argv;
-  return MAXMSGLENGTH;
+  return 0;
 }
 
 #define ADD_ARG(f) f(curr, x); curr++; argc++;
@@ -180,17 +223,11 @@ void libpd_add_symbol(const char *s) {
 }
 
 int libpd_finish_list(const char *recv) {
-  t_pd *dest = get_object(recv);
-  if (dest == NULL) return -1;
-  pd_list(dest, &s_list, argc, argv);
-  return 0;
+  return libpd_list(recv, argc, argv);
 }
 
 int libpd_finish_message(const char *recv, const char *msg) {
-  t_pd *dest = get_object(recv);
-  if (dest == NULL) return -1;
-  pd_typedmess(dest, gensym(msg), argc, argv);
-  return 0;
+  return libpd_message(recv, msg, argc, argv);
 }
 
 void *libpd_bind(const char *sym) {
@@ -203,32 +240,23 @@ void libpd_unbind(void *p) {
 
 int libpd_symbol(const char *recv, const char *sym) {
   void *obj = get_object(recv);
-  if (obj != NULL) {
-    pd_symbol(obj, gensym(sym));
-    return 0;
-  } else {
-    return -1;
-  }
+  if (obj == NULL) return -1;
+  pd_symbol(obj, gensym(sym));
+  return 0;
 }
 
 int libpd_float(const char *recv, float x) {
   void *obj = get_object(recv);
-  if (obj != NULL) {
-    pd_float(obj, x);
-    return 0;
-  } else {
-    return -1;
-  }
+  if (obj == NULL) return -1;
+  pd_float(obj, x);
+  return 0;
 }
 
 int libpd_bang(const char *recv) {
   void *obj = get_object(recv);
-  if (obj != NULL) {
-    pd_bang(obj);
-    return 0;
-  } else {
-    return -1;
-  }
+  if (obj == NULL) return -1;
+  pd_bang(obj);
+  return 0;
 }
 
 int libpd_blocksize(void) {
