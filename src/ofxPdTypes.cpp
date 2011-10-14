@@ -110,6 +110,36 @@ void List::addSymbol(const std::string& symbol) {
 	typeString += 's';
 }
 
+List& List::operator<<(const bool var) {
+    addFloat((float) var);
+}
+
+List& List::operator<<(const int var) {
+    addFloat((float) var);
+}
+
+List& List::operator<<(const float var) {
+    addFloat((float) var);
+}
+
+List& List::operator<<(const double var) {
+    addFloat((float) var);
+}
+        
+List& List::operator<<(const char var) {
+    std::string s;
+	s = var;
+	addSymbol(s);
+}
+
+List& List::operator<<(const char* var) {
+    addSymbol((std::string) var);
+}
+
+List& List::operator<<(const std::string& var) {
+    addSymbol((std::string) var);
+}
+
 //----------------------------------------------------------
 const unsigned int List::len() const {
 	return objects.size();

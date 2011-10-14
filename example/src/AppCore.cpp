@@ -83,6 +83,13 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 		pd.addSymbol("a symbol");
 	pd.finish();
 	
+    // send a list using the List object
+    List testList;
+    testList.addFloat(1.23);
+    testList.addSymbol("sent from a List object");
+    pd.sendList("fromOF", testList);
+    pd.sendMsg("fromOF", "msg", testList);
+    
 	cout << "FINISH Message Test" << endl;
 	
 	
@@ -105,7 +112,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	   << StartMidi(1) << 239 << Finish()
 	   << StartSysEx(1) << 239 << Finish()
 	   << StartSysRT(1) << 239 << Finish();
-	
+    
 	cout << "FINISH MIDI Test" << endl;
 	
 	
@@ -290,7 +297,12 @@ void AppCore::listReceived(const std::string& dest, const List& list) {
 		else if(list.isSymbol(i))
 			cout << list.asSymbol(i) << " ";
 	}
+    
+    // you can also use the built in toString function or simply stream it out
+    // cout << list.toString();
+    // cout << list;
 	
+    // print an OSC-style type string
 	cout << list.types() << endl;
 }
 

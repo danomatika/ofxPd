@@ -504,6 +504,60 @@ void ofxPd::finish() {
 }
 
 //----------------------------------------------------------
+void ofxPd::sendList(const std::string& dest, const List& list) {
+    
+    if(bMsgInProgress) {
+    	ofLog(OF_LOG_ERROR, "ofxPd: Can not send list, message in progress");
+		return;
+	}
+
+	_LOCK();	
+	libpd_start_message();
+	_UNLOCK();
+	
+	bMsgInProgress = true;
+	msgType = LIST;
+	msgDest = dest;
+    
+    // step through list
+    for(int i = 0; i < list.len(); ++i) {
+		if(list.isFloat(i))
+			addFloat(list.asFloat(i));
+		else if(list.isSymbol(i))
+			addSymbol(list.asSymbol(i));
+	}
+    
+    finish();
+}
+
+void ofxPd::sendMsg(const std::string& dest, const std::string& msg, const List& list) {
+
+    if(bMsgInProgress) {
+    	ofLog(OF_LOG_ERROR, "ofxPd: Can not send message, message in progress");
+		return;
+	}
+
+	_LOCK();	
+	libpd_start_message();
+	_UNLOCK();
+	
+	bMsgInProgress = true;
+	msgType = MSG;
+	msgDest = dest;
+    msgMsg = msg;
+    
+    // step through list
+    for(int i = 0; i < list.len(); ++i) {
+		if(list.isFloat(i))
+			addFloat(list.asFloat(i));
+		else if(list.isSymbol(i))
+			addSymbol(list.asSymbol(i));
+	}
+    
+    finish();
+}
+
+//----------------------------------------------------------
 void ofxPd::sendNote(const int pitch, const int velocity, const int channel) {
 	_LOCK();
 	libpd_noteon(channel-1, pitch, velocity);

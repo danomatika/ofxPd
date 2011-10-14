@@ -31,6 +31,9 @@
 ///
 ///	references:	http://gitorious.org/pdlib/pages/Libpd
 ///
+/// note: libpd currently does not support multiple states and it is 
+///       suggested that you use only one ofxPd object at a time
+///
 class ofxPd {
 	
 	public :
@@ -143,13 +146,44 @@ class ofxPd {
 		/// pd.addFloat(1.23);
 		/// pd.finish();
 		///
-		/// sends [list hello 1.23( -> [r test]
+		/// sends [list hello 1.23( -> [r test],
+        /// you will need to use the [list trim] object on the reciving end 
 		/// 
+        /// startMsg sends a typed message -> [; test msg1 hello 1.23(
+        ///
+        /// pd.startMsg("test", "msg1");
+        /// pd.addSymbol("hello");
+		/// pd.addFloat(1.23);
+		/// pd.finish();
+        ///
 		void startList(const std::string& dest);
 		void startMsg(const std::string& dest, const std::string& msg);
 		void addFloat(const float value);
 		void addSymbol(const std::string& symbol);
 		void finish();
+        
+        /// compound messages using the ofxPd List type
+        ///
+        /// List list;
+        /// list.addSymbol("hello");
+        /// list.addFloat(1.23);
+        /// pd.sendList("test", list);
+        ///
+        /// sends [list hello 1.23( -> [r test]
+        ///
+        /// clear the list:
+        ///
+        /// list.clear();
+        ///
+        /// stream operators work as well:
+        ///
+        /// list << "hello" << 1.23;
+        /// pd.sendMsg("test", "msg1", list);
+        /// 
+        /// sends a typed message -> [; test msg1 hello 1.23(
+        ///
+        void sendList(const std::string& dest, const List& list);
+        void sendMsg(const std::string& dest, const std::string& msg, const List& list);
 		
 		/// midi
 		///

@@ -88,6 +88,7 @@ class List : public Bang {
 
 	public:
 
+        List() : Bang("") {}
 		List(const std::string& dest) : Bang(dest) {}
 	
 		/// \section Read
@@ -102,10 +103,31 @@ class List : public Bang {
 
 		/// \section Write
 		
-		void addFloat(const float value);
+        /// add elements to the list
+        ///
+        /// List list;
+        /// list.addSymbol("hello");
+        /// list.addFloat(1.23);
+		///
+        void addFloat(const float value);
 		void addSymbol(const std::string& symbol);
+        
+        /// \section Write Stream Interface
+        
+        /// list << "hello" << 1.23;
+        
+        /// add a float to the message
+        List& operator<<(const bool var);
+        List& operator<<(const int var);
+        List& operator<<(const float var);
+        List& operator<<(const double var);
+        
+        /// add a symbol to the message
+        List& operator<<(const char var);
+        List& operator<<(const char* var);
+        List& operator<<(const std::string& var);
 		
-		/// \section Util
+        /// \section Util
 		
 		const unsigned int len() const;		///< number of items
 		const std::string& types() const;	///< OSC style type string ie "fsfs"
