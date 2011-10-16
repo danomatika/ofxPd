@@ -29,7 +29,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
     
     midiChan = 1; // midi channels are 1-16
 	
-	// add recieve source names
+	// bind receive source names
 	pd.bind("toOF");
 	pd.bind("env");
 	
@@ -251,9 +251,11 @@ void AppCore::keyPressed (int key) {
 		case ' ':
 			if(pd.isSubscribed(*this, "env")) {
 				pd.unsubscribe(*this, "env");
+                cout << "unsubscribed from env" << endl;
 			}
 			else {
 				pd.subscribe(*this, "env");
+                cout << "subscribed to env" << endl;
 			}
 			break;
 			

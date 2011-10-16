@@ -87,7 +87,7 @@ class ofxPd {
 		
 		/// turn on/off digital signal processing
         ///
-        /// shortcut for : [; pd dsp 1< & [; pd dsp 0<
+        /// shortcuts for [; pd dsp 1( & [; pd dsp 0(
         ///
 		void dspOn();
 		void dspOff();
@@ -106,7 +106,7 @@ class ofxPd {
 		void bind(const std::string& source);
 		void unbind(const std::string& source);
 		bool isBound(const std::string& source);
-		void unbindAll();	/// listeners will be unsubscribed from *all* sources
+		void unbindAll(); ///< listeners will be unsubscribed from *all* sources
 		
         /// add/remove listener to receive events
 		///

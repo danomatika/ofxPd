@@ -221,7 +221,7 @@ void ofxPd::dspOff() {
 void ofxPd::bind(const std::string& source) {
 
 	if(isBound(source)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: addSource: ignoring duplicate source");
+		ofLog(OF_LOG_WARNING, "ofxPd: bind: ignoring duplicate source");
 		return;
 	}
 	
@@ -235,7 +235,7 @@ void ofxPd::unbind(const std::string& source) {
 	map<string, Source>::iterator iter;
 	iter = sources.find(source);
 	if(iter == sources.end()) {
-		ofLog(OF_LOG_WARNING, "ofxPd: removeSource: ignoring unknown source");
+		ofLog(OF_LOG_WARNING, "ofxPd: unbind: ignoring unknown source");
 		return;
 	}
 	
@@ -310,7 +310,7 @@ void ofxPd::subscribe(ofxPdListener& listener, const std::string& source) {
 	}
 	
 	if(!isBound(source)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown source, call addSource first");
+		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown source, call bind first");
 		return;
 	}
 	
