@@ -143,7 +143,7 @@ void ofxPd::clearSearchPath() {
 //
 //	references http://pocoproject.org/docs/Poco.Path.html
 //
-Patch ofxPd::openFile(const std::string& patch) {
+Patch ofxPd::openPatch(const std::string& patch) {
 
 	Poco::Path path(ofToDataPath(patch));
 	string folder = path.parent().toString();
@@ -153,7 +153,7 @@ Patch ofxPd::openFile(const std::string& patch) {
 		folder.erase(folder.end()-1);
 	}
 	
-	ofLog(OF_LOG_VERBOSE, "ofxPd: Opening file: "+path.getFileName()+
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Opening patch: "+path.getFileName()+
 						  " path: "+folder);
 
 	// [; pd open file folder(
@@ -161,7 +161,7 @@ Patch ofxPd::openFile(const std::string& patch) {
 	void* handle = libpd_openfile(path.getFileName().c_str(), folder.c_str());
 	if(handle == NULL) {
 		_UNLOCK();
-		ofLog(OF_LOG_ERROR, "ofxPd: Opening file \"%s\" failed", path.getFileName().c_str());
+		ofLog(OF_LOG_ERROR, "ofxPd: Opening patch \"%s\" failed", path.getFileName().c_str());
 		return Patch();
 	}
 	int dollarZero = libpd_getdollarzero(handle);
@@ -170,9 +170,9 @@ Patch ofxPd::openFile(const std::string& patch) {
 	return Patch(handle, dollarZero, path.getFileName(), folder);
 }
 
-void ofxPd::closeFile(const std::string& patch) {
+void ofxPd::closePatch(const std::string& patch) {
 
-	ofLog(OF_LOG_VERBOSE, "ofxPd: Closing file: "+patch);
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Closing path: "+patch);
 
 	// [; pd-name menuclose 1(
 	string patchname = (string) "pd-"+patch;
@@ -183,9 +183,9 @@ void ofxPd::closeFile(const std::string& patch) {
 	_UNLOCK();
 }
 
-void ofxPd::closeFile(Patch& patch) {
+void ofxPd::closePatch(Patch& patch) {
 	
-	ofLog(OF_LOG_VERBOSE, "ofxPd: Closing file: "+patch.filename());
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Closing patch: "+patch.filename());
 	
 	_LOCK();
 	libpd_closefile(patch.handle());

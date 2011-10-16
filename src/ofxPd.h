@@ -74,14 +74,14 @@ class ofxPd {
 		
 		/// open a patch file, takes an absolute or relative path (in data folder)
 		/// returns a Patch object
-		pd::Patch openFile(const std::string& patch);
+		pd::Patch openPatch(const std::string& patch);
 		
 		/// close a patch file, takes the patch's basename (filename without extension)
-		void closeFile(const std::string& patch);
+		void closePatch(const std::string& patch);
 		
 		/// close a patch file, takes a patch object
 		/// clears the given Patch object
-		void closeFile(pd::Patch& patch);
+		void closePatch(pd::Patch& patch);
 		
 		/// \section Dsp Control
 		
