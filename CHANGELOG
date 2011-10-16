@@ -1,5 +1,6 @@
 v1.0.0: 2011 Oct
 
+	- added List building & sending
 	- reworked api to match libpd standard api
 		- channel is now first arg in midi functions
 		- port is now first arg in raw midi byte functions
