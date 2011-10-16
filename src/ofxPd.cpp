@@ -695,7 +695,7 @@ ofxPd& ofxPd::operator<<(const int var) {
 			break;
 			
 		case SYSRT:
-			sendSysRTByte(midiPort, var);
+			sendSysRtByte(midiPort, var);
 			break;
 	}
 

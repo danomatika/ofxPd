@@ -107,14 +107,14 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.sendPolyTouch(midiChan, 64, 100);
 	pd.sendMidiByte(0, 239);    // note: pd adds +2 to the port number from [midiin], [sysexin], & [realtimein]
 	pd.sendSysExByte(0, 239);   // so sending to port 0 gives port 2 in pd
-	pd.sendSysRTByte(0, 239);
+	pd.sendSysRtByte(0, 239);
 	
 	// stream
 	pd << Note(midiChan, 60) << Ctl(midiChan, 100, 64) << Pgm(midiChan, 100)
        << Bend(midiChan, 2000) << Touch(midiChan, 100) << PolyTouch(midiChan, 64, 100)
 	   << StartMidi(0) << 239 << Finish()
 	   << StartSysEx(0) << 239 << Finish()
-	   << StartSysRT(0) << 239 << Finish();
+	   << StartSysRt(0) << 239 << Finish();
     
 	cout << "FINISH MIDI Test" << endl;
 	
