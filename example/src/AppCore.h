@@ -55,4 +55,6 @@ class AppCore : public ofxPdListener {
 		
 		ofxPd pd;
 		vector<float> scopeArray;
+        
+        int midiChan;
 };

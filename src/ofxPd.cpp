@@ -527,7 +527,7 @@ void ofxPd::sendList(const std::string& dest, const List& list) {
 	}
 
 	_LOCK();	
-	libpd_start_message();
+	libpd_start_message(list.len());
 	_UNLOCK();
 	
 	bMsgInProgress = true;
@@ -553,7 +553,7 @@ void ofxPd::sendMsg(const std::string& dest, const std::string& msg, const List&
 	}
 
 	_LOCK();	
-	libpd_start_message();
+	libpd_start_message(list.len());
 	_UNLOCK();
 	
 	bMsgInProgress = true;
@@ -573,56 +573,56 @@ void ofxPd::sendMsg(const std::string& dest, const std::string& msg, const List&
 }
 
 //----------------------------------------------------------
-void ofxPd::sendNote(const int pitch, const int velocity, const int channel) {
+void ofxPd::sendNote(const int channel, const int pitch, const int velocity) {
 	_LOCK();
 	libpd_noteon(channel-1, pitch, velocity);
 	_UNLOCK();
 }
 
-void ofxPd::sendCtl(const int control, const int value, int channel) {
+void ofxPd::sendCtl(const int channel, const int control, const int value) {
 	_LOCK();
 	libpd_controlchange(channel-1, control, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendPgm(int program, const int channel) {
+void ofxPd::sendPgm(const int channel, int program) {
 	_LOCK();
-	libpd_programchange(channel-1, program);
+	libpd_programchange(channel-1, program-1);
 	_UNLOCK();
 }
 
-void ofxPd::sendBend(const int value, const int channel) {
+void ofxPd::sendBend(const int channel, const int value) {
 	_LOCK();
 	libpd_pitchbend(channel-1, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendTouch(const int value, const int channel) {
+void ofxPd::sendTouch(const int channel, const int value) {
 	_LOCK();
 	libpd_aftertouch(channel-1, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendPolyTouch(int note, int value, const int channel) {
+void ofxPd::sendPolyTouch(const int channel, int pitch, int value) {
 	_LOCK();
-	libpd_polyaftertouch(channel-1, note, value);
+	libpd_polyaftertouch(channel-1, pitch, value);
 	_UNLOCK();
 }
 
 //----------------------------------------------------------
-void ofxPd::sendMidiByte(const int value, const int port) {
+void ofxPd::sendMidiByte(const int port, const int value) {
 	_LOCK();
 	libpd_midibyte(port, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendSysExByte(const int value, const int port) {
+void ofxPd::sendSysExByte(const int port, const int value) {
 	_LOCK();
 	libpd_sysex(port, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendSysRTByte(const int value, const int port) {
+void ofxPd::sendSysRTByte(const int port, const int value) {
 	_LOCK();
 	libpd_sysrealtime(port, value);
 	_UNLOCK();
@@ -746,22 +746,22 @@ ofxPd& ofxPd::operator<<(const Ctl& var) {
 }
 
 ofxPd& ofxPd::operator<<(const Pgm& var) {
-	sendPgm(var.value, var.channel);
+	sendPgm(var.channel, var.value);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const Bend& var) {
-	sendBend(var.value, var.channel);
+	sendBend(var.channel, var.value);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const Touch& var) {
-	sendTouch(var.value, var.channel);
+	sendTouch(var.channel, var.value);
 	return *this;
 }
 
 ofxPd& ofxPd::operator<<(const PolyTouch& var) {
-	sendPolyTouch(var.pitch, var.value, var.channel);
+	sendPolyTouch(var.channel, var.pitch, var.value);
 	return *this;
 }
 
@@ -1179,12 +1179,12 @@ void ofxPd::_controlchange(int channel, int controller, int value) {
 
 void ofxPd::_programchange(int channel, int value) {
 	channel++;
-	ofLog(OF_LOG_VERBOSE, "ofxPd: program change: %d %d", channel, value);
+	ofLog(OF_LOG_VERBOSE, "ofxPd: program change: %d %d", channel, value+1);
 
 	set<ofxPdListener*>& listeners = pdPtr->listeners;
 	set<ofxPdListener*>::iterator iter;
 	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->pgmReceived(channel, value);
+		(*iter)->pgmReceived(channel, value+1);
 	}
 }
 

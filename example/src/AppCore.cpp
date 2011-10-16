@@ -26,6 +26,8 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 		ofLog(OF_LOG_ERROR, "Could not init pd");
 		OF_EXIT_APP(1);
 	}
+    
+    midiChan = 1; // midi channels are 1-16
 	
 	// add recieve source names
 	pd.addSource("toOF");
@@ -96,22 +98,23 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << endl << "BEGIN MIDI Test" << endl;
 	
 	// send functions
-	pd.sendNote(60);
-	pd.sendCtl(100, 64);
-	pd.sendPgm(100);
-	pd.sendBend(2000);
-	pd.sendTouch(100);
-	pd.sendPolyTouch(64, 100);
-	pd.sendMidiByte(239, 1);
-	pd.sendSysExByte(239, 1);
-	pd.sendSysRTByte(239, 1);
+	pd.sendNote(midiChan, 60);
+	pd.sendCtl(midiChan, 0, 64);
+	pd.sendPgm(midiChan, 100);   // note: pgm num range is 1 - 128
+	pd.sendBend(midiChan, 2000); // note: ofxPd uses -8192 - 8192 while [bendin] returns 0 - 16383,
+                                 // so sending a val of 2000 gives 10192 in pd
+	pd.sendTouch(midiChan, 100);
+	pd.sendPolyTouch(midiChan, 64, 100);
+	pd.sendMidiByte(0, 239);    // note: pd adds +2 to the port number from [midiin], [sysexin], & [realtimein]
+	pd.sendSysExByte(0, 239);   // so sending to port 0 gives port 2 in pd
+	pd.sendSysRTByte(0, 239);
 	
 	// stream
-	pd << Note(60) << Ctl(100, 64) << Bend(2000)
-	   << Touch(100) << PolyTouch(64, 100)
-	   << StartMidi(1) << 239 << Finish()
-	   << StartSysEx(1) << 239 << Finish()
-	   << StartSysRT(1) << 239 << Finish();
+	pd << Note(midiChan, 60) << Ctl(midiChan, 100, 64) << Pgm(midiChan, 100)
+       << Bend(midiChan, 2000) << Touch(midiChan, 100) << PolyTouch(midiChan, 64, 100)
+	   << StartMidi(0) << 239 << Finish()
+	   << StartSysEx(0) << 239 << Finish()
+	   << StartSysRT(0) << 239 << Finish();
     
 	cout << "FINISH MIDI Test" << endl;
 	
@@ -319,6 +322,7 @@ void AppCore::ctlReceived(const int channel, const int controller, const int val
 	cout << "OF: ctl: " << channel << " " << controller << " " << value << endl;
 }
 
+// note: pgm nums are 1-128 to match pd
 void AppCore::pgmReceived(const int channel, const int value) {
 	cout << "OF: pgm: " << channel << " " << value << endl;
 }
@@ -335,6 +339,8 @@ void AppCore::polyTouchReceived(const int channel, const int pitch, const int va
 	cout << "OF: polytouch: " << channel << " " << pitch << " " << value << endl;
 }
 
+// note: pd adds +2 to the port num, so sending to port 3 in pd to [midiout],
+//       shows up at port 1 in ofxPd
 void AppCore::midiByteReceived(const int port, const int byte) {
 	cout << "OF: midibyte: " << port << " " << byte << endl;
 }

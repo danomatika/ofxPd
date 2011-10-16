@@ -83,7 +83,10 @@ class ofxPd {
 		
 		/// \section Dsp Control
 		
-		// turn on/off digital signal processing
+		/// turn on/off digital signal processing
+        ///
+        /// shortcut for : [; pd dsp 1< & [; pd dsp 0<
+        ///
 		void dspOn();
 		void dspOff();
 		
@@ -190,32 +193,39 @@ class ofxPd {
 		/// send midi messages, any out of range messages will be silently ignored
 		///
 		/// number ranges:
+        /// channel		1 - 16 * dev# (dev #0: 1-16, dev #1: 17-32, etc)
 		/// pitch 		0 - 127
 		/// velocity	0 - 127
-		/// channel		1 - 16 * dev# (dev #0: 1-16, dev #1: 17-32, etc)
 		/// control value	0 - 127
-		/// program value	0 - 127
+		/// program value	1 - 128
 		/// bend value		-8192 - 8191
 		/// touch value		0 - 127
 		///
-		/// note: in pd, [bendin] returns a range of 0 - 16383 while [bendout]
-		///       returns a range of -8192 - 8192
-		///
-		void sendNote(const int pitch, const int velocity=64, const int channel=1);
-		void sendCtl(const int controller, const int value, const int channel=1);
-		void sendPgm(const int value, const int channel=1);
-		void sendBend(const int value, const int channel=1);
-		void sendTouch(const int value, const int channel=1);
-		void sendPolyTouch(const int pitch, const int value, const int channel=1);		
+		/// note, in pd:
+        /// [bendin] takes 0 - 16383 while [bendout] returns -8192 - 8192
+		/// [pgmin] and [pgmout] are 1 - 128
+        ///
+		void sendNote(const int channel, const int pitch, const int velocity=64);
+		void sendCtl(const int channel, const int controller, const int value);
+		void sendPgm(const int channel, const int value);
+		void sendBend(const int channel, const int value);
+		void sendTouch(const int channel, const int value);
+		void sendPolyTouch(const int channel, const int pitch, const int value);		
 		
 		/// raw midi bytes
 		///
 		/// value is a raw midi byte value 0 - 255
-		/// port is the raw port audio port #, see http://en.wikipedia.org/wiki/PortMidi 
+		/// port is the raw portmidi port #, similar to a channel
 		///
-		void sendMidiByte(const int value, const int port=0);
-		void sendSysExByte(const int value, const int port=0);
-		void sendSysRTByte(const int value, const int port=0);
+        /// for some reason, [midiin], [sysexin] & [realtimein] add 2 to the port num,
+        /// so sending to port 1 in ofxPd returns port 3 in pd
+        /// 
+        /// however, [midiout], [sysexout], & [realtimeout] do not add to the port num,
+        /// so sending port 1 to [midiout] returns port 1 in ofxPd
+        ///
+		void sendMidiByte(const int port, const int value);
+		void sendSysExByte(const int port, const int value);
+		void sendSysRTByte(const int port, const int value);
 		
 		/// \section Sending Stream Interface
 		

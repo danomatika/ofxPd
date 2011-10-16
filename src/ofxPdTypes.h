@@ -185,8 +185,8 @@ struct Note {
 	const int pitch;	///< pitch (0 - 127)
 	const int velocity;	///< velocity (0 - 127)
 	
-	explicit Note(const int pitch, const int velocity=64, const int channel=1) :
-		pitch(pitch), velocity(velocity), channel(channel) {}
+	explicit Note(const int channel, const int pitch, const int velocity=64) :
+		channel(channel), pitch(pitch), velocity(velocity) {}
 };
 
 /// change a control value aka send a CC message
@@ -196,18 +196,18 @@ struct Ctl {
 	const int controller;	///< controller (0 - 127)
 	const int value;		///< value (0 - 127)
 	
-	explicit Ctl(const int controller, const int value, const int channel=1) :
-		controller(controller), value(value), channel(channel) {}
+	explicit Ctl(const int channel, const int controller, const int value) :
+		channel(channel), controller(controller), value(value) {}
 };
 
 /// change a program value (ie an instrument)
 struct Pgm {
 
 	const int channel;	///< channel (1 - 16 * dev#)
-	const int value;	///< value (0 - 127)
+	const int value;	///< value (1 - 128)
 	
-	explicit Pgm(const int value, const int channel=1) :
-		value(value), channel(channel) {}
+	explicit Pgm(const int channel, const int value) :
+		channel(channel), value(value) {}
 };
 
 /// change the pitch bend value
@@ -216,8 +216,8 @@ struct Bend {
 	const int channel;	///< channel (1 - 16 * dev#)
 	const int value;	///< value (-8192 - 8192)
 	
-	explicit Bend(const int value, const int channel=1) :
-		value(value), channel(channel) {}
+	explicit Bend(const int channel, const int value) :
+		channel(channel), value(value) {}
 };
 
 /// change an aftertouch value
@@ -226,8 +226,8 @@ struct Touch {
 	const int channel;	///< channel (1 - 16 * dev#)
 	const int value;	///< value (0 - 127)
 	
-	explicit Touch(const int value, const int channel=1) :
-		value(value), channel(channel) {}
+	explicit Touch(const int channel, const int value) :
+		channel(channel), value(value) {}
 };
 
 /// change a poly aftertouch value
@@ -237,8 +237,8 @@ struct PolyTouch {
 	const int pitch;	///< controller (0 - 127)
 	const int value;	///< value (0 - 127)
 	
-	explicit PolyTouch(const int pitch, const int value, const int channel=1) :
-		pitch(pitch), value(value), channel(channel) {}
+	explicit PolyTouch(const int channel, const int pitch, const int value) :
+		channel(channel), pitch(pitch), value(value) {}
 };
 
 /// start a raw midi byte stream

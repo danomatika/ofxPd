@@ -1,0 +1,87 @@
+v1.0.0: 2011 Oct
+
+	- reworked api to match libpd standard api
+		- channel is now first arg in midi functions
+		- port is now first arg in raw midi byte functions
+		- pgm num range is now 1-128 to match [pgmin]/[pgmout] (was 0-127)
+
+v0.9.0: 2011 Sep
+
+	- updated to newest libpd
+	- added max message length setting
+	- merged win codeblocks branch
+	- cleaned Xcode projects, removed OF 0062 project
+	- tagged OF 0062 version
+
+v0.8.0: 2011 Aug
+	
+	- added codeblocks project for linux
+	- added branch with codeblocks project for windows
+	- udpated readme with minigw info
+	- added pd external libs tutorial to readme
+
+v0.7.0: 2011 Jun-Jul
+
+	- added path handling to addToSearchPath()
+	- added search path abs test to example
+	- added realtime scope array to example
+	- updated OF 007 project
+	- updated readme and comments
+
+v0.6.0: 2011 May 29
+
+	- added array access
+	- added Patch object
+	- cleaned and updated api tests in example
+	- simplified some api names to match corresponding pd names (midi)
+	- midi channels are now numbered 1-16
+	- added keyboard piano to example
+	- added delay to example
+	- now thread safe on all platforms
+	- added BSD license
+
+v0.5.0: 2011 May 26
+	
+	- added OF 007 iOS project
+	- reorganized example into AppCore
+	- added ticksPerBuffer to init()
+	- updated OF 0062 project
+	- audio out working on iOS
+	- swapped num in and out channel arg order in init() to match ofSoundStream
+	- list and message receiving now working
+
+v0.4.0: 2011 May 22
+
+	- added linux support
+	- added mutex for thread safety on linux (required by rtaudio)
+	- moved libpd sources to src folder
+	- bugfix soundstream hang on exit
+	- message event sources and subscriptions are now working
+
+v0.3.0: 2011 May 18
+
+	- fleshed out entire libpd api
+	- sound in and out working
+	- added stream interface and type structs
+	- added reciving control functions
+	- updated example
+	- bugfix listener bugs and print handling
+
+v0.2.0: 2011 May 13
+	
+	- added libpd source update script
+	- removed 'pd' function name prefix
+	- added midinote callback
+	- added Xcode OF 0062 project
+	- updated Xcode 007 project files
+	- removed need for libpd static lib
+	- bugfix 0062 hangs on exit
+
+v0.1.0:	Initial version 2011 Jan
+
+	- added Xcode OF 007 beta project file
+	- added libpd as a static lib
+	- added message sending functions
+	- added message receiving functions
+	- audio out working
+	- added event listeners

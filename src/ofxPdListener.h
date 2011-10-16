@@ -14,6 +14,7 @@
 
 #include "ofxPdTypes.h"
 
+/// a pd message receiver base class
 class ofxPdListener {
 
 	public:
@@ -31,7 +32,7 @@ class ofxPdListener {
 		/// midi
 		virtual void noteReceived(const int channel, const int pitch, const int velocity) {}
 		virtual void ctlReceived(const int channel, const int controller, const int value) {}
-		virtual void pgmReceived(const int channel, const int value) {}
+		virtual void pgmReceived(const int channel, const int value) {} // note: pgm value is 1-128
 		virtual void bendReceived(const int channel, const int value) {}
 		virtual void touchReceived(const int channel, const int value) {}
 		virtual void polyTouchReceived(const int channel, const int pitch, const int value) {}
