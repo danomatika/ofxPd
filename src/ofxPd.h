@@ -380,7 +380,7 @@ class ofxPd {
 		
 		std::string printMsg;	///< used to build a print message
 		
-		Poco::Mutex mutex;	///< used to lock libpd for thread safety
+		Poco::FastMutex mutex;	///< used to lock libpd for thread safety
 		
 		// libpd static callback functions
 		static void _print(const char* s);
