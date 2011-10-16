@@ -14,6 +14,9 @@
 
 #include "ofxPd.h"
 
+// ofxPd uses a namespace
+using namespace pd;
+
 class AppCore : public ofxPdListener {
 
 	public:

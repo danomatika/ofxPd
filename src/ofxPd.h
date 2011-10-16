@@ -26,6 +26,8 @@
 #warning You need to define HAVE_UNISTD_H in your project build settings!
 #endif
 
+namespace pd {
+
 ///
 ///	a Pure Data instance
 ///
@@ -410,3 +412,5 @@ class ofxPd {
 		
 		static void _midibyte(int port, int byte);
 };
+
+} // namespace

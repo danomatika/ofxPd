@@ -25,6 +25,8 @@
 
 using namespace std;
 
+namespace pd {
+
 // pointer for static member functions
 ofxPd* pdPtr = NULL;
 
@@ -1239,3 +1241,5 @@ void ofxPd::_midibyte(int port, int byte) {
 		(*iter)->midiByteReceived(port, byte);
 	}
 }
+
+} // namespace

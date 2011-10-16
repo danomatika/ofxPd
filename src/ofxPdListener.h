@@ -14,6 +14,8 @@
 
 #include "ofxPdTypes.h"
 
+namespace pd {
+
 /// a pd message receiver base class
 class ofxPdListener {
 
@@ -40,3 +42,5 @@ class ofxPdListener {
 		/// raw midi byte
 		virtual void midiByteReceived(const int port, const int byte) {}
 };
+
+} // namespace

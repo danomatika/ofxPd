@@ -9,6 +9,7 @@ v1.0.0: 2011 Oct
 		- renamed "sysRT" functions to "sysRt"
 		- renamed "getArrayLen" to "getArraySize"
 		- renamed "*Sources" functions to "*bind" functions
+	- wrapped ofxPd objects within a "pd" namespace
 
 v0.9.0: 2011 Sep
 

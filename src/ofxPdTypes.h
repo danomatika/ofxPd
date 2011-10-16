@@ -12,6 +12,8 @@
 
 #include "ofMain.h"
 
+namespace pd {
+
 /// \section ofxPd Patch
 
 class Patch {
@@ -275,3 +277,5 @@ struct StartSysRt {
 struct Finish {
 	explicit Finish() {}
 };
+
+} // namespace

@@ -10,6 +10,8 @@
  */
 #include "ofxPdTypes.h"
 	
+namespace pd {
+    
 /// PATCH
 //----------------------------------------------------------
 Patch::Patch() : _handle(NULL), _dollarZero(0), _dollarZeroStr("0"),
@@ -172,4 +174,6 @@ std::string List::toString() const {
 std::ostream& operator<<(std::ostream& os, const List& from) {
 	return os << from.toString();
 }
+
+} // namespace
 		
