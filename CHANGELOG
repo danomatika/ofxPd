@@ -4,6 +4,8 @@ v1.0.0: 2011 Oct
 		- channel is now first arg in midi functions
 		- port is now first arg in raw midi byte functions
 		- pgm num range is now 1-128 to match [pgmin]/[pgmout] (was 0-127)
+		- destination names are now set when finishing compound messages
+		- renamed "sysRT" functions to "sysRt"
 
 v0.9.0: 2011 Sep
 

@@ -613,7 +613,7 @@ void ofxPd::sendSysExByte(const int port, const int value) {
 	_UNLOCK();
 }
 
-void ofxPd::sendSysRTByte(const int port, const int value) {
+void ofxPd::sendSysRtByte(const int port, const int value) {
 	_LOCK();
 	libpd_sysrealtime(port, value);
 	_UNLOCK();
@@ -790,7 +790,7 @@ ofxPd& ofxPd::operator<<(const StartSysEx& var) {
 	return *this;
 }
 
-ofxPd& ofxPd::operator<<(const StartSysRT& var) {
+ofxPd& ofxPd::operator<<(const StartSysRt& var) {
 
 	if(bMsgInProgress) {
 		ofLog(OF_LOG_ERROR, "ofxPd: Can not start SysRealtime stream, message in progress");

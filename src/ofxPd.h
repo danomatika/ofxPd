@@ -227,7 +227,7 @@ class ofxPd {
         ///
 		void sendMidiByte(const int port, const int value);
 		void sendSysExByte(const int port, const int value);
-		void sendSysRTByte(const int port, const int value);
+		void sendSysRtByte(const int port, const int value);
 		
 		/// \section Sending Stream Interface
 		
@@ -280,7 +280,7 @@ class ofxPd {
 		///
 		ofxPd& operator<<(const StartMidi& var);
 		ofxPd& operator<<(const StartSysEx& var);
-		ofxPd& operator<<(const StartSysRT& var);
+		ofxPd& operator<<(const StartSysRt& var);
         ofxPd& operator<<(const Finish& var);
 		
 		/// is a message or byte stream currently in progress?

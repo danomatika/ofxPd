@@ -264,11 +264,11 @@ struct StartSysEx {
 };
 
 /// start a sys realtime byte stream
-struct StartSysRT {
+struct StartSysRt {
 
 	const int port; 	///< raw portmidi port
 	
-	explicit StartSysRT(const int port=0) : port(port) {}
+	explicit StartSysRt(const int port=0) : port(port) {}
 };
 
 /// finish a midi byte stream
