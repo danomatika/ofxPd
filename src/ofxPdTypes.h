@@ -159,19 +159,25 @@ class List : public Bang {
 		std::vector<MsgObject> objects;	///< list objects
 };
 
-/// start a list
-struct StartList : public Bang {
+/// start a compound message
+struct StartMsg {
     explicit
-		StartList(const std::string& dest) : Bang(dest) {}
+        StartMsg() {}
 };
 
-/// start a typed message
-struct StartMsg : public Bang {
+/// finish a compound message as a list
+struct FinishList : public Bang {
+    explicit
+		FinishList(const std::string& dest) : Bang(dest) {}
+};
+
+/// finish a compound message as a typed message
+struct FinishMsg : public Bang {
 
 	const std::string msg; ///< target msg at the dest
 
     explicit
-		StartMsg(const std::string& dest, const std::string& msg) :
+		FinishMsg(const std::string& dest, const std::string& msg) :
 			Bang(dest), msg(msg) {}
 };
 
@@ -265,11 +271,7 @@ struct StartSysRT {
 	explicit StartSysRT(const int port=0) : port(port) {}
 };
 
-///
-/// ofxPd stream interface endcap
-///
-
-/// finish the current compound message
+/// finish a midi byte stream
 struct Finish {
 	explicit Finish() {}
 };

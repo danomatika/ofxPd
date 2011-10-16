@@ -74,16 +74,16 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.sendSymbol("fromOF", "test string");
 	
 	// send a list
-	pd.startList("fromOF");
+	pd.startMsg();
 		pd.addFloat(1.23);
 		pd.addSymbol("a symbol");
-	pd.finish();
+	pd.finishList("fromOF");
 	
 	// send a message to the $0 reciever ie $0-toOF
-	pd.startList(patch.dollarZeroStr()+"-fromOF");
+	pd.startMsg();
 		pd.addFloat(1.23);
 		pd.addSymbol("a symbol");
-	pd.finish();
+	pd.finishList(patch.dollarZeroStr()+"-fromOF");
 	
     // send a list using the List object
     List testList;
@@ -166,10 +166,10 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	// play a tone by sending a list
 	// [list tone pitch 72 (
-	pd.startList("tone");
+	pd.startMsg();
 		pd.addSymbol("pitch");
 		pd.addFloat(72);
-	pd.finish();
+	pd.finishList("tone");
 	pd.sendBang("tone");
 }
 
@@ -200,7 +200,7 @@ void AppCore::exit() {}
 
 //--------------------------------------------------------------
 void AppCore::playTone(int pitch) {
-	pd << StartList("tone") << "pitch" << pitch << Finish() << Bang("tone");
+	pd << StartMsg() << "pitch" << pitch << FinishList("tone") << Bang("tone");
 }
 
 //--------------------------------------------------------------

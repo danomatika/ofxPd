@@ -41,6 +41,8 @@ class ofxPd {
 		ofxPd();
 		virtual ~ofxPd();
         
+        /// \section Initializing Pd
+        
         /// initialize resources
 		///
 		/// set the audio latency by setting the libpd ticks per buffer:
@@ -58,7 +60,7 @@ class ofxPd {
         /// clear resources
         void clear();
 		
-		/// \section Search Path
+		/// \section Adding Search Paths
 		
 		/// add to the pd search path
 		/// takes an absolute or relative path (in data folder)
@@ -68,7 +70,7 @@ class ofxPd {
 		/// clear the current pd search path
 		void clearSearchPath();
 		
-		/// \section Patch
+		/// \section Opening Patches
 		
 		/// open a patch file, takes an absolute or relative path (in data folder)
 		/// returns a Patch object
@@ -144,26 +146,26 @@ class ofxPd {
 		
 		/// compound messages
 		///
-		/// pd.startList("test");	// "test" is the reciever name in pd
+		/// pd.startMsg();
 		/// pd.addSymbol("hello");
 		/// pd.addFloat(1.23);
-		/// pd.finish();
+		/// pd.finishList("test");  // "test" is the reciever name in pd
 		///
 		/// sends [list hello 1.23( -> [r test],
         /// you will need to use the [list trim] object on the reciving end 
 		/// 
-        /// startMsg sends a typed message -> [; test msg1 hello 1.23(
+        /// finishMsg sends a typed message -> [; test msg1 hello 1.23(
         ///
-        /// pd.startMsg("test", "msg1");
+        /// pd.startMsg();
         /// pd.addSymbol("hello");
 		/// pd.addFloat(1.23);
-		/// pd.finish();
+		/// pd.finishMsg("test", "msg1");
         ///
-		void startList(const std::string& dest);
-		void startMsg(const std::string& dest, const std::string& msg);
+		void startMsg();
 		void addFloat(const float value);
 		void addSymbol(const std::string& symbol);
-		void finish();
+		void finishList(const std::string& dest);
+        void finishMsg(const std::string& dest, const std::string& msg);
         
         /// compound messages using the ofxPd List type
         ///
@@ -241,10 +243,11 @@ class ofxPd {
 		
 		/// compound messages
 		///
-		/// pd << StartList("test") << 100 << 1.2 << "a symbol" << Finish();
+		/// pd << StartMsg() << 100 << 1.2 << "a symbol" << FinishList("test");
 		///
-		ofxPd& operator<<(const StartList& var);
 		ofxPd& operator<<(const StartMsg& var);
+        ofxPd& operator<<(const FinishList& var);
+        ofxPd& operator<<(const FinishMsg& var);
         
 		/// add a float to the message
 		ofxPd& operator<<(const bool var);
@@ -278,11 +281,9 @@ class ofxPd {
 		ofxPd& operator<<(const StartMidi& var);
 		ofxPd& operator<<(const StartSysEx& var);
 		ofxPd& operator<<(const StartSysRT& var);
-		
-		/// finish a compound message or byte stream
         ofxPd& operator<<(const Finish& var);
 		
-		/// is a message currently in progress?
+		/// is a message or byte stream currently in progress?
         inline bool isMsgInProgress() {return bMsgInProgress;}
 		
 		/// \section Array Access
@@ -347,15 +348,12 @@ class ofxPd {
 		
 		/// compound message status
 		enum MsgType {
-			LIST,
 			MSG,
 			MIDI,
 			SYSEX,
 			SYSRT
 		} msgType;
 		
-		std::string msgDest;	///< message destination
-		std::string msgMsg;		///< message target message
 		int midiPort;			///< target midi port
 	
 		/// a receiving sources's pointer and bound listeners

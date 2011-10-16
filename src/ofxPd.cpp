@@ -117,7 +117,7 @@ void ofxPd::clear() {
 	
 	bMsgInProgress = false;
     curMsgLen = 0;
-	msgType = LIST;
+	msgType = MSG;
 	midiPort = 0;
 	_UNLOCK();
 
@@ -413,23 +413,7 @@ void ofxPd::sendSymbol(const std::string& dest, const std::string& symbol) {
 }
 
 //----------------------------------------------------------
-void ofxPd::startList(const std::string& dest) {
-	
-	if(bMsgInProgress) {
-    	ofLog(OF_LOG_ERROR, "ofxPd: Can not start list, message in progress");
-		return;
-	}
-
-	_LOCK();	
-	libpd_start_message(maxMsgLen);
-	_UNLOCK();
-	
-	bMsgInProgress = true;
-	msgType = LIST;
-	msgDest = dest;
-}
-
-void ofxPd::startMsg(const std::string& dest, const std::string& msg) {
+void ofxPd::startMsg() {
 	
 	if(bMsgInProgress) {
     	ofLog(OF_LOG_ERROR, "ofxPd: Can not start message, message in progress");
@@ -441,9 +425,7 @@ void ofxPd::startMsg(const std::string& dest, const std::string& msg) {
 	_UNLOCK();
 	
 	bMsgInProgress = true;
-	msgType = MSG;
-	msgDest = dest;
-	msgMsg = msg;
+    msgType = MSG;
 }
 
 void ofxPd::addFloat(const float value) {
@@ -453,8 +435,8 @@ void ofxPd::addFloat(const float value) {
 		return;
 	}
 	
-	if(msgType != LIST && msgType != MSG) {
-    	ofLog(OF_LOG_ERROR, "ofxPd: Can not add float, midi message in progress");
+	if(msgType != MSG) {
+    	ofLog(OF_LOG_ERROR, "ofxPd: Can not add float, midi byte stream in progress");
 		return;
 	}
     
@@ -476,8 +458,8 @@ void ofxPd::addSymbol(const std::string& symbol) {
 		return;
 	}
 	
-	if(msgType != LIST && msgType != MSG) {
-    	ofLog(OF_LOG_ERROR, "ofxPd: Can not add symbol, midi message in progress");
+	if(msgType != MSG) {
+    	ofLog(OF_LOG_ERROR, "ofxPd: Can not add symbol, midi byte stream in progress");
 		return;
 	}
 	
@@ -492,27 +474,41 @@ void ofxPd::addSymbol(const std::string& symbol) {
     curMsgLen++;
 }
 
-void ofxPd::finish() {
+void ofxPd::finishList(const std::string& dest) {
+
+	if(!bMsgInProgress) {
+    	ofLog(OF_LOG_ERROR, "ofxPd: Can not finish list, message not in progress");
+		return;
+	}
+	
+    if(msgType != MSG) {
+        ofLog(OF_LOG_ERROR, "ofxPd: Can not finish list, midi byte stream in progress");
+		return;
+    }
+    
+    _LOCK();
+    libpd_finish_list(dest.c_str());
+    _UNLOCK();
+	
+	bMsgInProgress = false;
+    curMsgLen = 0;
+}
+
+void ofxPd::finishMsg(const std::string& dest, const std::string& msg) {
 
 	if(!bMsgInProgress) {
     	ofLog(OF_LOG_ERROR, "ofxPd: Can not finish message, message not in progress");
 		return;
 	}
 	
-	switch(msgType) {
-		
-		case LIST:
-			_LOCK();
-			libpd_finish_list(msgDest.c_str());
-			_UNLOCK();
-			break;
-		
-		case MSG:
-			_LOCK();
-			libpd_finish_message(msgDest.c_str(), msgMsg.c_str());
-			_UNLOCK();
-			break;
-	}
+    if(msgType != MSG) {
+        ofLog(OF_LOG_ERROR, "ofxPd: Can not finish message, midi byte stream in progress");
+		return;
+    }
+    
+    _LOCK();
+    libpd_finish_message(dest.c_str(), msg.c_str());
+    _UNLOCK();
 	
 	bMsgInProgress = false;
     curMsgLen = 0;
@@ -531,8 +527,6 @@ void ofxPd::sendList(const std::string& dest, const List& list) {
 	_UNLOCK();
 	
 	bMsgInProgress = true;
-	msgType = LIST;
-	msgDest = dest;
     
     // step through list
     for(int i = 0; i < list.len(); ++i) {
@@ -542,7 +536,7 @@ void ofxPd::sendList(const std::string& dest, const List& list) {
 			addSymbol(list.asSymbol(i));
 	}
     
-    finish();
+    finishList(dest);
 }
 
 void ofxPd::sendMsg(const std::string& dest, const std::string& msg, const List& list) {
@@ -557,9 +551,6 @@ void ofxPd::sendMsg(const std::string& dest, const std::string& msg, const List&
 	_UNLOCK();
 	
 	bMsgInProgress = true;
-	msgType = MSG;
-	msgDest = dest;
-    msgMsg = msg;
     
     // step through list
     for(int i = 0; i < list.len(); ++i) {
@@ -569,7 +560,7 @@ void ofxPd::sendMsg(const std::string& dest, const std::string& msg, const List&
 			addSymbol(list.asSymbol(i));
 	}
     
-    finish();
+    finishMsg(dest, msg);
 }
 
 //----------------------------------------------------------
@@ -666,13 +657,18 @@ ofxPd& ofxPd::operator<<(const Symbol& var) {
 }
 
 //----------------------------------------------------------
-ofxPd& ofxPd::operator<<(const StartList& var) {
-	startList(var.dest);
+ofxPd& ofxPd::operator<<(const StartMsg& var) {
+	startMsg();
     return *this;
 }
 
-ofxPd& ofxPd::operator<<(const StartMsg& var) {
-	startMsg(var.dest, var.msg);
+ofxPd& ofxPd::operator<<(const FinishList& var) {
+	finishList(var.dest);
+    return *this;
+}
+
+ofxPd& ofxPd::operator<<(const FinishMsg& var) {
+	finishMsg(var.dest, var.msg);
     return *this;
 }
 
@@ -686,7 +682,7 @@ ofxPd& ofxPd::operator<<(const int var) {
     
 	switch(msgType) {
 	
-		case LIST: case MSG:
+		case MSG:
 			addFloat((float) var);
 			break;
 			
@@ -808,9 +804,20 @@ ofxPd& ofxPd::operator<<(const StartSysRT& var) {
 	return *this;
 }
 
-//----------------------------------------------------------
 ofxPd& ofxPd::operator<<(const Finish& var) {
-	finish();
+    
+    if(!bMsgInProgress) {
+    	ofLog(OF_LOG_ERROR, "ofxPd: Can not finish midi byte stream, stream not in progress");
+		return *this;
+	}
+	
+    if(msgType == MSG) {
+        ofLog(OF_LOG_ERROR, "ofxPd: Can not finish midi byte stream, message in progress");
+		return *this;
+    }
+    
+	bMsgInProgress = false;
+    curMsgLen = 0;
     return *this;
 }
 
