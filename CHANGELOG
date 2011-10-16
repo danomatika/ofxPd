@@ -6,6 +6,8 @@ v1.0.0: 2011 Oct
 		- pgm num range is now 1-128 to match [pgmin]/[pgmout] (was 0-127)
 		- destination names are now set when finishing compound messages
 		- renamed "sysRT" functions to "sysRt"
+		- renamed "getArrayLen" to "getArraySize"
+		- renamed "*Sources" functions to "*bind" functions
 
 v0.9.0: 2011 Sep
 

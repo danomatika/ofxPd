@@ -30,8 +30,8 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
     midiChan = 1; // midi channels are 1-16
 	
 	// add recieve source names
-	pd.addSource("toOF");
-	pd.addSource("env");
+	pd.bind("toOF");
+	pd.bind("env");
 	
 	// add listener
 	pd.addListener(*this);

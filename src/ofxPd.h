@@ -94,17 +94,7 @@ class ofxPd {
 		
 		//// \section Receiving
 		
-		/// add/remove listener to receive events
-		///
-		/// listeners automatically receive print and midi events only,
-		/// use subscribe() to plug a listener into a source
-		///
-		void addListener(ofxPdListener& listener);
-		void removeListener(ofxPdListener& listener);
-		bool listenerExists(ofxPdListener& listener);
-		void clearListeners();	/// also unsubscribes all listeners
-		
-		/// add/remove receiver sources from libpd
+		/// bind/unbind receiver sources from libpd
 		///
 		/// aka the pd receive name
 		///
@@ -113,11 +103,21 @@ class ofxPd {
 		///
 		/// note: the global source (aka "") exists by default 
 		///
-		void addSource(const std::string& source);
-		void removeSource(const std::string& source);
-		bool sourceExists(const std::string& source);
-		void clearSources();	/// listeners will be unsubscribed from *all* sources
+		void bind(const std::string& source);
+		void unbind(const std::string& source);
+		bool isBound(const std::string& source);
+		void unbindAll();	/// listeners will be unsubscribed from *all* sources
 		
+        /// add/remove listener to receive events
+		///
+		/// listeners automatically receive print and midi events only,
+		/// use subscribe() to plug a listener into a source
+		///
+		void addListener(ofxPdListener& listener);
+		void removeListener(ofxPdListener& listener);
+		bool listenerExists(ofxPdListener& listener);
+		void clearListeners();	/// also unsubscribes all listeners
+        
 		/// un/subscribe a listener to a receiver source from libpd
 		///
 		/// un/subscribe using a source name or "" for all sources,
@@ -354,7 +354,7 @@ class ofxPd {
 			SYSRT
 		} msgType;
 		
-		int midiPort;			///< target midi port
+		int midiPort;   ///< target midi port
 	
 		/// a receiving sources's pointer and bound listeners
 		struct Source {

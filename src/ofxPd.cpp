@@ -121,7 +121,7 @@ void ofxPd::clear() {
 	midiPort = 0;
 	_UNLOCK();
 
-	clearSources();
+	unbindAll();
 }
 
 //--------------------------------------------------------------------
@@ -217,6 +217,48 @@ void ofxPd::dspOff() {
 	_UNLOCK();
 }
 
+//----------------------------------------------------------
+void ofxPd::bind(const std::string& source) {
+
+	if(isBound(source)) {
+		ofLog(OF_LOG_WARNING, "ofxPd: addSource: ignoring duplicate source");
+		return;
+	}
+	
+	Source s;
+	s.pointer = libpd_bind(source.c_str());
+	sources.insert(pair<string, Source>(source, s));
+}
+
+void ofxPd::unbind(const std::string& source) {
+	
+	map<string, Source>::iterator iter;
+	iter = sources.find(source);
+	if(iter == sources.end()) {
+		ofLog(OF_LOG_WARNING, "ofxPd: removeSource: ignoring unknown source");
+		return;
+	}
+	
+	libpd_unbind(iter->second.pointer);
+	sources.erase(iter);
+}
+
+bool ofxPd::isBound(const std::string& source) {
+	if(sources.find(source) != sources.end())
+		return true;
+	return false;
+}
+
+void ofxPd::unbindAll(){
+	
+	sources.clear();
+
+	// add default global source
+	Source s;
+	s.pointer = NULL;
+	sources.insert(make_pair("", s));
+}
+
 //--------------------------------------------------------------------
 void ofxPd::addListener(ofxPdListener& listener) {
 	
@@ -260,47 +302,6 @@ void ofxPd::clearListeners() {
 }
 
 //----------------------------------------------------------
-void ofxPd::addSource(const std::string& source) {
-	if(sourceExists(source)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: addSource: ignoring duplicate source");
-		return;
-	}
-	
-	Source s;
-	s.pointer = libpd_bind(source.c_str());
-	sources.insert(pair<string, Source>(source, s));
-}
-
-void ofxPd::removeSource(const std::string& source) {
-	
-	map<string, Source>::iterator iter;
-	iter = sources.find(source);
-	if(iter == sources.end()) {
-		ofLog(OF_LOG_WARNING, "ofxPd: removeSource: ignoring unknown source");
-		return;
-	}
-	
-	libpd_unbind(iter->second.pointer);
-	sources.erase(iter);
-}
-
-bool ofxPd::sourceExists(const std::string& source) {
-	if(sources.find(source) != sources.end())
-		return true;
-	return false;
-}
-
-void ofxPd::clearSources() {
-	
-	sources.clear();
-
-	// add default global source
-	Source s;
-	s.pointer = NULL;
-	sources.insert(make_pair("", s));
-}
-
-//----------------------------------------------------------
 void ofxPd::subscribe(ofxPdListener& listener, const std::string& source) {
 
 	if(!listenerExists(listener)) {
@@ -308,7 +309,7 @@ void ofxPd::subscribe(ofxPdListener& listener, const std::string& source) {
 		return;
 	}
 	
-	if(!sourceExists(source)) {
+	if(!isBound(source)) {
 		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown source, call addSource first");
 		return;
 	}
@@ -346,7 +347,7 @@ void ofxPd::unsubscribe(ofxPdListener& listener, const std::string& source) {
 		return;
 	}
 
-	if(!sourceExists(source)) {
+	if(!isBound(source)) {
 		ofLog(OF_LOG_WARNING, "ofxPd: unsubscribe: ignoring unknown source");
 		return;
 	}
