@@ -822,7 +822,7 @@ ofxPd& ofxPd::operator<<(const Finish& var) {
 }
 
 //----------------------------------------------------------
-int ofxPd::getArrayLen(const std::string& arrayName) {
+int ofxPd::getArraySize(const std::string& arrayName) {
 	_LOCK();
 	int len = libpd_arraysize(arrayName.c_str());
 	_UNLOCK();

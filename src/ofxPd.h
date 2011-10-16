@@ -288,9 +288,9 @@ class ofxPd {
 		
 		/// \section Array Access
 		
-		/// get pd array length
+		/// get size of pd array
 		/// returns 0 if array not found
-		int getArrayLen(const std::string& arrayName);
+		int getArraySize(const std::string& arrayName);
 		
 		/// read from a pd array
 		///

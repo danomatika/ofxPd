@@ -122,7 +122,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << endl << "BEGIN Array Test" << endl;
 	
 	// array check length
-	cout << "array1 len: " << pd.getArrayLen("array1") << endl;
+	cout << "array1 len: " << pd.getArraySize("array1") << endl;
 	
 	// read array
 	std::vector<float> array1;
