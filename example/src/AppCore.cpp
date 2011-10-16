@@ -48,21 +48,21 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.dspOn();
 	
 	
-	cout << endl << "BEGIN Patch Test" << endl;
+	cout << endl << "BEGIN File Test" << endl;
 	
 	// open patch
-	Patch patch = pd.openPatch("test.pd");
+	Patch patch = pd.openFile("test.pd");
 	cout << patch << endl;
 	
 	// close patch
-	pd.closePatch(patch);
+	pd.closeFile(patch);
 	cout << patch << endl;
 	
 	// open patch
-	patch = pd.openPatch("test.pd");
+	patch = pd.openFile("test.pd");
 	cout << patch << endl;
 	
-	cout << "FINISH Patch Test" << endl;
+	cout << "FINISH File Test" << endl;
 	
 	
 	
