@@ -527,7 +527,7 @@ void ofxPd::sendList(const std::string& dest, const List& list) {
 	}
 
 	_LOCK();	
-	libpd_start_message();
+	libpd_start_message(maxMsgLen);
 	_UNLOCK();
 	
 	bMsgInProgress = true;
@@ -553,7 +553,7 @@ void ofxPd::sendMsg(const std::string& dest, const std::string& msg, const List&
 	}
 
 	_LOCK();	
-	libpd_start_message();
+	libpd_start_message(maxMsgLen);
 	_UNLOCK();
 	
 	bMsgInProgress = true;
