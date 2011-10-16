@@ -24,8 +24,7 @@
 #define USEAPI_DUMMY
 
 using namespace std;
-
-namespace pd {
+using namespace pd;
 
 // pointer for static member functions
 ofxPd* pdPtr = NULL;
@@ -262,52 +261,52 @@ void ofxPd::unbindAll(){
 }
 
 //--------------------------------------------------------------------
-void ofxPd::addListener(ofxPdListener& listener) {
+void ofxPd::addReceiver(PdReceiver& receiver) {
 	
-	pair<set<ofxPdListener*>::iterator, bool> ret;
-	ret = listeners.insert(&listener);
+	pair<set<PdReceiver*>::iterator, bool> ret;
+	ret = receivers.insert(&receiver);
 	if(!ret.second) {
-		ofLog(OF_LOG_WARNING, "ofxPd: addListener: ignoring duplicate listener");
+		ofLog(OF_LOG_WARNING, "ofxPd: addReceiver: ignoring duplicate receiver");
 		return;
 	}
 }
 
-void ofxPd::removeListener(ofxPdListener& listener) {
+void ofxPd::removeReceiver(PdReceiver& receiver) {
 	
 	// exists?
-	set<ofxPdListener*>::iterator l_iter;
-	l_iter = listeners.find(&listener);
-	if(l_iter == listeners.end()) {
-		ofLog(OF_LOG_WARNING, "ofxPd: removeListener: ignoring unknown listener");
+	set<PdReceiver*>::iterator l_iter;
+	l_iter = receivers.find(&receiver);
+	if(l_iter == receivers.end()) {
+		ofLog(OF_LOG_WARNING, "ofxPd: removeReceiver: ignoring unknown receiver");
 		return;
 	}
-	listeners.erase(l_iter);
+	receivers.erase(l_iter);
 
 	// remove from all sources
-	unsubscribe(listener);		
+	unsubscribe(receiver);		
 }
 
-bool ofxPd::listenerExists(ofxPdListener& listener) {
-	if(listeners.find(&listener) != listeners.end())
+bool ofxPd::receiverExists(PdReceiver& receiver) {
+	if(receivers.find(&receiver) != receivers.end())
 		return true;
 	return false;
 }
 
-void ofxPd::clearListeners() {
+void ofxPd::clearReceivers() {
 
-	listeners.clear();
+	receivers.clear();
 	
 	map<string, Source>::iterator iter;
 	for(iter = sources.begin(); iter != sources.end(); ++iter) {
-		iter->second.listeners.clear();
+		iter->second.receivers.clear();
 	}
 }
 
 //----------------------------------------------------------
-void ofxPd::subscribe(ofxPdListener& listener, const std::string& source) {
+void ofxPd::subscribe(PdReceiver& receiver, const std::string& source) {
 
-	if(!listenerExists(listener)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown listener, call addListener first");
+	if(!receiverExists(receiver)) {
+		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown receiver, call addReceiver first");
 		return;
 	}
 	
@@ -324,28 +323,28 @@ void ofxPd::subscribe(ofxPdListener& listener, const std::string& source) {
 	if(source != "") {
 	
 		// make sure unsubscribed from global source
-		if(g_iter->second.listenerExists(&listener)) {
-			g_iter->second.removeListener(&listener);
+		if(g_iter->second.receiverExists(&receiver)) {
+			g_iter->second.removeReceiver(&receiver);
 		}
 		
 		// subscribe to specific source
 		map<string,Source>::iterator s_iter;
 		s_iter = sources.find(source);
-		s_iter->second.addListener(&listener);
+		s_iter->second.addReceiver(&receiver);
 	}
 	else {
 		// make sure unsubscribed from all sources
-		unsubscribe(listener);
+		unsubscribe(receiver);
 	
 		// subscribe to global source
-		g_iter->second.addListener(&listener);
+		g_iter->second.addReceiver(&receiver);
 	}
 }
 
-void ofxPd::unsubscribe(ofxPdListener& listener, const std::string& source) {
+void ofxPd::unsubscribe(PdReceiver& receiver, const std::string& source) {
 
-	if(!listenerExists(listener)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: unsubscribe: ignoring unknown listener");
+	if(!receiverExists(receiver)) {
+		ofLog(OF_LOG_WARNING, "ofxPd: unsubscribe: ignoring unknown receiver");
 		return;
 	}
 
@@ -364,34 +363,34 @@ void ofxPd::unsubscribe(ofxPdListener& listener, const std::string& source) {
 		g_iter = sources.find("");
 	
 		// negation from global
-		if(g_iter->second.listenerExists(&listener)) {
+		if(g_iter->second.receiverExists(&receiver)) {
 			
 			// remove from global
-			g_iter->second.removeListener(&listener);
+			g_iter->second.removeReceiver(&receiver);
 			
 			// add to *all* other sources
 			for(s_iter = sources.begin(); s_iter != sources.end(); ++s_iter) {
 				if(s_iter != g_iter) {
-					s_iter->second.addListener(&listener);
+					s_iter->second.addReceiver(&receiver);
 				}
 			}
 		}
 		
 		// remove from source
 		s_iter = sources.find(source);
-		s_iter->second.removeListener(&listener);
+		s_iter->second.removeReceiver(&receiver);
 	}
 	else {	// unsubscribe from all sources	
 		for(s_iter = sources.begin(); s_iter != sources.end(); ++s_iter) {
-			s_iter->second.removeListener(&listener);
+			s_iter->second.removeReceiver(&receiver);
 		}
 	}
 }
 
-bool ofxPd::isSubscribed(ofxPdListener& listener, const std::string& source) {
+bool ofxPd::isSubscribed(PdReceiver& receiver, const std::string& source) {
 	map<string,Source>::iterator s_iter;
 	s_iter = sources.find(source);
-	if(s_iter != sources.end() && s_iter->second.listenerExists(&listener))
+	if(s_iter != sources.end() && s_iter->second.receiverExists(&receiver))
 		return true;
 	return false;
 }
@@ -995,10 +994,10 @@ void ofxPd::_print(const char* s)
 		ofLog(OF_LOG_VERBOSE, "ofxPd: print: %s", pdPtr->printMsg.c_str());
 		
 		// broadcast
-		set<ofxPdListener*>& listeners = pdPtr->listeners;
-		set<ofxPdListener*>::iterator iter;
-		for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-			(*iter)->printReceived(pdPtr->printMsg);
+		set<PdReceiver*>& receivers = pdPtr->receivers;
+		set<PdReceiver*>::iterator iter;
+		for(iter = receivers.begin(); iter != receivers.end(); ++iter) {
+			(*iter)->receivePrint(pdPtr->printMsg);
 		}
 	
 		pdPtr->printMsg = "";
@@ -1013,23 +1012,23 @@ void ofxPd::_bang(const char* source)
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: bang: %s", source);
 	
-	set<ofxPdListener*>::iterator l_iter;
-	set<ofxPdListener*>* listeners;
+	set<PdReceiver*>::iterator l_iter;
+	set<PdReceiver*>* receivers;
 	
-	// send to global listeners
+	// send to global receivers
 	map<string,Source>::iterator g_iter;
 	g_iter = pdPtr->sources.find("");
-	listeners = &g_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->bangReceived((string) source);
+	receivers = &g_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveBang((string) source);
 	}
 	
-	// send to subscribed listeners
+	// send to subscribed receivers
 	map<string,Source>::iterator s_iter;
 	s_iter = pdPtr->sources.find((string) source);
-	listeners = &s_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->bangReceived((string) source);
+	receivers = &s_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveBang((string) source);
 	}
 }
 
@@ -1037,23 +1036,23 @@ void ofxPd::_float(const char* source, float value)
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: float: %s %f", source, value);
 	
-	set<ofxPdListener*>::iterator l_iter;
-	set<ofxPdListener*>* listeners;
+	set<PdReceiver*>::iterator l_iter;
+	set<PdReceiver*>* receivers;
 	
-	// send to global listeners
+	// send to global receivers
 	map<string,Source>::iterator g_iter;
 	g_iter = pdPtr->sources.find("");
-	listeners = &g_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->floatReceived((string) source, value);
+	receivers = &g_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveFloat((string) source, value);
 	}
 	
-	// send to subscribed listeners
+	// send to subscribed receivers
 	map<string,Source>::iterator s_iter;
 	s_iter = pdPtr->sources.find((string) source);
-	listeners = &s_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->floatReceived((string) source, value);
+	receivers = &s_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveFloat((string) source, value);
 	}
 }
 
@@ -1061,23 +1060,23 @@ void ofxPd::_symbol(const char* source, const char* symbol)
 {
 	ofLog(OF_LOG_VERBOSE, "ofxPd: symbol: %s %s", source, symbol);
 	
-	set<ofxPdListener*>::iterator l_iter;
-	set<ofxPdListener*>* listeners;
+	set<PdReceiver*>::iterator l_iter;
+	set<PdReceiver*>* receivers;
 	
-	// send to global listeners
+	// send to global receivers
 	map<string,Source>::iterator g_iter;
 	g_iter = pdPtr->sources.find("");
-	listeners = &g_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->symbolReceived((string) source, (string) symbol);
+	receivers = &g_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveSymbol((string) source, (string) symbol);
 	}
 	
-	// send to subscribed listeners
+	// send to subscribed receivers
 	map<string,Source>::iterator s_iter;
 	s_iter = pdPtr->sources.find((string) source);
-	listeners = &s_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->symbolReceived((string) source, (string) symbol);
+	receivers = &s_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveSymbol((string) source, (string) symbol);
 	}
 }
 
@@ -1103,23 +1102,23 @@ void ofxPd::_list(const char* source, int argc, t_atom* argv)
 		}
 	}
 	
-	set<ofxPdListener*>::iterator l_iter;
-	set<ofxPdListener*>* listeners;
+	set<PdReceiver*>::iterator l_iter;
+	set<PdReceiver*>* receivers;
 	
-	// send to global listeners
+	// send to global receivers
 	map<string,Source>::iterator g_iter;
 	g_iter = pdPtr->sources.find("");
-	listeners = &g_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->listReceived((string) source, list);
+	receivers = &g_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveList((string) source, list);
 	}
 	
-	// send to subscribed listeners
+	// send to subscribed receivers
 	map<string,Source>::iterator s_iter;
 	s_iter = pdPtr->sources.find((string) source);
-	listeners = &s_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->listReceived((string) source, list);
+	receivers = &s_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveList((string) source, list);
 	}
 }
 
@@ -1145,23 +1144,23 @@ void ofxPd::_message(const char* source, const char *symbol, int argc, t_atom *a
 		}
 	}
 	
-	set<ofxPdListener*>::iterator l_iter;
-	set<ofxPdListener*>* listeners;
+	set<PdReceiver*>::iterator l_iter;
+	set<PdReceiver*>* receivers;
 	
-	// send to global listeners
+	// send to global receivers
 	map<string,Source>::iterator g_iter;
 	g_iter = pdPtr->sources.find("");
-	listeners = &g_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->messageReceived((string) source, (string) symbol, list);
+	receivers = &g_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveMessage((string) source, (string) symbol, list);
 	}
 	
-	// send to subscribed listeners
+	// send to subscribed receivers
 	map<string,Source>::iterator s_iter;
 	s_iter = pdPtr->sources.find((string) source);
-	listeners = &s_iter->second.listeners;
-	for(l_iter = listeners->begin(); l_iter != listeners->end(); ++l_iter) {
-		(*l_iter)->messageReceived((string) source, (string) symbol, list);
+	receivers = &s_iter->second.receivers;
+	for(l_iter = receivers->begin(); l_iter != receivers->end(); ++l_iter) {
+		(*l_iter)->receiveMessage((string) source, (string) symbol, list);
 	}
 }
 
@@ -1169,10 +1168,10 @@ void ofxPd::_noteon(int channel, int pitch, int velocity) {
 	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: note: %d %d %d", channel, pitch, velocity);
 
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->noteReceived(channel, pitch, velocity);
+	set<PdReceiver*>& receivers = pdPtr->receivers;
+	set<PdReceiver*>::iterator iter;
+	for(iter = receivers.begin(); iter != receivers.end(); ++iter) {
+		(*iter)->receiveNote(channel, pitch, velocity);
 	}
 }
 
@@ -1180,10 +1179,10 @@ void ofxPd::_controlchange(int channel, int controller, int value) {
 	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: control change: %d %d %d", channel, controller, value);
 
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->ctlReceived(channel, controller, value);
+	set<PdReceiver*>& receivers = pdPtr->receivers;
+	set<PdReceiver*>::iterator iter;
+	for(iter = receivers.begin(); iter != receivers.end(); ++iter) {
+		(*iter)->receiveCtl(channel, controller, value);
 	}
 }
 
@@ -1191,10 +1190,10 @@ void ofxPd::_programchange(int channel, int value) {
 	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: program change: %d %d", channel, value+1);
 
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->pgmReceived(channel, value+1);
+	set<PdReceiver*>& receivers = pdPtr->receivers;
+	set<PdReceiver*>::iterator iter;
+	for(iter = receivers.begin(); iter != receivers.end(); ++iter) {
+		(*iter)->receivePgm(channel, value+1);
 	}
 }
 
@@ -1202,10 +1201,10 @@ void ofxPd::_pitchbend(int channel, int value) {
 	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: pitchbend: %d %d", channel, value);
 
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->bendReceived(channel, value);
+	set<PdReceiver*>& receivers = pdPtr->receivers;
+	set<PdReceiver*>::iterator iter;
+	for(iter = receivers.begin(); iter != receivers.end(); ++iter) {
+		(*iter)->receiveBend(channel, value);
 	}
 }
 
@@ -1213,10 +1212,10 @@ void ofxPd::_aftertouch(int channel, int value) {
 	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: aftertouch: %d %d", channel, value);
 
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->touchReceived(channel, value);
+	set<PdReceiver*>& receivers = pdPtr->receivers;
+	set<PdReceiver*>::iterator iter;
+	for(iter = receivers.begin(); iter != receivers.end(); ++iter) {
+		(*iter)->receiveTouch(channel, value);
 	}
 }
 
@@ -1224,10 +1223,10 @@ void ofxPd::_polyaftertouch(int channel, int pitch, int value) {
 	channel++;
 	ofLog(OF_LOG_VERBOSE, "ofxPd: polyaftertouch: %d %d %d", channel, pitch, value);
 
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->polyTouchReceived(channel, pitch, value);
+	set<PdReceiver*>& receivers = pdPtr->receivers;
+	set<PdReceiver*>::iterator iter;
+	for(iter = receivers.begin(); iter != receivers.end(); ++iter) {
+		(*iter)->receivePolyTouch(channel, pitch, value);
 	}
 }
 
@@ -1235,11 +1234,9 @@ void ofxPd::_midibyte(int port, int byte) {
 
 	ofLog(OF_LOG_VERBOSE, "ofxPd: midibyte: %d %d", port, byte);
 
-	set<ofxPdListener*>& listeners = pdPtr->listeners;
-	set<ofxPdListener*>::iterator iter;
-	for(iter = listeners.begin(); iter != listeners.end(); ++iter) {
-		(*iter)->midiByteReceived(port, byte);
+	set<PdReceiver*>& receivers = pdPtr->receivers;
+	set<PdReceiver*>::iterator iter;
+	for(iter = receivers.begin(); iter != receivers.end(); ++iter) {
+		(*iter)->receiveMidiByte(port, byte);
 	}
 }
-
-} // namespace

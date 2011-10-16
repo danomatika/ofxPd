@@ -14,7 +14,7 @@
 
 namespace pd {
 
-/// \section ofxPd Patch
+/// \section Pd Patch
 
 class Patch {
 
@@ -57,7 +57,7 @@ class Patch {
 		std::string _path;		///< full path
 };
 
-/// \section ofxPd stream interface message objects
+/// \section Pd stream interface message objects
 
 /// bang event
 struct Bang {

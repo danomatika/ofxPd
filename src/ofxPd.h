@@ -26,8 +26,6 @@
 #warning You need to define HAVE_UNISTD_H in your project build settings!
 #endif
 
-namespace pd {
-
 ///
 ///	a Pure Data instance
 ///
@@ -76,14 +74,14 @@ class ofxPd {
 		
 		/// open a patch file, takes an absolute or relative path (in data folder)
 		/// returns a Patch object
-		Patch openFile(const std::string& patch);
+		pd::Patch openFile(const std::string& patch);
 		
 		/// close a patch file, takes the patch's basename (filename without extension)
 		void closeFile(const std::string& patch);
 		
 		/// close a patch file, takes a patch object
 		/// clears the given Patch object
-		void closeFile(Patch& patch);
+		void closeFile(pd::Patch& patch);
 		
 		/// \section Dsp Control
 		
@@ -96,7 +94,7 @@ class ofxPd {
 		
 		//// \section Receiving
 		
-		/// bind/unbind receiver sources from libpd
+		/// bind/unbind ource names from libpd
 		///
 		/// aka the pd receive name
 		///
@@ -110,17 +108,17 @@ class ofxPd {
 		bool isBound(const std::string& source);
 		void unbindAll(); ///< listeners will be unsubscribed from *all* sources
 		
-        /// add/remove listener to receive events
+        /// add/remove incoming event receiver
 		///
-		/// listeners automatically receive print and midi events only,
-		/// use subscribe() to plug a listener into a source
+		/// receivers automatically receive print and midi events only,
+		/// use subscribe() to plug a receiver into a source
 		///
-		void addListener(ofxPdListener& listener);
-		void removeListener(ofxPdListener& listener);
-		bool listenerExists(ofxPdListener& listener);
-		void clearListeners();	/// also unsubscribes all listeners
+		void addReceiver(pd::PdReceiver& receiver);
+		void removeReceiver(pd::PdReceiver& receiver);
+		bool receiverExists(pd::PdReceiver& receiver);
+		void clearReceivers();	/// also unsubscribes all receivers
         
-		/// un/subscribe a listener to a receiver source from libpd
+		/// un/subscribe a receiver to a source name from libpd
 		///
 		/// un/subscribe using a source name or "" for all sources,
 		/// make sure to add the listener and source first
@@ -132,12 +130,12 @@ class ofxPd {
 		///
 		/// also: use negation if you want to subscribe to all sources but one:
 		///
-		/// pd.subscribe(listener);				// subscribe to all
-		/// pd.unsubscribe(listener, "source"); // unsubscribe from "source"
+		/// pd.subscribe(receiver);				// subscribe to all
+		/// pd.unsubscribe(receiver, "source"); // unsubscribe from "source"
 		///
-		void subscribe(ofxPdListener& listener, const std::string& source="");
-		void unsubscribe(ofxPdListener& listener, const std::string& source="");
-		bool isSubscribed(ofxPdListener& listener, const std::string& source="");
+		void subscribe(pd::PdReceiver& listener, const std::string& source="");
+		void unsubscribe(pd::PdReceiver& listener, const std::string& source="");
+		bool isSubscribed(pd::PdReceiver& listener, const std::string& source="");
 		
 		/// \section Sending Functions
 		
@@ -189,8 +187,8 @@ class ofxPd {
         /// 
         /// sends a typed message -> [; test msg1 hello 1.23(
         ///
-        void sendList(const std::string& dest, const List& list);
-        void sendMsg(const std::string& dest, const std::string& msg, const List& list);
+        void sendList(const std::string& dest, const pd::List& list);
+        void sendMsg(const std::string& dest, const std::string& msg, const pd::List& list);
 		
 		/// midi
 		///
@@ -239,17 +237,17 @@ class ofxPd {
 		/// pd << Float("test", 100);
 		/// pd << Symbol("test", "a symbol");
 		///
-		ofxPd& operator<<(const Bang& var);
-		ofxPd& operator<<(const Float& var);
-		ofxPd& operator<<(const Symbol& var);
+		ofxPd& operator<<(const pd::Bang& var);
+		ofxPd& operator<<(const pd::Float& var);
+		ofxPd& operator<<(const pd::Symbol& var);
 		
 		/// compound messages
 		///
 		/// pd << StartMsg() << 100 << 1.2 << "a symbol" << FinishList("test");
 		///
-		ofxPd& operator<<(const StartMsg& var);
-        ofxPd& operator<<(const FinishList& var);
-        ofxPd& operator<<(const FinishMsg& var);
+		ofxPd& operator<<(const pd::StartMsg& var);
+        ofxPd& operator<<(const pd::FinishList& var);
+        ofxPd& operator<<(const pd::FinishMsg& var);
         
 		/// add a float to the message
 		ofxPd& operator<<(const bool var);
@@ -268,22 +266,22 @@ class ofxPd {
 		/// pd << Ctl(100, 64) << Pgm(100, 1) << Bend(2000, 1);
 		/// pd << Touch(127, 1) << PolyTouch(64, 127, 1);
 		///
-		ofxPd& operator<<(const Note& var);
-		ofxPd& operator<<(const Ctl& var);
-		ofxPd& operator<<(const Pgm& var);
-		ofxPd& operator<<(const Bend& var);
-		ofxPd& operator<<(const Touch& var);
-		ofxPd& operator<<(const PolyTouch& var);
+		ofxPd& operator<<(const pd::Note& var);
+		ofxPd& operator<<(const pd::Ctl& var);
+		ofxPd& operator<<(const pd::Pgm& var);
+		ofxPd& operator<<(const pd::Bend& var);
+		ofxPd& operator<<(const pd::Touch& var);
+		ofxPd& operator<<(const pd::PolyTouch& var);
 		
 		/// compound raw midi byte stream
 		///
 		/// pd << StartMidi() << 0xEF << 0x45 << Finish();
 		/// pd << StartSysEx() << 0xE7 << 0x45 << 0x56 << 0x17 << Finish();
 		///
-		ofxPd& operator<<(const StartMidi& var);
-		ofxPd& operator<<(const StartSysEx& var);
-		ofxPd& operator<<(const StartSysRt& var);
-        ofxPd& operator<<(const Finish& var);
+		ofxPd& operator<<(const pd::StartMidi& var);
+		ofxPd& operator<<(const pd::StartSysEx& var);
+		ofxPd& operator<<(const pd::StartSysRt& var);
+        ofxPd& operator<<(const pd::Finish& var);
 		
 		/// is a message or byte stream currently in progress?
         inline bool isMsgInProgress() {return bMsgInProgress;}
@@ -358,33 +356,33 @@ class ofxPd {
 		
 		int midiPort;   ///< target midi port
 	
-		/// a receiving sources's pointer and bound listeners
+		/// a receiving sources's pointer and bound receivers
 		struct Source {
 			
 			// data
-			void* pointer;						///< source pointer
-			std::set<ofxPdListener*> listeners;	///< subscribed listeners
+			void* pointer;                          ///< source pointer
+			std::set<pd::PdReceiver*> receivers;    ///< subscribed receivers
 
 			// helper functions
-			void addListener(ofxPdListener* listener) {
-				listeners.insert(listener);
+			void addReceiver(pd::PdReceiver* receiver) {
+				receivers.insert(receiver);
 			}
 			
-			void removeListener(ofxPdListener* listener) {
-				std::set<ofxPdListener*>::iterator iter;
-				iter = listeners.find(listener);
-				if(iter != listeners.end())
-					listeners.erase(iter);
+			void removeReceiver(pd::PdReceiver* receiver) {
+				std::set<pd::PdReceiver*>::iterator iter;
+				iter = receivers.find(receiver);
+				if(iter != receivers.end())
+					receivers.erase(iter);
 			}
 
-			bool listenerExists(ofxPdListener* listener) {
-				if(listeners.find(listener) != listeners.end())
+			bool receiverExists(pd::PdReceiver* receiver) {
+				if(receivers.find(receiver) != receivers.end())
 					return true;
 				return false;
 			}
 		};
 			
-		std::set<ofxPdListener*> listeners;		///< the listeners
+		std::set<pd::PdReceiver*> receivers;	///< the receivers
 		std::map<std::string,Source> sources;	///< bound sources
 												///< first object always global
 		
@@ -412,5 +410,3 @@ class ofxPd {
 		
 		static void _midibyte(int port, int byte);
 };
-
-} // namespace

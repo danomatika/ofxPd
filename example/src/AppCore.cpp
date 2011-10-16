@@ -34,7 +34,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.bind("env");
 	
 	// add listener
-	pd.addListener(*this);
+	pd.addReceiver(*this);
 	pd.subscribe(*this);			// listen to everything
 	pd.unsubscribe(*this, "env");	// don't listen to "env"
 	
@@ -275,24 +275,24 @@ void AppCore::audioRequested(float * output, int bufferSize, int nChannels) {
 }
 
 //--------------------------------------------------------------
-void AppCore::printReceived(const std::string& message) {
+void AppCore::receivePrint(const std::string& message) {
 	cout << message << endl;
 }
 
 //--------------------------------------------------------------		
-void AppCore::bangReceived(const std::string& dest) {
+void AppCore::receiveBang(const std::string& dest) {
 	cout << "OF: bang " << dest << endl;
 }
 
-void AppCore::floatReceived(const std::string& dest, float value) {
+void AppCore::receiveFloat(const std::string& dest, float value) {
 	cout << "OF: float " << dest << ": " << value << endl;
 }
 
-void AppCore::symbolReceived(const std::string& dest, const std::string& symbol) {
+void AppCore::receiveSymbol(const std::string& dest, const std::string& symbol) {
 	cout << "OF: symbol " << dest << ": " << symbol << endl;
 }
 
-void AppCore::listReceived(const std::string& dest, const List& list) {
+void AppCore::receiveList(const std::string& dest, const List& list) {
 	cout << "OF: list " << dest << ": ";
 	
 	// step through the list
@@ -311,38 +311,38 @@ void AppCore::listReceived(const std::string& dest, const List& list) {
 	cout << list.types() << endl;
 }
 
-void AppCore::messageReceived(const std::string& dest, const std::string& msg, const List& list) {
+void AppCore::receiveMessage(const std::string& dest, const std::string& msg, const List& list) {
 	cout << "OF: msg " << dest << ": " << msg << " " << list.toString() << list.types() << endl;
 }
 
 //--------------------------------------------------------------
-void AppCore::noteReceived(const int channel, const int pitch, const int velocity) {
+void AppCore::receiveNote(const int channel, const int pitch, const int velocity) {
 	cout << "OF: note: " << channel << " " << pitch << " " << velocity << endl;
 }
 
-void AppCore::ctlReceived(const int channel, const int controller, const int value) {
+void AppCore::receiveCtl(const int channel, const int controller, const int value) {
 	cout << "OF: ctl: " << channel << " " << controller << " " << value << endl;
 }
 
 // note: pgm nums are 1-128 to match pd
-void AppCore::pgmReceived(const int channel, const int value) {
+void AppCore::receivePgm(const int channel, const int value) {
 	cout << "OF: pgm: " << channel << " " << value << endl;
 }
 
-void AppCore::bendReceived(const int channel, const int value) {
+void AppCore::receiveBend(const int channel, const int value) {
 	cout << "OF: bend: " << channel << " " << value << endl;
 }
 
-void AppCore::touchReceived(const int channel, const int value) {
+void AppCore::receiveTouch(const int channel, const int value) {
 	cout << "OF: touch: " << channel << " " << value << endl;
 }
 
-void AppCore::polyTouchReceived(const int channel, const int pitch, const int value) {
+void AppCore::receivePolyTouch(const int channel, const int pitch, const int value) {
 	cout << "OF: polytouch: " << channel << " " << pitch << " " << value << endl;
 }
 
 // note: pd adds +2 to the port num, so sending to port 3 in pd to [midiout],
 //       shows up at port 1 in ofxPd
-void AppCore::midiByteReceived(const int port, const int byte) {
+void AppCore::receiveMidiByte(const int port, const int byte) {
 	cout << "OF: midibyte: " << port << " " << byte << endl;
 }

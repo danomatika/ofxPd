@@ -1,15 +1,19 @@
 v1.0.0: 2011 Oct
 
 	- added List building & sending
-	- reworked api to match libpd standard api
+	- wrapped Pd receiver and types within a "pd" namespace
+	- reworked api to better match libpd C/Java api
 		- channel is now first arg in midi functions
 		- port is now first arg in raw midi byte functions
 		- pgm num range is now 1-128 to match [pgmin]/[pgmout] (was 0-127)
 		- destination names are now set when finishing compound messages
 		- renamed "sysRT" functions to "sysRt"
 		- renamed "getArrayLen" to "getArraySize"
-		- renamed "*Sources" functions to "*bind" functions
-	- wrapped ofxPd objects within a "pd" namespace
+		- renamed "*Source" functions to "*bind" functions
+		- renamed "ofxPdListener" class to "PdReceiver"
+		- renamed "*Listener" functions to "*Receiver" functions
+		- renamed Receiver functions (bangReceived, floatReceived, etc) to match
+		  Java Receiver (receiveBang, receiveFloat, etc)
 
 v0.9.0: 2011 Sep
 
