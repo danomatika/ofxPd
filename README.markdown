@@ -1,4 +1,4 @@
-ofxPd: a Pure Data addon
+ofxPd
 ===================================
 
 Copyright (c) [Dan Wilcox](danomatika.com) 2011
@@ -10,74 +10,86 @@ WARRANTIES, see the file, "LICENSE.txt," in this distribution.
 
 See https://github.com/danomatika/ofxPd for documentation as well as the [OF forum post on ofxPd](http://forum.openframeworks.cc/index.php?topic=6492.0)
 
-DESCRIPTION
+Description
 -----------
 
-ofxPd is an Open Frameworks addon for running an instance of the Pure Data audio enviornment within an OpenFrameworks application. Audio, messages, and [MIDI](http://en.wikipedia.org/wiki/Musical_Instrument_Digital_Interface) events can be passed to and from pure data patches and the library is thread safe.
+ofxPd is an Open Frameworks addon for running an instance of the Pure Data audio environment within an OpenFrameworks application. Audio, messages, and [MIDI](http://en.wikipedia.org/wiki/Musical_Instrument_Digital_Interface) events can be passed to and from pure data patches and the library is thread safe.
 
-[Pure Data](http://pure-data.info/) is a graphical patching enviornment for audio and multimedia (note: the gui and graphics features are not within the scope of this addon) 
+[Pure Data](http://pure-data.info/) is a graphical patching environment for audio and multimedia (note: the gui and graphics features are not within the scope of this addon) 
 
 [OpenFrameworks](http://www.openframeworks.cc/) is a cross platform open source toolkit for creative coding in C++
 
-BUILD REQUIREMENTS
+Build Requirements
 ------------------
 
-To use ofxPd, first you need to download and install Open Frameworks. Development is against the latest version of Open Frameworks on github. Checkout a tag if you need an earlier version.
+To use ofxPd, first you need to download and install Open Frameworks. Development is against the latest version of Open Frameworks on github. Checkout a tag if you need an earlier, stable version.
 
 [OF github repository](https://github.com/openframeworks/openFrameworks)
 
-Currently, ofxPd is being developed on Mac OSX. You will need to install Xcode from the Mac Developer Tools.
+On Mac OSX, you will need to install Xcode from the Mac Developer Tools.
 
 On Linux, you can use the Makefile and/or Codeblocks project files (without the "_win" suffix).
 
-On Win, you will need [Codeblocks+MiniGW](Get Codeblocks from http://www.codeblocks.org/downloads/26) and the [Win Codeblocks OF package](http://www.openframeworks.cc/download). Use the Codeblocsk projects files with the "_win" suffix. 
+On Win, you will need [Codeblocks+MiniGW](http://www.codeblocks.org/downloads/26) and the [Win Codeblocks OF package](http://www.openframeworks.cc/download). Use the Codeblocks projects files with the "_win" suffix. 
 
-BUILD AND INSTALLATION
-----------------------
+Installation
+------------
 
 Place ofxPd within a folder in the apps folder of the OF dir tree:
 <pre>
 openframeworks/addons/ofxPd
 </pre>
 
-### Bugs
+#### Which version to use?
 
-#### Undefined basic_ostream in XCode
+If you are using a stable version (0062, 007, ...) of OpenFrameworks then you want to use a git tag of ofxPd for that version. You can select the tag in the Github "Current Branch" menu or clone and check it out using git.
 
-If you get the following [linker error](http://www.openframeworks.cc/forum/viewtopic.php?f=8&t=5344&p=26537&hilit=Undefined+symbol#p26537) in XCode:
+For example, the following commands will clone ofxPd and switch to the OF 0062 tagged version:
 <pre>
-Undefined symbols: "std::basic_ostream<char, std::char_traits<char> ...
+git clone git://github.com/danomatika/ofxPd.git
+cd ofxPd
+git checkout 0062
 </pre>
-you need to change the Base SDK to 10.6: Project > Edit Project Settings
 
-#### RtAudio Hang on Exit in 0062
+#### Using the latest ofxPd
 
-RtAudio will hang on app exit in OF 0062. The only way to fix this is to make a small edit to the OF 0062 core by editing `lib/openFrameworks/sound/ofSoundStream.cpp` and commenting line 143 so close() is not called.
+The master branch of ofxPd will work with the current master of OpenFrameworks and can be considered *realtively* stable. The develop branch is used for testing new features and bugfixes before they are applied to master.
 
-#### Distorted Sound on iOS in 007
+If you want to work with the latest unstable (still in development) ofxPd, download the source from the develop branch [https://github.com/danomatika/ofxPd/tree/develop](https://github.com/danomatika/ofxPd/tree/develop) or via git clone:
+<pre>
+git clone git://github.com/danomatika/ofxPd.git -b develop
+</pre> 
 
-There's a bug in the 007 release that causes disorted sound due to a typo when assigning a pointer. Edit `lib/openFrameworks/sound/ofxiPhoneSoundStream.mm` and change line 171 from
-<pre>soundOutput = soundOutput;</pre>
-to
-<pre>soundOutputPtr = soundOutput;</pre>
+Warning: The develop branch will be in flux, so don't be suprised if things do not always work as expected!
 
-Hopefully this will be fixed in the official release soon. [Fix from JonBro](https://github.com/openframeworks/openFrameworks/pull/690).
+Running the Example Project
+---------------------------
 
-#### "verbose" redefinition in Win Codeblocks
+The example projects are in the `example` folder.
 
-Currently, there is a static function in the videinput lib on Win that conflicts with a #define in the Pure Data sources. The easy fix, until the OF core is updated, is to comment out line 115 in `libs\videoInput\include\videoInput.h`.
+### OSX
 
-Note: This change hasn't been tested while using the ofVideoGrabber yet ... there is a slight chance it may cause a crash, be warned.
+Xcode3: Open the Xcode project and hit "Build and Run". You might want to choose "Release" instead of "Debug" for faster performance.
 
-### Notes
+Xcode4: Open the Xcode project, select the "ofxPdExample" scheme, and hit "Run".
 
-#### Sample Rate
+### Linux
 
-The sample rate is set to 44100 when initializing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
+Open the Code::Blocks .cbp and hit F9 to build. Optionally, you can build the example with the Makefile.
 
-For example: The default sample rate on Mac OSX is 96000. Running the app at 44100 results in double the playback pitch while initing ofxPd at 96000 gives the correct pitch.
+To run it, use the terminal:
+<pre>
+make
+cd bin
+./example_debug
+</pre>
 
-### How to Create a New ofxPd Project
+### Windows
+
+An example Visual Studio 2010 solution as well as a Codeblocks workspace are included.
+
+How to Create a New ofxPd Project
+---------------------------------
 
 To develop your own project based on ofxPd, simply copy the example project and rename it. You probably want to put it in your apps folder, for example, after copying:
 <pre>
@@ -91,15 +103,16 @@ Then after renaming:
 openFrameworks/apps/myApps/myPdProject/
 </pre>
 
-#### For XCode:
+### For XCode:
 
 Rename the project in XCode (do not rename the .xcodeproj file in Finder!): XCode Menu->Project->Rename
 
-#### For Codeblocks (Win & Linux):
+### For Codeblocks (Win & Linux):
 
 Rename the *.cbp and *workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
 
-### Adding ofxPd to an Existing Project
+Adding ofxPd to an Existing Project
+-----------------------------------
 
 If you want to add ofxPd to another project, you need to make sure you include the src folder:
 <pre>
@@ -108,14 +121,14 @@ openFrameworks/addons/ofxPd/src
 
 You will also need to include some additional C Flags for building the libpd source:
 
-#### For XCode:
+### For XCode:
 
 * create a new group "ofxPd" * drag these directories from ofxpd into this new group: ofxPd/src & ofxPd/libs
 * add a search path to: `../../../addons/ofxPd/src/pd/pure-data/src` under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
 * under Targets->YourApp->Build->Other C Flags (make sure All Configurations and All Settings are selected), add
 	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -dynamiclib -ldl -lm</pre>
 
-#### For Linux (Makefiles & Codeblocks):
+### For Linux (Makefiles & Codeblocks):
 
 * edit addons.make in your project folder and add the following line to the end of the file: 
 	<pre>ofxPd</pre>
@@ -126,7 +139,7 @@ You will also need to include some additional C Flags for building the libpd sou
 	USER_LIBS = -ldl -lm
 	</pre>
 
-#### For Codeblocks (Win):
+### For Codeblocks (Win):
 
 * add the ofxPd sources to the project:
 	* right-click on your project in the project tree
@@ -156,11 +169,51 @@ You will also need to include some additional C Flags for building the libpd sou
 	pthread
 	</pre>
 	
-### Adding Pure Data external libraries to ofxPd
+Notes
+-----
+
+### Sample Rate
+
+The sample rate is set to 44100 when initializing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
+
+For example: The default sample rate on Mac OSX is 96000. Running the app at 44100 results in double the playback pitch while initing ofxPd at 96000 gives the correct pitch.
+	
+Bugs & Errors
+-------------
+
+### Undefined basic_ostream in XCode
+
+If you get the following [linker error](http://www.openframeworks.cc/forum/viewtopic.php?f=8&t=5344&p=26537&hilit=Undefined+symbol#p26537) in XCode:
+<pre>
+Undefined symbols: "std::basic_ostream<char, std::char_traits<char> ...
+</pre>
+you need to change the Base SDK to 10.6: Project > Edit Project Settings
+
+### RtAudio Hang on Exit in 0062
+
+RtAudio will hang on app exit in OF 0062. The only way to fix this is to make a small edit to the OF 0062 core by editing `lib/openFrameworks/sound/ofSoundStream.cpp` and commenting line 143 so close() is not called.
+
+### Distorted Sound on iOS in 007
+
+There's a bug in the 007 release that causes distorted sound due to a typo when assigning a pointer. Edit `lib/openFrameworks/sound/ofxiPhoneSoundStream.mm` and change line 171 from
+<pre>soundOutput = soundOutput;</pre>
+to
+<pre>soundOutputPtr = soundOutput;</pre>
+
+Hopefully this will be fixed in the official release soon. [Fix from JonBro](https://github.com/openframeworks/openFrameworks/pull/690).
+
+### "verbose" redefinition in Win Codeblocks
+
+Currently, there is a static function in the videoinput lib on Win that conflicts with a #define in the Pure Data sources. The easy fix, until the OF core is updated, is to comment out line 115 in `libs\videoInput\include\videoInput.h`.
+
+Note: This change hasn't been tested while using the ofVideoGrabber yet ... there is a slight chance it may cause a crash, be warned.
+	
+Adding Pure Data external libraries to ofxPd
+--------------------------------------------
 
 ofxPd only includes the standard set of Pure Data objects as found in the "Vanilla" version of PD. If you wish to include an external library from Pd-Extended, etc you need to include the source files in your project and call the library setup function after intiializing ofxPd in order to load the lib.
 
-#### Adding external source files
+### Adding external source files
 
 The source files for externals included with Pd-Extended can be found in the Pure Data Subversion repository on Sourceforge. It is recommended that you use the latest Pd-Extended release branch as it will be more stable then the development version. See http://puredata.info/docs/developer/GettingPdSource
 
@@ -173,7 +226,7 @@ Note: Some libraries may require external libraries of their own and/or special 
 
 Note: Some special objects included with Pd-Vanilla are not part of the libpd distribution for licensing reasons, mainly expr~, fiddle~, and sigmund~. The sources for these are found with the sources for Pd itself in the `pd/extra` folder in the Subverison repo.
 
-#### Calling the external setup function
+### Calling the external setup function
 
 In order for libpd to use an external library, the library has to register itself on startup. This accomplished by calling the library's setup function which is named after the library followed by a "_setup" suffix: "library_setup()". The zexy setup function is simply "zexy_setup()". Call this setup function after initializing ofxPd in your app's setup() function:
 <pre>
@@ -213,14 +266,14 @@ extern "C" {
 
 The `extern "C"` keywords tell the compiler to look for a pure C function, not a C++ function. Make sure to include the "Externals.h" header file where you include "ofxPd.h". Add a setup function declaration ofr any other externals that need it here.
 
-#### External library licensing on iOS
+### External library licensing on iOS
 
 Apple's iOS and App Store policies forbid dynamically linking libraries. As such, you cannot include any GPL licensed externals as the GPL expressly requires dynamic linking. Submitting an app using a GPL library, such as expr~, is in violation of the GPL and will most likely result in your app being rejected from distribution in the App Store.
 
 GPL patches, however, are not in violation of GPL distribution policies and can be included. They are not compiled into an application binary and can be replaced by the user.
 
-DEVELOPING
-----------
+Developing ofxPd
+----------------
 
 You can help develop ofxPd on GitHub: [https://github.com/danomatika/ofxPd](https://github.com/danomatika/ofxPd)
 
