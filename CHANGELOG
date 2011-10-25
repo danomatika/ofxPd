@@ -16,7 +16,7 @@ v1.0.0: 2011 Oct
 		- renamed Receiver functions (bangReceived, floatReceived, etc) to match
 		  Java Receiver (receiveBang, receiveFloat, etc)
 		- renamed "dspOn/dspOff" to "start/stop"
-		- added receivers now receive from all subscribed sources by default
+		- receivers now receive from all subscribed sources by default
 		- renamed ofxPdListener and ofxPdTypes source files to PdReceiver and PdTypes
 
 v0.9.0: 2011 Sep
