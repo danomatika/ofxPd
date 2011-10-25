@@ -20,7 +20,7 @@
 #include <Poco/Mutex.h>
 
 #include "z_libpd.h"
-#include "ofxPdListener.h"
+#include "PdReceiver.h"
 
 #ifndef HAVE_UNISTD_H
 #warning You need to define HAVE_UNISTD_H in your project build settings!
@@ -64,8 +64,10 @@ class ofxPd {
 		
 		/// add to the pd search path
 		/// takes an absolute or relative path (in data folder)
+        ///
 		/// note: fails silently if path not found
-		void addToSearchPath(const std::string& path);
+		///
+        void addToSearchPath(const std::string& path);
 		
 		/// clear the current pd search path
 		void clearSearchPath();
@@ -83,18 +85,20 @@ class ofxPd {
 		/// clears the given Patch object
 		void closePatch(pd::Patch& patch);
 		
-		/// \section Dsp Control
+		/// \section Audio Processing Control
 		
-		/// turn on/off digital signal processing
+		/// start/stop audio processing
+        ///
+        /// note: in general, once started, you won't need to turn off audio processing
         ///
         /// shortcuts for [; pd dsp 1( & [; pd dsp 0(
         ///
-		void dspOn();
-		void dspOff();
+		void start();
+		void stop();
 		
 		//// \section Receiving
 		
-		/// bind/unbind ource names from libpd
+		/// subscribe/unsubscribe to source names from libpd
 		///
 		/// aka the pd receive name
 		///
@@ -103,39 +107,41 @@ class ofxPd {
 		///
 		/// note: the global source (aka "") exists by default 
 		///
-		void bind(const std::string& source);
-		void unbind(const std::string& source);
-		bool isBound(const std::string& source);
-		void unbindAll(); ///< listeners will be unsubscribed from *all* sources
+		void subscribe(const std::string& source);
+		void unsubscribe(const std::string& source);
+		bool isSubscribed(const std::string& source);
+		void unsubscribeAll(); ///< listeners will be unsubscribed from *all* sources
 		
         /// add/remove incoming event receiver
 		///
-		/// receivers automatically receive print and midi events only,
-		/// use subscribe() to plug a receiver into a source
+		/// receivers automatically receive from *all* subscribed sources
+        /// as well as print and midi events
+        ///
+        /// see receive/ignore for specific source recieving control
 		///
 		void addReceiver(pd::PdReceiver& receiver);
 		void removeReceiver(pd::PdReceiver& receiver);
 		bool receiverExists(pd::PdReceiver& receiver);
 		void clearReceivers();	/// also unsubscribes all receivers
         
-		/// un/subscribe a receiver to a source name from libpd
+		/// set a reciever to receive/ignore a subscribed source from libpd
 		///
-		/// un/subscribe using a source name or "" for all sources,
-		/// make sure to add the listener and source first
+		/// receive/ignore using a source name or "" for all sources,
+		/// make sure to add the receiver and source first
 		///
 		/// note: the global source (aka "") is added by default
-		/// note: unsubscribing from the global source unsubscribes from *all*
-		///       sources, so the listener will not recieve any message events,
+		/// note: ignoring the global source ignores *all* sources,
+		///       so the receiver will not receive any message events,
 		///		  but still get print and midi events
 		///
-		/// also: use negation if you want to subscribe to all sources but one:
+		/// also: use negation if you want to plug into all sources but one:
 		///
-		/// pd.subscribe(receiver);				// subscribe to all
-		/// pd.unsubscribe(receiver, "source"); // unsubscribe from "source"
+		/// pd.receive(receiver);			// receive from *all*
+		/// pd.ignore(receiver, "source");  // ignore "source"
 		///
-		void subscribe(pd::PdReceiver& listener, const std::string& source="");
-		void unsubscribe(pd::PdReceiver& listener, const std::string& source="");
-		bool isSubscribed(pd::PdReceiver& listener, const std::string& source="");
+		void receive(pd::PdReceiver& receiver, const std::string& source="");
+		void ignore(pd::PdReceiver& receiver, const std::string& source="");
+		bool isReceiving(pd::PdReceiver& receiver, const std::string& source="");
 		
 		/// \section Sending Functions
 		
@@ -383,7 +389,7 @@ class ofxPd {
 		};
 			
 		std::set<pd::PdReceiver*> receivers;	///< the receivers
-		std::map<std::string,Source> sources;	///< bound sources
+		std::map<std::string,Source> sources;	///< subscribed sources
 												///< first object always global
 		
 		std::string printMsg;	///< used to build a print message

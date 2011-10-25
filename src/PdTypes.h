@@ -183,7 +183,7 @@ struct FinishMsg : public Bang {
 			Bang(dest), msg(msg) {}
 };
 
-/// /section ofxPd stream interface midi objects
+/// /section Pd stream interface midi objects
 /// ref: http://www.gweep.net/~prefect/eng/reference/protocol/midispec.html
 
 /// send a note on/off event (set vel = 0 for noteoff)

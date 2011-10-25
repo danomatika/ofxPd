@@ -122,7 +122,7 @@ void ofxPd::clear() {
 	midiPort = 0;
 	_UNLOCK();
 
-	unbindAll();
+	unsubscribeAll();
 }
 
 //--------------------------------------------------------------------
@@ -194,9 +194,9 @@ void ofxPd::closePatch(Patch& patch) {
 }	
 
 //--------------------------------------------------------------------
-void ofxPd::dspOn() {
+void ofxPd::start() {
 
-	ofLog(OF_LOG_VERBOSE, "ofxPd: Dsp on");
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Audio processing on");
 	
 	// [; pd dsp 1(
 	_LOCK();
@@ -206,9 +206,9 @@ void ofxPd::dspOn() {
 	_UNLOCK();
 }
 
-void ofxPd::dspOff() {
+void ofxPd::stop() {
 
-	ofLog(OF_LOG_VERBOSE, "ofxPd: Dsp off");
+	ofLog(OF_LOG_VERBOSE, "ofxPd: Audio processing off");
 	
 	// [; pd dsp 0(
 	_LOCK();
@@ -219,10 +219,10 @@ void ofxPd::dspOff() {
 }
 
 //----------------------------------------------------------
-void ofxPd::bind(const std::string& source) {
+void ofxPd::subscribe(const std::string& source) {
 
-	if(isBound(source)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: bind: ignoring duplicate source");
+	if(isSubscribed(source)) {
+		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: ignoring duplicate source");
 		return;
 	}
 	
@@ -231,12 +231,12 @@ void ofxPd::bind(const std::string& source) {
 	sources.insert(pair<string, Source>(source, s));
 }
 
-void ofxPd::unbind(const std::string& source) {
+void ofxPd::unsubscribe(const std::string& source) {
 	
 	map<string, Source>::iterator iter;
 	iter = sources.find(source);
 	if(iter == sources.end()) {
-		ofLog(OF_LOG_WARNING, "ofxPd: unbind: ignoring unknown source");
+		ofLog(OF_LOG_WARNING, "ofxPd: unsubscribe: ignoring unknown source");
 		return;
 	}
 	
@@ -244,13 +244,13 @@ void ofxPd::unbind(const std::string& source) {
 	sources.erase(iter);
 }
 
-bool ofxPd::isBound(const std::string& source) {
+bool ofxPd::isSubscribed(const std::string& source) {
 	if(sources.find(source) != sources.end())
 		return true;
 	return false;
 }
 
-void ofxPd::unbindAll(){
+void ofxPd::unsubscribeAll(){
 	
 	sources.clear();
 
@@ -269,6 +269,9 @@ void ofxPd::addReceiver(PdReceiver& receiver) {
 		ofLog(OF_LOG_WARNING, "ofxPd: addReceiver: ignoring duplicate receiver");
 		return;
 	}
+    
+    // receive from all sources by default
+    receive(receiver);
 }
 
 void ofxPd::removeReceiver(PdReceiver& receiver) {
@@ -283,7 +286,7 @@ void ofxPd::removeReceiver(PdReceiver& receiver) {
 	receivers.erase(l_iter);
 
 	// remove from all sources
-	unsubscribe(receiver);		
+	ignore(receiver);		
 }
 
 bool ofxPd::receiverExists(PdReceiver& receiver) {
@@ -303,15 +306,15 @@ void ofxPd::clearReceivers() {
 }
 
 //----------------------------------------------------------
-void ofxPd::subscribe(PdReceiver& receiver, const std::string& source) {
+void ofxPd::receive(PdReceiver& receiver, const std::string& source) {
 
 	if(!receiverExists(receiver)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown receiver, call addReceiver first");
+		ofLog(OF_LOG_WARNING, "ofxPd: receive: unknown receiver, call addReceiver first");
 		return;
 	}
 	
-	if(!isBound(source)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: subscribe: unknown source, call bind first");
+	if(!isSubscribed(source)) {
+		ofLog(OF_LOG_WARNING, "ofxPd: receive: unknown source, call subscribe first");
 		return;
 	}
 	
@@ -322,34 +325,34 @@ void ofxPd::subscribe(PdReceiver& receiver, const std::string& source) {
 	// subscribe to specific source
 	if(source != "") {
 	
-		// make sure unsubscribed from global source
+		// make sure global source is ignored
 		if(g_iter->second.receiverExists(&receiver)) {
 			g_iter->second.removeReceiver(&receiver);
 		}
 		
-		// subscribe to specific source
+		// receive from specific source
 		map<string,Source>::iterator s_iter;
 		s_iter = sources.find(source);
 		s_iter->second.addReceiver(&receiver);
 	}
 	else {
-		// make sure unsubscribed from all sources
-		unsubscribe(receiver);
+		// make sure all sources are ignored
+		ignore(receiver);
 	
-		// subscribe to global source
+		// receive from the global source
 		g_iter->second.addReceiver(&receiver);
 	}
 }
 
-void ofxPd::unsubscribe(PdReceiver& receiver, const std::string& source) {
+void ofxPd::ignore(PdReceiver& receiver, const std::string& source) {
 
 	if(!receiverExists(receiver)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: unsubscribe: ignoring unknown receiver");
+		ofLog(OF_LOG_WARNING, "ofxPd: ignore: ignoring unknown receiver");
 		return;
 	}
 
-	if(!isBound(source)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: unsubscribe: ignoring unknown source");
+	if(!isSubscribed(source)) {
+		ofLog(OF_LOG_WARNING, "ofxPd: ignore: ignoring unknown source");
 		return;
 	}
 	
@@ -380,14 +383,14 @@ void ofxPd::unsubscribe(PdReceiver& receiver, const std::string& source) {
 		s_iter = sources.find(source);
 		s_iter->second.removeReceiver(&receiver);
 	}
-	else {	// unsubscribe from all sources	
+	else {	// ignore all sources	
 		for(s_iter = sources.begin(); s_iter != sources.end(); ++s_iter) {
 			s_iter->second.removeReceiver(&receiver);
 		}
 	}
 }
 
-bool ofxPd::isSubscribed(PdReceiver& receiver, const std::string& source) {
+bool ofxPd::isReceiving(PdReceiver& receiver, const std::string& source) {
 	map<string,Source>::iterator s_iter;
 	s_iter = sources.find(source);
 	if(s_iter != sources.end() && s_iter->second.receiverExists(&receiver))

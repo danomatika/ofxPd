@@ -12,7 +12,7 @@
  */
 #pragma once
 
-#include "ofxPdTypes.h"
+#include "PdTypes.h"
 
 namespace pd {
 

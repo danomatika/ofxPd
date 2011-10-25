@@ -8,7 +8,7 @@
  * See https://github.com/danomatika/ofxPd for documentation
  *
  */
-#include "ofxPdTypes.h"
+#include "PdTypes.h"
 	
 namespace pd {
     

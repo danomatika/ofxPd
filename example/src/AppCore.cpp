@@ -29,23 +29,22 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
     
     midiChan = 1; // midi channels are 1-16
 	
-	// bind receive source names
-	pd.bind("toOF");
-	pd.bind("env");
+	// subscribe to receive source names
+	pd.subscribe("toOF");
+	pd.subscribe("env");
 	
-	// add listener
-	pd.addReceiver(*this);
-	pd.subscribe(*this);			// listen to everything
-	pd.unsubscribe(*this, "env");	// don't listen to "env"
+	// add receiver
+	pd.addReceiver(*this);  // automatically receives from all subscribed sources
+	pd.ignore(*this, "env"); // don't receive from "env"
 	
-	//pd.subscribe(*this, "toOF");	// listen to "toOF"
-	//pd.unsubscribe(*this);		// don't listen to anything
+    //pd.ignore(*this);             // ignore all sources
+	//pd.receive(*this, "toOF");	// receive only from "toOF"
 	
 	// add the data/pd folder to the search path
 	pd.addToSearchPath("pd");
 	
 	// audio processing on
-	pd.dspOn();
+	pd.start();
 	
 	
 	cout << endl << "BEGIN Patch Test" << endl;
@@ -249,13 +248,13 @@ void AppCore::keyPressed (int key) {
 			break;
 			
 		case ' ':
-			if(pd.isSubscribed(*this, "env")) {
-				pd.unsubscribe(*this, "env");
-                cout << "unsubscribed from env" << endl;
+			if(pd.isReceiving(*this, "env")) {
+				pd.ignore(*this, "env");
+                cout << "ignoring env" << endl;
 			}
 			else {
-				pd.subscribe(*this, "env");
-                cout << "subscribed to env" << endl;
+				pd.receive(*this, "env");
+                cout << "receiving from env" << endl;
 			}
 			break;
 			

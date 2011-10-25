@@ -2,18 +2,22 @@ v1.0.0: 2011 Oct
 
 	- added List building & sending
 	- wrapped Pd receiver and types within a "pd" namespace
-	- reworked api to better match libpd C/Java api
+	- reworked api to better match libpd Java api
 		- channel is now first arg in midi functions
 		- port is now first arg in raw midi byte functions
 		- pgm num range is now 1-128 to match [pgmin]/[pgmout] (was 0-127)
 		- destination names are now set when finishing compound messages
 		- renamed "sysRT" functions to "sysRt"
 		- renamed "getArrayLen" to "getArraySize"
-		- renamed "*Source" functions to "*bind" functions
+		- renamed "*Source" functions to "subscribe" functions
+		- renamed "*subscribe" functions to "receive/ignore" functions
 		- renamed "ofxPdListener" class to "PdReceiver"
 		- renamed "*Listener" functions to "*Receiver" functions
 		- renamed Receiver functions (bangReceived, floatReceived, etc) to match
 		  Java Receiver (receiveBang, receiveFloat, etc)
+		- renamed "dspOn/dspOff" to "start/stop"
+		- added receivers now receive from all subscribed sources by default
+		- renamed ofxPdListener and ofxPdTypes source files to PdReceiver and PdTypes
 
 v0.9.0: 2011 Sep
 
@@ -27,7 +31,7 @@ v0.8.0: 2011 Aug
 	
 	- added codeblocks project for linux
 	- added branch with codeblocks project for windows
-	- udpated readme with minigw info
+	- updated readme with minigw info
 	- added pd external libs tutorial to readme
 
 v0.7.0: 2011 Jun-Jul
@@ -73,7 +77,7 @@ v0.3.0: 2011 May 18
 	- fleshed out entire libpd api
 	- sound in and out working
 	- added stream interface and type structs
-	- added reciving control functions
+	- added receiving control functions
 	- updated example
 	- bugfix listener bugs and print handling
 
