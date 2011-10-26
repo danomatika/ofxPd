@@ -33,13 +33,18 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.subscribe("toOF");
 	pd.subscribe("env");
 	
-	// add receiver
-	pd.addReceiver(*this);  // automatically receives from all subscribed sources
+	// add message receiver
+	pd.addReceiver(*this);   // automatically receives from all subscribed sources
 	pd.ignore(*this, "env"); // don't receive from "env"
-	
     //pd.ignore(*this);             // ignore all sources
 	//pd.receive(*this, "toOF");	// receive only from "toOF"
 	
+    // add midi receiver
+    pd.addMidiReceiver(*this);  // automatically receives from all channels
+    //pd.ignoreMidi(*this, 1);     // ignore midi channel 1
+    //pd.ignoreMidi(*this);         // ignore all channels
+    //pd.receiveMidi(*this, 1);    // receive only from channel 1
+    
 	// add the data/pd folder to the search path
 	pd.addToSearchPath("pd");
 	
@@ -316,32 +321,32 @@ void AppCore::receiveMessage(const std::string& dest, const std::string& msg, co
 
 //--------------------------------------------------------------
 void AppCore::receiveNote(const int channel, const int pitch, const int velocity) {
-	cout << "OF: note: " << channel << " " << pitch << " " << velocity << endl;
+	cout << "OF MIDI: note: " << channel << " " << pitch << " " << velocity << endl;
 }
 
 void AppCore::receiveCtl(const int channel, const int controller, const int value) {
-	cout << "OF: ctl: " << channel << " " << controller << " " << value << endl;
+	cout << "OF MIDI: ctl: " << channel << " " << controller << " " << value << endl;
 }
 
 // note: pgm nums are 1-128 to match pd
 void AppCore::receivePgm(const int channel, const int value) {
-	cout << "OF: pgm: " << channel << " " << value << endl;
+	cout << "OF MIDI: pgm: " << channel << " " << value << endl;
 }
 
 void AppCore::receiveBend(const int channel, const int value) {
-	cout << "OF: bend: " << channel << " " << value << endl;
+	cout << "OF MIDI: bend: " << channel << " " << value << endl;
 }
 
 void AppCore::receiveTouch(const int channel, const int value) {
-	cout << "OF: touch: " << channel << " " << value << endl;
+	cout << "OF MIDI: touch: " << channel << " " << value << endl;
 }
 
 void AppCore::receivePolyTouch(const int channel, const int pitch, const int value) {
-	cout << "OF: polytouch: " << channel << " " << pitch << " " << value << endl;
+	cout << "OF MIDI: polytouch: " << channel << " " << pitch << " " << value << endl;
 }
 
 // note: pd adds +2 to the port num, so sending to port 3 in pd to [midiout],
 //       shows up at port 1 in ofxPd
 void AppCore::receiveMidiByte(const int port, const int byte) {
-	cout << "OF: midibyte: " << port << " " << byte << endl;
+	cout << "OF MIDI: midibyte: " << port << " " << byte << endl;
 }

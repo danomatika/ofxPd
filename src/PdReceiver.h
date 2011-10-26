@@ -30,17 +30,6 @@ class PdReceiver {
 		virtual void receiveSymbol(const std::string& dest, const std::string& symbol) {}
 		virtual void receiveList(const std::string& dest, const List& list) {}
 		virtual void receiveMessage(const std::string& dest, const std::string& msg, const List& list) {}
-
-		/// midi
-		virtual void receiveNote(const int channel, const int pitch, const int velocity) {}
-		virtual void receiveCtl(const int channel, const int controller, const int value) {}
-		virtual void receivePgm(const int channel, const int value) {} // note: pgm value is 1-128
-		virtual void receiveBend(const int channel, const int value) {}
-		virtual void receiveTouch(const int channel, const int value) {}
-		virtual void receivePolyTouch(const int channel, const int pitch, const int value) {}
-		
-		/// raw midi byte
-		virtual void receiveMidiByte(const int port, const int byte) {}
 };
 
 } // namespace

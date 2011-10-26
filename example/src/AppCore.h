@@ -17,7 +17,7 @@
 // a namespace for the Pd types
 using namespace pd;
 
-class AppCore : public PdReceiver {
+class AppCore : public PdReceiver, public PdMidiReceiver {
 
 	public:
 
@@ -38,7 +38,7 @@ class AppCore : public PdReceiver {
 		void audioReceived(float * input, int bufferSize, int nChannels);
 		void audioRequested(float * output, int bufferSize, int nChannels);
 		
-		// pd callbacks
+		// pd message receiver callbacks
 		void receivePrint(const std::string& message);
 		
 		void receiveBang(const std::string& dest);
@@ -47,6 +47,7 @@ class AppCore : public PdReceiver {
 		void receiveList(const std::string& dest, const List& list);
 		void receiveMessage(const std::string& dest, const std::string& msg, const List& list);
 		
+        // pd midi receiver callbacks
 		void receiveNote(const int channel, const int pitch, const int velocity);
 		void receiveCtl(const int channel, const int controller, const int value);
 		void receivePgm(const int channel, const int value);

@@ -240,6 +240,7 @@
 		30D3EFEC14573E7900D55978 /* PdReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdReceiver.h; sourceTree = "<group>"; };
 		30D3EFED14573E7900D55978 /* PdTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdTypes.cpp; sourceTree = "<group>"; };
 		30D3EFEE14573E7900D55978 /* PdTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdTypes.h; sourceTree = "<group>"; };
+		30D3F00F1457A40100D55978 /* PdMidiReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdMidiReceiver.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -303,6 +304,7 @@
 				30B2D0C5142B2CA5000AB5E1 /* ofxPd.h */,
 				30B2D0C9142B2CA5000AB5E1 /* pd */,
 				30D3EFEC14573E7900D55978 /* PdReceiver.h */,
+				30D3F00F1457A40100D55978 /* PdMidiReceiver.h */,
 				30D3EFED14573E7900D55978 /* PdTypes.cpp */,
 				30D3EFEE14573E7900D55978 /* PdTypes.h */,
 			);

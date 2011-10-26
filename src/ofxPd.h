@@ -21,6 +21,7 @@
 
 #include "z_libpd.h"
 #include "PdReceiver.h"
+#include "PdMidiReceiver.h"
 
 #ifndef HAVE_UNISTD_H
 #warning You need to define HAVE_UNISTD_H in your project build settings!
@@ -96,7 +97,7 @@ class ofxPd {
 		void start();
 		void stop();
 		
-		//// \section Receiving
+		//// \section Message Receiving
 		
 		/// subscribe/unsubscribe to source names from libpd
 		///
@@ -115,16 +116,16 @@ class ofxPd {
         /// add/remove incoming event receiver
 		///
 		/// receivers automatically receive from *all* subscribed sources
-        /// as well as print and midi events
+        /// as well as print events
         ///
-        /// see receive/ignore for specific source recieving control
+        /// see receive/ignore for specific source receiving control
 		///
 		void addReceiver(pd::PdReceiver& receiver);
 		void removeReceiver(pd::PdReceiver& receiver);
 		bool receiverExists(pd::PdReceiver& receiver);
 		void clearReceivers();	/// also unsubscribes all receivers
         
-		/// set a reciever to receive/ignore a subscribed source from libpd
+		/// set a receever to receive/ignore a subscribed source from libpd
 		///
 		/// receive/ignore using a source name or "" for all sources,
 		/// make sure to add the receiver and source first
@@ -132,7 +133,7 @@ class ofxPd {
 		/// note: the global source (aka "") is added by default
 		/// note: ignoring the global source ignores *all* sources,
 		///       so the receiver will not receive any message events,
-		///		  but still get print and midi events
+		///		  but still get print events
 		///
 		/// also: use negation if you want to plug into all sources but one:
 		///
@@ -143,6 +144,39 @@ class ofxPd {
 		void ignore(pd::PdReceiver& receiver, const std::string& source="");
 		bool isReceiving(pd::PdReceiver& receiver, const std::string& source="");
 		
+        /// \section Midi Receiving
+        
+        /// add/remove incoming midi event receiver
+		///
+		/// receivers automatically receive from *all* incoming midi channels
+        ///
+        /// see receive/ignore for specific source recieving control
+		///
+		void addMidiReceiver(pd::PdMidiReceiver& receiver);
+		void removeMidiReceiver(pd::PdMidiReceiver& receiver);
+		bool midiReceiverExists(pd::PdMidiReceiver& receiver);
+		void clearMidiReceivers();
+        
+		/// set a receiver to receive/ignore an incoming midi channel
+		///
+		/// receive/ignore a specific midi channel or 0 for all channels,
+		/// make sure to add the receiver first
+		///
+        /// note: midi bytes are sent to all receivers
+		/// note: the global channel (aka 0) is added by default
+		/// note: ignoring the global channel ignores *all* channels,
+		///       so the receiver will not receive any midi events except for
+        ///       midi bytes
+		///
+		/// also: use negation if you want to plug into all channels but one:
+		///
+		/// pd.receiveMidi(midiReceiver);   // receive from *all* channels
+		/// pd.ignoreMidi(midiReceiver, 2); // ignore channel 2
+		///
+		void receiveMidi(pd::PdMidiReceiver& receiver, int channel=0);
+		void ignoreMidi(pd::PdMidiReceiver& receiver, int channel=0);
+		bool isReceivingMidi(pd::PdMidiReceiver& receiver, int channel=0);
+        
 		/// \section Sending Functions
 		
 		/// messages
@@ -362,12 +396,12 @@ class ofxPd {
 		
 		int midiPort;   ///< target midi port
 	
-		/// a receiving sources's pointer and bound receivers
+		/// a receiving source's pointer and receivers
 		struct Source {
 			
 			// data
 			void* pointer;                          ///< source pointer
-			std::set<pd::PdReceiver*> receivers;    ///< subscribed receivers
+			std::set<pd::PdReceiver*> receivers;    ///< receivers
 
 			// helper functions
 			void addReceiver(pd::PdReceiver* receiver) {
@@ -387,13 +421,44 @@ class ofxPd {
 				return false;
 			}
 		};
-			
-		std::set<pd::PdReceiver*> receivers;	///< the receivers
+        
+        std::set<pd::PdReceiver*> receivers;	///< the receivers
 		std::map<std::string,Source> sources;	///< subscribed sources
 												///< first object always global
 		
 		std::string printMsg;	///< used to build a print message
+        
+        /// a receiving midi channel's receivers
+        struct Channel {
+        
+            std::set<pd::PdMidiReceiver*> receivers;    ///< receivers
+            
+            // helper functions
+            void addMidiReceiver(pd::PdMidiReceiver* receiver) {
+				receivers.insert(receiver);
+			}
+			
+			void removeMidiReceiver(pd::PdMidiReceiver* receiver) {
+				std::set<pd::PdMidiReceiver*>::iterator iter;
+				iter = receivers.find(receiver);
+				if(iter != receivers.end())
+					receivers.erase(iter);
+			}
+
+			bool midiReceiverExists(pd::PdMidiReceiver* receiver) {
+				if(receivers.find(receiver) != receivers.end())
+					return true;
+				return false;
+			}
+        };
+        
+        std::set<pd::PdMidiReceiver*> midiReceivers;	///< the midi receivers
+		std::map<int,Channel> channels;                 ///< subscribed channels
+                                                        ///< first object always global
 		
+        /// check if a channel exists
+        bool channelExists(int channel);
+        
 		Poco::Mutex mutex;	///< used to lock libpd for thread safety
 		
 		// libpd static callback functions
