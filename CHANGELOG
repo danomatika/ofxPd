@@ -17,6 +17,7 @@ v1.0.0: 2011 Oct
 		  Java Receiver (receiveBang, receiveFloat, etc)
 		- split midi receiving into PdMidiReceiver base class
 		- renamed "dspOn/dspOff" to "start/stop"
+		- added computeAudio function
 		- receivers now receive from all subscribed sources by default
 		- renamed ofxPdListener and ofxPdTypes source files to PdReceiver and PdTypes
 		- renamed "getArraySize" function to "arraySize"
@@ -24,6 +25,9 @@ v1.0.0: 2011 Oct
 		- renamed "getBlockSize" function to "blockSize"
 	- added receiveMidi/ignoreMidi functions to filter midi channel events for PdMidiReceivers
 	- separated base libpd wrapper into PdBase class, now extended by ofxPd
+		- added setReceiver and setMidiReceiver functions
+		- added audio processing (processRaw, processShort, etc) functions
+	- added isInited function
 
 v0.9.0: 2011 Sep
 
