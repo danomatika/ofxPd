@@ -10,7 +10,8 @@
  */
 #pragma once
 
-#include "ofMain.h"
+#include <string>
+#include <vector>
 
 namespace pd {
 
@@ -189,7 +190,7 @@ struct FinishMsg : public Bang {
 /// send a note on/off event (set vel = 0 for noteoff)
 struct Note {
 
-	const int channel;	///< channel (1 - 16 * dev#)
+	const int channel;	///< channel (0 - 15 * dev#)
 	const int pitch;	///< pitch (0 - 127)
 	const int velocity;	///< velocity (0 - 127)
 	
@@ -200,7 +201,7 @@ struct Note {
 /// change a control value aka send a CC message
 struct Ctl {
 
-	const int channel;		///< channel (1 - 16 * dev#)
+	const int channel;		///< channel (0 - 15 * dev#)
 	const int controller;	///< controller (0 - 127)
 	const int value;		///< value (0 - 127)
 	
@@ -211,8 +212,8 @@ struct Ctl {
 /// change a program value (ie an instrument)
 struct Pgm {
 
-	const int channel;	///< channel (1 - 16 * dev#)
-	const int value;	///< value (1 - 128)
+	const int channel;	///< channel (0 - 15 * dev#)
+	const int value;	///< value (0 - 127)
 	
 	explicit Pgm(const int channel, const int value) :
 		channel(channel), value(value) {}
@@ -221,7 +222,7 @@ struct Pgm {
 /// change the pitch bend value
 struct Bend {
 
-	const int channel;	///< channel (1 - 16 * dev#)
+	const int channel;	///< channel (0 - 15 * dev#)
 	const int value;	///< value (-8192 - 8192)
 	
 	explicit Bend(const int channel, const int value) :
@@ -231,7 +232,7 @@ struct Bend {
 /// change an aftertouch value
 struct Touch {
 
-	const int channel;	///< channel (1 - 16 * dev#)
+	const int channel;	///< channel (0 - 15 * dev#)
 	const int value;	///< value (0 - 127)
 	
 	explicit Touch(const int channel, const int value) :
@@ -241,7 +242,7 @@ struct Touch {
 /// change a poly aftertouch value
 struct PolyTouch {
 
-	const int channel;	///< channel (1 - 16 * dev#)
+	const int channel;	///< channel (0 - 15 * dev#)
 	const int pitch;	///< controller (0 - 127)
 	const int value;	///< value (0 - 127)
 	

@@ -19,13 +19,7 @@
 #include <set>
 #include <Poco/Mutex.h>
 
-#include "z_libpd.h"
-#include "PdReceiver.h"
-#include "PdMidiReceiver.h"
-
-#ifndef HAVE_UNISTD_H
-#warning You need to define HAVE_UNISTD_H in your project build settings!
-#endif
+#include "PdBase.h"
 
 ///
 ///	a Pure Data instance
@@ -35,7 +29,16 @@
 /// note: libpd currently does not support multiple states and it is 
 ///       suggested that you use only one ofxPd object at a time
 ///
-class ofxPd {
+/// also: see PdBase.h for some functions which are not wrapped by ofxPd
+///
+///
+/// differences from libpd C api and/or C++ wrapper:
+///     - the ofxPd object is thread safe
+///     - midi channels are 1-16 to match pd ranges
+///     - pgm values are 1-128 to match [pgmin]/[pgmout] in pd
+///     - init() takes numOutChannels first to match ofSoundStream
+///
+class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiReceiver {
 	
 	public :
 
@@ -87,13 +90,14 @@ class ofxPd {
 		void closePatch(pd::Patch& patch);
 		
 		/// \section Audio Processing Control
-		
+        
 		/// start/stop audio processing
         ///
         /// note: in general, once started, you won't need to turn off audio processing
         ///
         /// shortcuts for [; pd dsp 1( & [; pd dsp 0(
         ///
+        void computeAudio(bool state);
 		void start();
 		void stop();
 		
@@ -110,8 +114,8 @@ class ofxPd {
 		///
 		void subscribe(const std::string& source);
 		void unsubscribe(const std::string& source);
-		bool isSubscribed(const std::string& source);
-		void unsubscribeAll(); ///< listeners will be unsubscribed from *all* sources
+		bool exists(const std::string& source);
+		void unsubscribeAll(); ///< receivers will be unsubscribed from *all* sources
 		
         /// add/remove incoming event receiver
 		///
@@ -125,7 +129,7 @@ class ofxPd {
 		bool receiverExists(pd::PdReceiver& receiver);
 		void clearReceivers();	/// also unsubscribes all receivers
         
-		/// set a receever to receive/ignore a subscribed source from libpd
+		/// set a receiver to receive/ignore a subscribed source from libpd
 		///
 		/// receive/ignore using a source name or "" for all sources,
 		/// make sure to add the receiver and source first
@@ -134,7 +138,7 @@ class ofxPd {
 		/// note: ignoring the global source ignores *all* sources,
 		///       so the receiver will not receive any message events,
 		///		  but still get print events
-		///
+        ///
 		/// also: use negation if you want to plug into all sources but one:
 		///
 		/// pd.receive(receiver);			// receive from *all*
@@ -150,7 +154,7 @@ class ofxPd {
 		///
 		/// receivers automatically receive from *all* incoming midi channels
         ///
-        /// see receive/ignore for specific source recieving control
+        /// see receive/ignore for specific source receiving control
 		///
 		void addMidiReceiver(pd::PdMidiReceiver& receiver);
 		void removeMidiReceiver(pd::PdMidiReceiver& receiver);
@@ -277,60 +281,28 @@ class ofxPd {
 		/// pd << Float("test", 100);
 		/// pd << Symbol("test", "a symbol");
 		///
-		ofxPd& operator<<(const pd::Bang& var);
-		ofxPd& operator<<(const pd::Float& var);
-		ofxPd& operator<<(const pd::Symbol& var);
-		
 		/// compound messages
 		///
 		/// pd << StartMsg() << 100 << 1.2 << "a symbol" << FinishList("test");
 		///
-		ofxPd& operator<<(const pd::StartMsg& var);
-        ofxPd& operator<<(const pd::FinishList& var);
-        ofxPd& operator<<(const pd::FinishMsg& var);
-        
-		/// add a float to the message
-		ofxPd& operator<<(const bool var);
-        ofxPd& operator<<(const int var);
-        ofxPd& operator<<(const float var);
-        ofxPd& operator<<(const double var);
-        
-		/// add a symbol to the message
-		ofxPd& operator<<(const char var);
-        ofxPd& operator<<(const char* var);
-        ofxPd& operator<<(const std::string& var);
-		
 		/// midi
 		///
 		/// pd << Note(64) << Note(64, 60) << Note(64, 60, 1);
 		/// pd << Ctl(100, 64) << Pgm(100, 1) << Bend(2000, 1);
 		/// pd << Touch(127, 1) << PolyTouch(64, 127, 1);
 		///
-		ofxPd& operator<<(const pd::Note& var);
-		ofxPd& operator<<(const pd::Ctl& var);
-		ofxPd& operator<<(const pd::Pgm& var);
-		ofxPd& operator<<(const pd::Bend& var);
-		ofxPd& operator<<(const pd::Touch& var);
-		ofxPd& operator<<(const pd::PolyTouch& var);
-		
 		/// compound raw midi byte stream
 		///
 		/// pd << StartMidi() << 0xEF << 0x45 << Finish();
 		/// pd << StartSysEx() << 0xE7 << 0x45 << 0x56 << 0x17 << Finish();
-		///
-		ofxPd& operator<<(const pd::StartMidi& var);
-		ofxPd& operator<<(const pd::StartSysEx& var);
-		ofxPd& operator<<(const pd::StartSysRt& var);
-        ofxPd& operator<<(const pd::Finish& var);
-		
-		/// is a message or byte stream currently in progress?
-        inline bool isMsgInProgress() {return bMsgInProgress;}
-		
+        ///
+        /// see PdBase.h for function declarations
+        	
 		/// \section Array Access
 		
-		/// get size of pd array
+		/// get the size of a pd array
 		/// returns 0 if array not found
-		int getArraySize(const std::string& arrayName);
+		int arraySize(const std::string& arrayName);
 		
 		/// read from a pd array
 		///
@@ -358,49 +330,52 @@ class ofxPd {
 		/// clear array and set to a specific value
 		void clearArray(const std::string& arrayName, int value=0);
 		
-		/// \section Utils
+        /// \section Utils
 		
+        /// has this pd instance been initialized?
+        /// bool isInited();
+        ///
 		/// get the blocksize of pd (sample length per channel)
-		static int getBlockSize();
-        
+		/// static int getBlockSize();
+        ///
         /// get/set the max length of messages and lists, default: 32
-        void setMaxMsgLength(unsigned int len);
-        unsigned int getMaxMsgLength();
-		
+        /// void setMaxMsgLength(unsigned int len);
+        /// unsigned int getMaxMsgLength();
+        ///
+        /// see PdBase.h for function declarations
+        
 		/// \section Audio Processing Callbacks
 		
 		/// the libpd processing is done in the audioOut callback
 		virtual void audioIn(float * input, int bufferSize, int nChannels);
 		virtual void audioOut(float * output, int bufferSize, int nChannels);
 		
+    protected:
+    
+        /// message callbacks
+        void receivePrint(const std::string& message);
+		void receiveBang(const std::string& dest);
+		void receiveFloat(const std::string& dest, float value);
+		void receiveSymbol(const std::string& dest, const std::string& symbol);
+		void receiveList(const std::string& dest, const pd::List& list);
+		void receiveMessage(const std::string& dest, const std::string& msg, const pd::List& list);
+        
+        /// midi callbacks
+        void receiveNote(const int channel, const int pitch, const int velocity);
+		void receiveCtl(const int channel, const int controller, const int value);
+		void receivePgm(const int channel, const int value);
+		void receiveBend(const int channel, const int value);
+		void receiveTouch(const int channel, const int value);
+		void receivePolyTouch(const int channel, const int pitch, const int value);
+		void receiveMidiByte(const int port, const int byte);
+        
     private:
-	
-		bool bPdInited;						///< is pd inited?
 
-		int sampleRate;						///< the audio sample rate
-		int ticksPerBuffer;					///< how many pd blocks per buffer frame
-		int numInChannels, numOutChannels;	///< number of channels in/out
-		float *inputBuffer;  				///< interleaved input audio buffer
-		
-		bool bMsgInProgress;				///< is a compound message being constructed?
-        int maxMsgLen;                      ///< maximum allowed message length
-        int curMsgLen;                      ///< the length of the current message
-		
-		/// compound message status
-		enum MsgType {
-			MSG,
-			MIDI,
-			SYSEX,
-			SYSRT
-		} msgType;
-		
-		int midiPort;   ///< target midi port
+		float* inputBuffer;  				///< interleaved input audio buffer
 	
 		/// a receiving source's pointer and receivers
 		struct Source {
 			
-			// data
-			void* pointer;                          ///< source pointer
 			std::set<pd::PdReceiver*> receivers;    ///< receivers
 
 			// helper functions
@@ -425,8 +400,6 @@ class ofxPd {
         std::set<pd::PdReceiver*> receivers;	///< the receivers
 		std::map<std::string,Source> sources;	///< subscribed sources
 												///< first object always global
-		
-		std::string printMsg;	///< used to build a print message
         
         /// a receiving midi channel's receivers
         struct Channel {
@@ -455,29 +428,4 @@ class ofxPd {
         std::set<pd::PdMidiReceiver*> midiReceivers;	///< the midi receivers
 		std::map<int,Channel> channels;                 ///< subscribed channels
                                                         ///< first object always global
-		
-        /// check if a channel exists
-        bool channelExists(int channel);
-        
-		Poco::Mutex mutex;	///< used to lock libpd for thread safety
-		
-		// libpd static callback functions
-		static void _print(const char* s);
-				
-		static void _bang(const char* source);
-		static void _float(const char* source, float value);
-		static void _symbol(const char* source, const char* symbol);
-		
-		static void _list(const char* source, int argc, t_atom* argv); 
-		static void _message(const char* source, const char *symbol,
-												int argc, t_atom *argv);
-
-		static void _noteon(int channel, int pitch, int velocity);
-		static void _controlchange(int channel, int controller, int value);
-		static void _programchange(int channel, int value);
-		static void _pitchbend(int channel, int value);
-		static void _aftertouch(int channel, int value);
-		static void _polyaftertouch(int channel, int pitch, int value);
-		
-		static void _midibyte(int port, int byte);
 };

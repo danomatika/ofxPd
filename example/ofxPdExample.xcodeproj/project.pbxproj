@@ -83,6 +83,7 @@
 		30B2D17E142B2CA5000AB5E1 /* x_qlist.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D133142B2CA5000AB5E1 /* x_qlist.c */; };
 		30B2D17F142B2CA5000AB5E1 /* x_time.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D134142B2CA5000AB5E1 /* x_time.c */; };
 		30D3EFEF14573E7900D55978 /* PdTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30D3EFED14573E7900D55978 /* PdTypes.cpp */; };
+		30D3F0121457BEDA00D55978 /* PdBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30D3F0101457BEDA00D55978 /* PdBase.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -241,6 +242,8 @@
 		30D3EFED14573E7900D55978 /* PdTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdTypes.cpp; sourceTree = "<group>"; };
 		30D3EFEE14573E7900D55978 /* PdTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdTypes.h; sourceTree = "<group>"; };
 		30D3F00F1457A40100D55978 /* PdMidiReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdMidiReceiver.h; sourceTree = "<group>"; };
+		30D3F0101457BEDA00D55978 /* PdBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdBase.cpp; sourceTree = "<group>"; };
+		30D3F0111457BEDA00D55978 /* PdBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdBase.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -302,6 +305,8 @@
 			children = (
 				30B2D0C4142B2CA5000AB5E1 /* ofxPd.cpp */,
 				30B2D0C5142B2CA5000AB5E1 /* ofxPd.h */,
+				30D3F0101457BEDA00D55978 /* PdBase.cpp */,
+				30D3F0111457BEDA00D55978 /* PdBase.h */,
 				30B2D0C9142B2CA5000AB5E1 /* pd */,
 				30D3EFEC14573E7900D55978 /* PdReceiver.h */,
 				30D3F00F1457A40100D55978 /* PdMidiReceiver.h */,
@@ -726,6 +731,7 @@
 				30B2D17E142B2CA5000AB5E1 /* x_qlist.c in Sources */,
 				30B2D17F142B2CA5000AB5E1 /* x_time.c in Sources */,
 				30D3EFEF14573E7900D55978 /* PdTypes.cpp in Sources */,
+				30D3F0121457BEDA00D55978 /* PdBase.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

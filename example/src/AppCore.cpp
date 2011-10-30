@@ -32,7 +32,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	// subscribe to receive source names
 	pd.subscribe("toOF");
 	pd.subscribe("env");
-	
+
 	// add message receiver
 	pd.addReceiver(*this);   // automatically receives from all subscribed sources
 	pd.ignore(*this, "env"); // don't receive from "env"
@@ -42,15 +42,15 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
     // add midi receiver
     pd.addMidiReceiver(*this);  // automatically receives from all channels
     //pd.ignoreMidi(*this, 1);     // ignore midi channel 1
-    //pd.ignoreMidi(*this);         // ignore all channels
+    //pd.ignoreMidi(*this);        // ignore all channels
     //pd.receiveMidi(*this, 1);    // receive only from channel 1
-    
+
 	// add the data/pd folder to the search path
 	pd.addToSearchPath("pd");
-	
+
 	// audio processing on
 	pd.start();
-	
+
 	
 	cout << endl << "BEGIN Patch Test" << endl;
 	
@@ -69,13 +69,17 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << "FINISH Patch Test" << endl;
 	
 	
-	
 	cout << endl << "BEGIN Message Test" << endl;
 	
 	// test basic atoms
 	pd.sendBang("fromOF");
 	pd.sendFloat("fromOF", 100);
 	pd.sendSymbol("fromOF", "test string");
+    
+    // stream interface
+    pd << Bang("fromOF")
+       << Float("fromOF", 100)
+       << Symbol("fromOF", "test string");
 	
 	// send a list
 	pd.startMsg();
@@ -83,7 +87,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 		pd.addSymbol("a symbol");
 	pd.finishList("fromOF");
 	
-	// send a message to the $0 reciever ie $0-toOF
+	// send a message to the $0 receiver ie $0-toOF
 	pd.startMsg();
 		pd.addFloat(1.23);
 		pd.addSymbol("a symbol");
@@ -95,6 +99,9 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
     testList.addSymbol("sent from a List object");
     pd.sendList("fromOF", testList);
     pd.sendMsg("fromOF", "msg", testList);
+    
+    // stream interface for list
+    pd << StartMsg() << 1.23 << "sent from a streamed list" << FinishList("fromOF");
     
 	cout << "FINISH Message Test" << endl;
 	
@@ -114,8 +121,9 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.sendSysRtByte(0, 239);
 	
 	// stream
-	pd << Note(midiChan, 60) << Ctl(midiChan, 100, 64) << Pgm(midiChan, 100)
-       << Bend(midiChan, 2000) << Touch(midiChan, 100) << PolyTouch(midiChan, 64, 100)
+	pd << Note(midiChan, 60) << Ctl(midiChan, 100, 64)
+       << Pgm(midiChan, 100) << Bend(midiChan, 2000)
+       << Touch(midiChan, 100) << PolyTouch(midiChan, 64, 100)
 	   << StartMidi(0) << 239 << Finish()
 	   << StartSysEx(0) << 239 << Finish()
 	   << StartSysRt(0) << 239 << Finish();
@@ -126,7 +134,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << endl << "BEGIN Array Test" << endl;
 	
 	// array check length
-	cout << "array1 len: " << pd.getArraySize("array1") << endl;
+	cout << "array1 len: " << pd.arraySize("array1") << endl;
 	
 	// read array
 	std::vector<float> array1;
@@ -175,6 +183,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 		pd.addFloat(72);
 	pd.finishList("tone");
 	pd.sendBang("tone");
+
 }
 
 //--------------------------------------------------------------

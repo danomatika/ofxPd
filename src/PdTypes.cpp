@@ -9,6 +9,9 @@
  *
  */
 #include "PdTypes.h"
+
+#include <iostream>
+#include <sstream>
 	
 namespace pd {
     
@@ -20,7 +23,9 @@ Patch::Patch() : _handle(NULL), _dollarZero(0), _dollarZeroStr("0"),
 Patch::Patch(void* handle, int dollarZero, const std::string& filename, const std::string& path) :
 	_handle(handle), _dollarZero(dollarZero), _dollarZeroStr(""), 
 	_filename(filename), _path(path) {
-	_dollarZeroStr = ofToString(dollarZero);
+    std::stringstream itoa;
+    itoa << dollarZero;
+	_dollarZeroStr = itoa.str();
 }
 	
 bool Patch::isValid() const {
@@ -81,7 +86,7 @@ bool List::isSymbol(const unsigned int index) const {
 //----------------------------------------------------------
 float List::asFloat(const unsigned int index) const {
 	if(!isFloat(index)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: List: object is not a float");
+		std::cerr << "Pd: List: object is not a float" << std::endl;
 		return 0;
 	}
 	return objects[index].value;
@@ -89,7 +94,7 @@ float List::asFloat(const unsigned int index) const {
 
 std::string List::asSymbol(const unsigned int index) const {
 	if(!isSymbol(index)) {
-		ofLog(OF_LOG_WARNING, "ofxPd: List: object is not a symbol");
+		std::cerr << "Pd: List: object is not a symbol" << std::endl;
 		return "";
 	}
 	return objects[index].symbol;
@@ -158,11 +163,15 @@ void List::clear() {
 
 std::string List::toString() const {
 	
-	string line;
+	std::string line;
+    std::stringstream itoa;
 	
 	for(int i = 0; i < objects.size(); ++i) {
-		if(isFloat(i))
-			line += ofToString(asFloat(i));
+		if(isFloat(i)) {
+            itoa << asFloat(i);
+			line += itoa.str();
+            itoa.str("");
+        }
 		else
 			line += asSymbol(i);
 		line += " ";
