@@ -29,8 +29,8 @@
 /// note: libpd currently does not support multiple states and it is 
 ///       suggested that you use only one ofxPd object at a time
 ///
-/// also: see PdBase.h for some functions which are not wrapped by ofxPd
-///
+/// also: see PdBase.h in src/pd/cpp for some functions which are not wrapped by
+///       ofxPd and PdTypes.h for small Pd C++ Objects
 ///
 /// differences from libpd C api and/or C++ wrapper:
 ///     - the ofxPd object is thread safe

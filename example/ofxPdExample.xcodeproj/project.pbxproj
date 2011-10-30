@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3000D8EE145D1029009FC3EC /* PdBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3000D8E8145D1029009FC3EC /* PdBase.cpp */; };
+		3000D8EF145D1029009FC3EC /* PdTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3000D8EC145D1029009FC3EC /* PdTypes.cpp */; };
 		30B2D0C1142B2C7A000AB5E1 /* AppCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D0BF142B2C7A000AB5E1 /* AppCore.cpp */; };
 		30B2D135142B2CA5000AB5E1 /* ofxPd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D0C4142B2CA5000AB5E1 /* ofxPd.cpp */; };
 		30B2D137142B2CA5000AB5E1 /* s_libpdmidi.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D0CB142B2CA5000AB5E1 /* s_libpdmidi.c */; };
@@ -82,8 +84,6 @@
 		30B2D17D142B2CA5000AB5E1 /* x_net.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D132142B2CA5000AB5E1 /* x_net.c */; };
 		30B2D17E142B2CA5000AB5E1 /* x_qlist.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D133142B2CA5000AB5E1 /* x_qlist.c */; };
 		30B2D17F142B2CA5000AB5E1 /* x_time.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D134142B2CA5000AB5E1 /* x_time.c */; };
-		30D3EFEF14573E7900D55978 /* PdTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30D3EFED14573E7900D55978 /* PdTypes.cpp */; };
-		30D3F0121457BEDA00D55978 /* PdBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30D3F0101457BEDA00D55978 /* PdBase.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -134,6 +134,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3000D8E8145D1029009FC3EC /* PdBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdBase.cpp; sourceTree = "<group>"; };
+		3000D8E9145D1029009FC3EC /* PdBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdBase.h; sourceTree = "<group>"; };
+		3000D8EA145D1029009FC3EC /* PdMidiReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdMidiReceiver.h; sourceTree = "<group>"; };
+		3000D8EB145D1029009FC3EC /* PdReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdReceiver.h; sourceTree = "<group>"; };
+		3000D8EC145D1029009FC3EC /* PdTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdTypes.cpp; sourceTree = "<group>"; };
+		3000D8ED145D1029009FC3EC /* PdTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdTypes.h; sourceTree = "<group>"; };
 		30B2D0BF142B2C7A000AB5E1 /* AppCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppCore.cpp; sourceTree = "<group>"; };
 		30B2D0C0142B2C7A000AB5E1 /* AppCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppCore.h; sourceTree = "<group>"; };
 		30B2D0C4142B2CA5000AB5E1 /* ofxPd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPd.cpp; sourceTree = "<group>"; };
@@ -238,12 +244,6 @@
 		30B2D132142B2CA5000AB5E1 /* x_net.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_net.c; sourceTree = "<group>"; };
 		30B2D133142B2CA5000AB5E1 /* x_qlist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_qlist.c; sourceTree = "<group>"; };
 		30B2D134142B2CA5000AB5E1 /* x_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_time.c; sourceTree = "<group>"; };
-		30D3EFEC14573E7900D55978 /* PdReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdReceiver.h; sourceTree = "<group>"; };
-		30D3EFED14573E7900D55978 /* PdTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdTypes.cpp; sourceTree = "<group>"; };
-		30D3EFEE14573E7900D55978 /* PdTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdTypes.h; sourceTree = "<group>"; };
-		30D3F00F1457A40100D55978 /* PdMidiReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdMidiReceiver.h; sourceTree = "<group>"; };
-		30D3F0101457BEDA00D55978 /* PdBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdBase.cpp; sourceTree = "<group>"; };
-		30D3F0111457BEDA00D55978 /* PdBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdBase.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -292,6 +292,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3000D8E7145D1029009FC3EC /* cpp */ = {
+			isa = PBXGroup;
+			children = (
+				3000D8E8145D1029009FC3EC /* PdBase.cpp */,
+				3000D8E9145D1029009FC3EC /* PdBase.h */,
+				3000D8EA145D1029009FC3EC /* PdMidiReceiver.h */,
+				3000D8EB145D1029009FC3EC /* PdReceiver.h */,
+				3000D8EC145D1029009FC3EC /* PdTypes.cpp */,
+				3000D8ED145D1029009FC3EC /* PdTypes.h */,
+			);
+			path = cpp;
+			sourceTree = "<group>";
+		};
 		30B2D0C2142B2C8B000AB5E1 /* ofxPd */ = {
 			isa = PBXGroup;
 			children = (
@@ -305,13 +318,7 @@
 			children = (
 				30B2D0C4142B2CA5000AB5E1 /* ofxPd.cpp */,
 				30B2D0C5142B2CA5000AB5E1 /* ofxPd.h */,
-				30D3F0101457BEDA00D55978 /* PdBase.cpp */,
-				30D3F0111457BEDA00D55978 /* PdBase.h */,
 				30B2D0C9142B2CA5000AB5E1 /* pd */,
-				30D3EFEC14573E7900D55978 /* PdReceiver.h */,
-				30D3F00F1457A40100D55978 /* PdMidiReceiver.h */,
-				30D3EFED14573E7900D55978 /* PdTypes.cpp */,
-				30D3EFEE14573E7900D55978 /* PdTypes.h */,
 			);
 			name = src;
 			path = ../../../addons/ofxPd/src;
@@ -320,6 +327,7 @@
 		30B2D0C9142B2CA5000AB5E1 /* pd */ = {
 			isa = PBXGroup;
 			children = (
+				3000D8E7145D1029009FC3EC /* cpp */,
 				30B2D0CA142B2CA5000AB5E1 /* libpd_wrapper */,
 				30B2D0D0142B2CA5000AB5E1 /* LICENSE.txt */,
 				30B2D0D1142B2CA5000AB5E1 /* pure-data */,
@@ -730,8 +738,8 @@
 				30B2D17D142B2CA5000AB5E1 /* x_net.c in Sources */,
 				30B2D17E142B2CA5000AB5E1 /* x_qlist.c in Sources */,
 				30B2D17F142B2CA5000AB5E1 /* x_time.c in Sources */,
-				30D3EFEF14573E7900D55978 /* PdTypes.cpp in Sources */,
-				30D3F0121457BEDA00D55978 /* PdBase.cpp in Sources */,
+				3000D8EE145D1029009FC3EC /* PdBase.cpp in Sources */,
+				3000D8EF145D1029009FC3EC /* PdTypes.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

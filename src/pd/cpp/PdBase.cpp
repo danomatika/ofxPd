@@ -5,7 +5,7 @@
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
  *
- * See https://github.com/danomatika/PdBase for documentation
+ * See https://github.com/danomatika/ofxPd for documentation
  *
  * This project uses libpd, copyrighted by Miller Puckette and others using the
  * "Standard Improved BSD License". See the file "LICENSE.txt" in src/pd.
