@@ -15,12 +15,14 @@ v1.0.0: 2011 Oct
 		- renamed "*Listener" functions to "*Receiver" functions
 		- renamed Receiver functions (bangReceived, floatReceived, etc) to match
 		  Java Receiver (receiveBang, receiveFloat, etc)
+		- split midi receiving into PdMidiReceiver base class
 		- renamed "dspOn/dspOff" to "start/stop"
 		- receivers now receive from all subscribed sources by default
 		- renamed ofxPdListener and ofxPdTypes source files to PdReceiver and PdTypes
 		- renamed "getArraySize" function to "arraySize"
 		- renamed "getMaxMsgLength" function to "maxMsgLength"
 		- renamed "getBlockSize" function to "blockSize"
+	- added receiveMidi/ignoreMidi functions to filter midi channel events for PdMidiReceivers
 	- separated base libpd wrapper into PdBase class, now extended by ofxPd
 
 v0.9.0: 2011 Sep
