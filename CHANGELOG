@@ -27,6 +27,7 @@ v1.0.0: 2011 Oct
 	- separated base libpd wrapper into PdBase class, now extended by ofxPd
 		- added setReceiver and setMidiReceiver functions
 		- added audio processing (processRaw, processShort, etc) functions
+		- Pd class source files (PdTypes, PdReceiver, etc) have been moved to src/pd/cpp
 	- added isInited function
 
 v0.9.0: 2011 Sep
