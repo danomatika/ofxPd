@@ -211,7 +211,7 @@ void PdBase::sendSymbol(const std::string& dest, const std::string& symbol) {
 }
 
 //----------------------------------------------------------
-void PdBase::startMsg() {
+void PdBase::startMessage() {
 	
 	if(bMsgInProgress) {
     	cerr << "Pd: Can not start message, message in progress" << endl;
@@ -237,7 +237,7 @@ void PdBase::addFloat(const float value) {
 	}
     
     if(curMsgLen+1 >= maxMsgLen) {
-        cerr << "Pd: Can not add float, max msg len of " << maxMsgLen<< " reached" << endl;
+        cerr << "Pd: Can not add float, max message len of " << maxMsgLen<< " reached" << endl;
 		return;
     }
 	
@@ -258,7 +258,7 @@ void PdBase::addSymbol(const std::string& symbol) {
 	}
 	
     if(curMsgLen+1 >= maxMsgLen) {
-        cerr << "Pd: Can not add symbol, max msg len of " << maxMsgLen << " reached" << endl;
+        cerr << "Pd: Can not add symbol, max message len of " << maxMsgLen << " reached" << endl;
 		return;
     }
     
@@ -284,7 +284,7 @@ void PdBase::finishList(const std::string& dest) {
     curMsgLen = 0;
 }
 
-void PdBase::finishMsg(const std::string& dest, const std::string& msg) {
+void PdBase::finishMessage(const std::string& dest, const std::string& msg) {
 
 	if(!bMsgInProgress) {
     	cerr << "Pd: Can not finish message, message not in progress" << endl;
@@ -325,7 +325,7 @@ void PdBase::sendList(const std::string& dest, const List& list) {
     finishList(dest);
 }
 
-void PdBase::sendMsg(const std::string& dest, const std::string& msg, const List& list) {
+void PdBase::sendMessage(const std::string& dest, const std::string& msg, const List& list) {
 
     if(bMsgInProgress) {
     	cerr << "Pd: Can not send message, message in progress" << endl;
@@ -344,31 +344,31 @@ void PdBase::sendMsg(const std::string& dest, const std::string& msg, const List
 			addSymbol(list.asSymbol(i));
 	}
     
-    finishMsg(dest, msg);
+    finishMessage(dest, msg);
 }
 
 //----------------------------------------------------------
-void PdBase::sendNote(const int channel, const int pitch, const int velocity) {
+void PdBase::sendNoteOn(const int channel, const int pitch, const int velocity) {
 	libpd_noteon(channel, pitch, velocity);
 }
 
-void PdBase::sendCtl(const int channel, const int control, const int value) {
+void PdBase::sendControlChange(const int channel, const int control, const int value) {
 	libpd_controlchange(channel, control, value);
 }
 
-void PdBase::sendPgm(const int channel, int program) {
+void PdBase::sendProgramChange(const int channel, int program) {
 	libpd_programchange(channel, program);
 }
 
-void PdBase::sendBend(const int channel, const int value) {
+void PdBase::sendPitchBend(const int channel, const int value) {
 	libpd_pitchbend(channel, value);
 }
 
-void PdBase::sendTouch(const int channel, const int value) {
+void PdBase::sendAftertouch(const int channel, const int value) {
 	libpd_aftertouch(channel, value);
 }
 
-void PdBase::sendPolyTouch(const int channel, int pitch, int value) {
+void PdBase::sendPolyAftertouch(const int channel, int pitch, int value) {
 	libpd_polyaftertouch(channel, pitch, value);
 }
 
@@ -377,11 +377,11 @@ void PdBase::sendMidiByte(const int port, const int value) {
 	libpd_midibyte(port, value);
 }
 
-void PdBase::sendSysExByte(const int port, const int value) {
+void PdBase::sendSysex(const int port, const int value) {
 	libpd_sysex(port, value);
 }
 
-void PdBase::sendSysRtByte(const int port, const int value) {
+void PdBase::sendSysRealTime(const int port, const int value) {
 	libpd_sysrealtime(port, value);
 }
 
@@ -423,8 +423,8 @@ PdBase& PdBase::operator<<(const Symbol& var) {
 }
 
 //----------------------------------------------------------
-PdBase& PdBase::operator<<(const StartMsg& var) {
-	startMsg();
+PdBase& PdBase::operator<<(const StartMessage& var) {
+	startMessage();
     return *this;
 }
 
@@ -433,8 +433,8 @@ PdBase& PdBase::operator<<(const FinishList& var) {
     return *this;
 }
 
-PdBase& PdBase::operator<<(const FinishMsg& var) {
-	finishMsg(var.dest, var.msg);
+PdBase& PdBase::operator<<(const FinishMessage& var) {
+	finishMessage(var.dest, var.msg);
     return *this;
 }
 
@@ -457,11 +457,11 @@ PdBase& PdBase::operator<<(const int var) {
 			break;
 			
 		case SYSEX:
-			sendSysExByte(midiPort, var);
+			sendSysex(midiPort, var);
 			break;
 			
 		case SYSRT:
-			sendSysRtByte(midiPort, var);
+			sendSysRealTime(midiPort, var);
 			break;
 	}
 
@@ -497,33 +497,33 @@ PdBase& PdBase::operator<<(const std::string& var) {
 }
 
 //----------------------------------------------------------
-PdBase& PdBase::operator<<(const Note& var) {
-	sendNote(var.channel, var.pitch, var.velocity);
+PdBase& PdBase::operator<<(const NoteOn& var) {
+	sendNoteOn(var.channel, var.pitch, var.velocity);
 	return *this;
 }
 
-PdBase& PdBase::operator<<(const Ctl& var) {
-	sendCtl(var.channel, var.controller, var.value);
+PdBase& PdBase::operator<<(const ControlChange& var) {
+	sendControlChange(var.channel, var.controller, var.value);
 	return *this;
 }
 
-PdBase& PdBase::operator<<(const Pgm& var) {
-	sendPgm(var.channel, var.value);
+PdBase& PdBase::operator<<(const ProgramChange& var) {
+	sendProgramChange(var.channel, var.value);
 	return *this;
 }
 
-PdBase& PdBase::operator<<(const Bend& var) {
-	sendBend(var.channel, var.value);
+PdBase& PdBase::operator<<(const PitchBend& var) {
+	sendPitchBend(var.channel, var.value);
 	return *this;
 }
 
-PdBase& PdBase::operator<<(const Touch& var) {
-	sendTouch(var.channel, var.value);
+PdBase& PdBase::operator<<(const Aftertouch& var) {
+	sendAftertouch(var.channel, var.value);
 	return *this;
 }
 
-PdBase& PdBase::operator<<(const PolyTouch& var) {
-	sendPolyTouch(var.channel, var.pitch, var.value);
+PdBase& PdBase::operator<<(const PolyAftertouch& var) {
+	sendPolyAftertouch(var.channel, var.pitch, var.value);
 	return *this;
 }
 
@@ -542,10 +542,10 @@ PdBase& PdBase::operator<<(const StartMidi& var) {
 	return *this;
 }
 
-PdBase& PdBase::operator<<(const StartSysEx& var) {
+PdBase& PdBase::operator<<(const StartSysex& var) {
 
 	if(bMsgInProgress) {
-		cerr << "Pd: Can not start SysEx stream, message in progress" << endl;
+		cerr << "Pd: Can not start Sysex stream, message in progress" << endl;
 		return *this;
 	}
 	
@@ -556,10 +556,10 @@ PdBase& PdBase::operator<<(const StartSysEx& var) {
 	return *this;
 }
 
-PdBase& PdBase::operator<<(const StartSysRt& var) {
+PdBase& PdBase::operator<<(const StartSysRealTime& var) {
 
 	if(bMsgInProgress) {
-        cerr << "Pd: Can not start SysRealtime stream, message in progress" << endl;
+        cerr << "Pd: Can not start SysRealRime stream, message in progress" << endl;
 		return *this;
 	}
 	
@@ -695,11 +695,11 @@ int PdBase::blockSize() {
 	return libpd_blocksize();
 }
 
-void PdBase::setMaxMsgLength(unsigned int len) {
+void PdBase::setMaxMessageLen(unsigned int len) {
     maxMsgLen = len;
 }
 
-unsigned int PdBase::maxMsgLength() {
+unsigned int PdBase::maxMessageLen() {
     return maxMsgLen;
 }
 
@@ -719,7 +719,7 @@ void PdBase::_print(const char* s)
 		}
 		
 		if(pdPtr->receiver)
-            pdPtr->receiver->receivePrint(pdPtr->printMsg);
+            pdPtr->receiver->print(pdPtr->printMsg);
 	
 		pdPtr->printMsg = "";
 		return;
@@ -793,32 +793,32 @@ void PdBase::_message(const char* source, const char *symbol, int argc, t_atom *
 
 void PdBase::_noteon(int channel, int pitch, int velocity) {
     if(pdPtr->midiReceiver)
-        pdPtr->midiReceiver->receiveNote(channel, pitch, velocity);
+        pdPtr->midiReceiver->receiveNoteOn(channel, pitch, velocity);
 }
 
 void PdBase::_controlchange(int channel, int controller, int value) {
     if(pdPtr->midiReceiver)
-        pdPtr->midiReceiver->receiveCtl(channel, controller, value);
+        pdPtr->midiReceiver->receiveControlChange(channel, controller, value);
 }
 
 void PdBase::_programchange(int channel, int value) {
     if(pdPtr->midiReceiver)
-        pdPtr->midiReceiver->receivePgm(channel, value);
+        pdPtr->midiReceiver->receiveProgramChange(channel, value);
 }
 
 void PdBase::_pitchbend(int channel, int value) {
     if(pdPtr->midiReceiver)
-        pdPtr->midiReceiver->receiveBend(channel, value);
+        pdPtr->midiReceiver->receivePitchBend(channel, value);
 }
 
 void PdBase::_aftertouch(int channel, int value) {
     if(pdPtr->midiReceiver)
-        pdPtr->midiReceiver->receiveTouch(channel, value);
+        pdPtr->midiReceiver->receiveAftertouch(channel, value);
 }
 
 void PdBase::_polyaftertouch(int channel, int pitch, int value) {
     if(pdPtr->midiReceiver)
-        pdPtr->midiReceiver->receivePolyTouch(channel, pitch, value);
+        pdPtr->midiReceiver->receivePolyAftertouch(channel, pitch, value);
 }
 
 void PdBase::_midibyte(int port, int byte) {

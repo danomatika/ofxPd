@@ -39,7 +39,7 @@ class AppCore : public PdReceiver, public PdMidiReceiver {
 		void audioRequested(float * output, int bufferSize, int nChannels);
 		
 		// pd message receiver callbacks
-		void receivePrint(const std::string& message);
+		void print(const std::string& message);
 		
 		void receiveBang(const std::string& dest);
 		void receiveFloat(const std::string& dest, float value);
@@ -48,12 +48,12 @@ class AppCore : public PdReceiver, public PdMidiReceiver {
 		void receiveMessage(const std::string& dest, const std::string& msg, const List& list);
 		
         // pd midi receiver callbacks
-		void receiveNote(const int channel, const int pitch, const int velocity);
-		void receiveCtl(const int channel, const int controller, const int value);
-		void receivePgm(const int channel, const int value);
-		void receiveBend(const int channel, const int value);
-		void receiveTouch(const int channel, const int value);
-		void receivePolyTouch(const int channel, const int pitch, const int value);
+		void receiveNoteOn(const int channel, const int pitch, const int velocity);
+		void receiveControlChange(const int channel, const int controller, const int value);
+		void receiveProgramChange(const int channel, const int value);
+		void receivePitchBend(const int channel, const int value);
+		void receiveAftertouch(const int channel, const int value);
+		void receivePolyAftertouch(const int channel, const int pitch, const int value);
 		
 		void receiveMidiByte(const int port, const int byte);
 		

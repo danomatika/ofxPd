@@ -82,13 +82,13 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
        << Symbol("fromOF", "test string");
 	
 	// send a list
-	pd.startMsg();
+	pd.startMessage();
 		pd.addFloat(1.23);
 		pd.addSymbol("a symbol");
 	pd.finishList("fromOF");
 	
 	// send a message to the $0 receiver ie $0-toOF
-	pd.startMsg();
+	pd.startMessage();
 		pd.addFloat(1.23);
 		pd.addSymbol("a symbol");
 	pd.finishList(patch.dollarZeroStr()+"-fromOF");
@@ -98,10 +98,10 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
     testList.addFloat(1.23);
     testList.addSymbol("sent from a List object");
     pd.sendList("fromOF", testList);
-    pd.sendMsg("fromOF", "msg", testList);
+    pd.sendMessage("fromOF", "msg", testList);
     
     // stream interface for list
-    pd << StartMsg() << 1.23 << "sent from a streamed list" << FinishList("fromOF");
+    pd << StartMessage() << 1.23 << "sent from a streamed list" << FinishList("fromOF");
     
 	cout << "FINISH Message Test" << endl;
 	
@@ -109,24 +109,24 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << endl << "BEGIN MIDI Test" << endl;
 	
 	// send functions
-	pd.sendNote(midiChan, 60);
-	pd.sendCtl(midiChan, 0, 64);
-	pd.sendPgm(midiChan, 100);   // note: pgm num range is 1 - 128
-	pd.sendBend(midiChan, 2000); // note: ofxPd uses -8192 - 8192 while [bendin] returns 0 - 16383,
-                                 // so sending a val of 2000 gives 10192 in pd
-	pd.sendTouch(midiChan, 100);
-	pd.sendPolyTouch(midiChan, 64, 100);
+	pd.sendNoteOn(midiChan, 60);
+	pd.sendControlChange(midiChan, 0, 64);
+	pd.sendProgramChange(midiChan, 100);    // note: pgm num range is 1 - 128
+	pd.sendPitchBend(midiChan, 2000);   // note: ofxPd uses -8192 - 8192 while [bendin] returns 0 - 16383,
+                                        // so sending a val of 2000 gives 10192 in pd
+	pd.sendAftertouch(midiChan, 100);
+	pd.sendPolyAftertouch(midiChan, 64, 100);
 	pd.sendMidiByte(0, 239);    // note: pd adds +2 to the port number from [midiin], [sysexin], & [realtimein]
-	pd.sendSysExByte(0, 239);   // so sending to port 0 gives port 2 in pd
-	pd.sendSysRtByte(0, 239);
+	pd.sendSysex(0, 239);       // so sending to port 0 gives port 2 in pd
+	pd.sendSysRealTime(0, 239);
 	
 	// stream
-	pd << Note(midiChan, 60) << Ctl(midiChan, 100, 64)
-       << Pgm(midiChan, 100) << Bend(midiChan, 2000)
-       << Touch(midiChan, 100) << PolyTouch(midiChan, 64, 100)
+	pd << NoteOn(midiChan, 60) << ControlChange(midiChan, 100, 64)
+       << ProgramChange(midiChan, 100) << PitchBend(midiChan, 2000)
+       << Aftertouch(midiChan, 100) << PolyAftertouch(midiChan, 64, 100)
 	   << StartMidi(0) << 239 << Finish()
-	   << StartSysEx(0) << 239 << Finish()
-	   << StartSysRt(0) << 239 << Finish();
+	   << StartSysex(0) << 239 << Finish()
+	   << StartSysRealTime(0) << 239 << Finish();
     
 	cout << "FINISH MIDI Test" << endl;
 	
@@ -178,7 +178,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	// play a tone by sending a list
 	// [list tone pitch 72 (
-	pd.startMsg();
+	pd.startMessage();
 		pd.addSymbol("pitch");
 		pd.addFloat(72);
 	pd.finishList("tone");
@@ -213,7 +213,7 @@ void AppCore::exit() {}
 
 //--------------------------------------------------------------
 void AppCore::playTone(int pitch) {
-	pd << StartMsg() << "pitch" << pitch << FinishList("tone") << Bang("tone");
+	pd << StartMessage() << "pitch" << pitch << FinishList("tone") << Bang("tone");
 }
 
 //--------------------------------------------------------------
@@ -288,7 +288,7 @@ void AppCore::audioRequested(float * output, int bufferSize, int nChannels) {
 }
 
 //--------------------------------------------------------------
-void AppCore::receivePrint(const std::string& message) {
+void AppCore::print(const std::string& message) {
 	cout << message << endl;
 }
 
@@ -325,37 +325,37 @@ void AppCore::receiveList(const std::string& dest, const List& list) {
 }
 
 void AppCore::receiveMessage(const std::string& dest, const std::string& msg, const List& list) {
-	cout << "OF: msg " << dest << ": " << msg << " " << list.toString() << list.types() << endl;
+	cout << "OF: message " << dest << ": " << msg << " " << list.toString() << list.types() << endl;
 }
 
 //--------------------------------------------------------------
-void AppCore::receiveNote(const int channel, const int pitch, const int velocity) {
-	cout << "OF MIDI: note: " << channel << " " << pitch << " " << velocity << endl;
+void AppCore::receiveNoteOn(const int channel, const int pitch, const int velocity) {
+	cout << "OF MIDI: note on: " << channel << " " << pitch << " " << velocity << endl;
 }
 
-void AppCore::receiveCtl(const int channel, const int controller, const int value) {
-	cout << "OF MIDI: ctl: " << channel << " " << controller << " " << value << endl;
+void AppCore::receiveControlChange(const int channel, const int controller, const int value) {
+	cout << "OF MIDI: control change: " << channel << " " << controller << " " << value << endl;
 }
 
 // note: pgm nums are 1-128 to match pd
-void AppCore::receivePgm(const int channel, const int value) {
-	cout << "OF MIDI: pgm: " << channel << " " << value << endl;
+void AppCore::receiveProgramChange(const int channel, const int value) {
+	cout << "OF MIDI: program change: " << channel << " " << value << endl;
 }
 
-void AppCore::receiveBend(const int channel, const int value) {
-	cout << "OF MIDI: bend: " << channel << " " << value << endl;
+void AppCore::receivePitchBend(const int channel, const int value) {
+	cout << "OF MIDI: pitch bend: " << channel << " " << value << endl;
 }
 
-void AppCore::receiveTouch(const int channel, const int value) {
-	cout << "OF MIDI: touch: " << channel << " " << value << endl;
+void AppCore::receiveAftertouch(const int channel, const int value) {
+	cout << "OF MIDI: aftertouch: " << channel << " " << value << endl;
 }
 
-void AppCore::receivePolyTouch(const int channel, const int pitch, const int value) {
-	cout << "OF MIDI: polytouch: " << channel << " " << pitch << " " << value << endl;
+void AppCore::receivePolyAftertouch(const int channel, const int pitch, const int value) {
+	cout << "OF MIDI: poly aftertouch: " << channel << " " << pitch << " " << value << endl;
 }
 
 // note: pd adds +2 to the port num, so sending to port 3 in pd to [midiout],
 //       shows up at port 1 in ofxPd
 void AppCore::receiveMidiByte(const int port, const int byte) {
-	cout << "OF MIDI: midibyte: " << port << " " << byte << endl;
+	cout << "OF MIDI: midi byte: " << port << " " << byte << endl;
 }

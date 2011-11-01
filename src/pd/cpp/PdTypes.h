@@ -163,9 +163,9 @@ class List : public Bang {
 };
 
 /// start a compound message
-struct StartMsg {
+struct StartMessage {
     explicit
-        StartMsg() {}
+        StartMessage() {}
 };
 
 /// finish a compound message as a list
@@ -175,78 +175,78 @@ struct FinishList : public Bang {
 };
 
 /// finish a compound message as a typed message
-struct FinishMsg : public Bang {
+struct FinishMessage : public Bang {
 
 	const std::string msg; ///< target msg at the dest
 
     explicit
-		FinishMsg(const std::string& dest, const std::string& msg) :
+		FinishMessage(const std::string& dest, const std::string& msg) :
 			Bang(dest), msg(msg) {}
 };
 
 /// /section Pd stream interface midi objects
 /// ref: http://www.gweep.net/~prefect/eng/reference/protocol/midispec.html
 
-/// send a note on/off event (set vel = 0 for noteoff)
-struct Note {
+/// send a note on event (set vel = 0 for noteoff)
+struct NoteOn {
 
 	const int channel;	///< channel (0 - 15 * dev#)
 	const int pitch;	///< pitch (0 - 127)
 	const int velocity;	///< velocity (0 - 127)
 	
-	explicit Note(const int channel, const int pitch, const int velocity=64) :
+	explicit NoteOn(const int channel, const int pitch, const int velocity=64) :
 		channel(channel), pitch(pitch), velocity(velocity) {}
 };
 
 /// change a control value aka send a CC message
-struct Ctl {
+struct ControlChange {
 
 	const int channel;		///< channel (0 - 15 * dev#)
 	const int controller;	///< controller (0 - 127)
 	const int value;		///< value (0 - 127)
 	
-	explicit Ctl(const int channel, const int controller, const int value) :
+	explicit ControlChange(const int channel, const int controller, const int value) :
 		channel(channel), controller(controller), value(value) {}
 };
 
 /// change a program value (ie an instrument)
-struct Pgm {
+struct ProgramChange {
 
 	const int channel;	///< channel (0 - 15 * dev#)
 	const int value;	///< value (0 - 127)
 	
-	explicit Pgm(const int channel, const int value) :
+	explicit ProgramChange(const int channel, const int value) :
 		channel(channel), value(value) {}
 };
 
 /// change the pitch bend value
-struct Bend {
+struct PitchBend {
 
 	const int channel;	///< channel (0 - 15 * dev#)
 	const int value;	///< value (-8192 - 8192)
 	
-	explicit Bend(const int channel, const int value) :
+	explicit PitchBend(const int channel, const int value) :
 		channel(channel), value(value) {}
 };
 
 /// change an aftertouch value
-struct Touch {
+struct Aftertouch {
 
 	const int channel;	///< channel (0 - 15 * dev#)
 	const int value;	///< value (0 - 127)
 	
-	explicit Touch(const int channel, const int value) :
+	explicit Aftertouch(const int channel, const int value) :
 		channel(channel), value(value) {}
 };
 
 /// change a poly aftertouch value
-struct PolyTouch {
+struct PolyAftertouch {
 
 	const int channel;	///< channel (0 - 15 * dev#)
 	const int pitch;	///< controller (0 - 127)
 	const int value;	///< value (0 - 127)
 	
-	explicit PolyTouch(const int channel, const int pitch, const int value) :
+	explicit PolyAftertouch(const int channel, const int pitch, const int value) :
 		channel(channel), pitch(pitch), value(value) {}
 };
 
@@ -259,19 +259,19 @@ struct StartMidi {
 };
 
 /// start a raw sysex byte stream
-struct StartSysEx {
+struct StartSysex {
 
 	const int port; 	///< raw portmidi port
 	
-	explicit StartSysEx(const int port=0) : port(port) {}
+	explicit StartSysex(const int port=0) : port(port) {}
 };
 
 /// start a sys realtime byte stream
-struct StartSysRt {
+struct StartSysRealTime {
 
 	const int port; 	///< raw portmidi port
 	
-	explicit StartSysRt(const int port=0) : port(port) {}
+	explicit StartSysRealTime(const int port=0) : port(port) {}
 };
 
 /// finish a midi byte stream

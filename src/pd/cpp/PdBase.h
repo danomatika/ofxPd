@@ -175,7 +175,7 @@ class PdBase {
 		
 		/// compound messages
 		///
-		/// pd.startMsg();
+		/// pd.startMessage();
 		/// pd.addSymbol("hello");
 		/// pd.addFloat(1.23);
 		/// pd.finishList("test");  // "test" is the reciever name in pd
@@ -185,16 +185,16 @@ class PdBase {
 		/// 
         /// finishMsg sends a typed message -> [; test msg1 hello 1.23(
         ///
-        /// pd.startMsg();
+        /// pd.startMessage();
         /// pd.addSymbol("hello");
 		/// pd.addFloat(1.23);
-		/// pd.finishMsg("test", "msg1");
+		/// pd.finishMessage("test", "msg1");
         ///
-		virtual void startMsg();
+		virtual void startMessage();
 		virtual void addFloat(const float value);
 		virtual void addSymbol(const std::string& symbol);
 		virtual void finishList(const std::string& dest);
-        virtual void finishMsg(const std::string& dest, const std::string& msg);
+        virtual void finishMessage(const std::string& dest, const std::string& msg);
         
         /// compound messages using the PdBase List type
         ///
@@ -212,12 +212,12 @@ class PdBase {
         /// stream operators work as well:
         ///
         /// list << "hello" << 1.23;
-        /// pd.sendMsg("test", "msg1", list);
+        /// pd.sendMessage("test", "msg1", list);
         /// 
         /// sends a typed message -> [; test msg1 hello 1.23(
         ///
         virtual void sendList(const std::string& dest, const pd::List& list);
-        virtual void sendMsg(const std::string& dest, const std::string& msg, const pd::List& list);
+        virtual void sendMessage(const std::string& dest, const std::string& msg, const pd::List& list);
         
 		/// midi
 		///
@@ -236,12 +236,12 @@ class PdBase {
         /// [bendin] takes 0 - 16383 while [bendout] returns -8192 - 8192
 		/// [pgmin] and [pgmout] are 0 - 127
         ///
-		virtual void sendNote(const int channel, const int pitch, const int velocity=64);
-		virtual void sendCtl(const int channel, const int controller, const int value);
-		virtual void sendPgm(const int channel, const int value);
-		virtual void sendBend(const int channel, const int value);
-		virtual void sendTouch(const int channel, const int value);
-		virtual void sendPolyTouch(const int channel, const int pitch, const int value);		
+		virtual void sendNoteOn(const int channel, const int pitch, const int velocity=64);
+		virtual void sendControlChange(const int channel, const int controller, const int value);
+		virtual void sendProgramChange(const int channel, const int value);
+		virtual void sendPitchBend(const int channel, const int value);
+		virtual void sendAftertouch(const int channel, const int value);
+		virtual void sendPolyAftertouch(const int channel, const int pitch, const int value);		
 		
 		/// raw midi bytes
 		///
@@ -255,8 +255,8 @@ class PdBase {
         /// so sending port 1 to [midiout] returns port 1 in PdBase
         ///
 		virtual void sendMidiByte(const int port, const int value);
-		virtual void sendSysExByte(const int port, const int value);
-		virtual void sendSysRtByte(const int port, const int value);
+		virtual void sendSysex(const int port, const int value);
+		virtual void sendSysRealTime(const int port, const int value);
 		
 		/// \section Sending Stream Interface
 		
@@ -272,11 +272,11 @@ class PdBase {
 		
 		/// compound messages
 		///
-		/// pd << StartMsg() << 100 << 1.2 << "a symbol" << FinishList("test");
+		/// pd << StartMessage() << 100 << 1.2 << "a symbol" << FinishList("test");
 		///
-		PdBase& operator<<(const pd::StartMsg& var);
+		PdBase& operator<<(const pd::StartMessage& var);
         PdBase& operator<<(const pd::FinishList& var);
-        PdBase& operator<<(const pd::FinishMsg& var);
+        PdBase& operator<<(const pd::FinishMessage& var);
         
 		/// add a float to the message
 		PdBase& operator<<(const bool var);
@@ -291,29 +291,29 @@ class PdBase {
 		
 		/// midi
 		///
-		/// pd << Note(64) << Note(64, 60) << Note(64, 60, 1);
-		/// pd << Ctl(100, 64) << Pgm(100, 1) << Bend(2000, 1);
-		/// pd << Touch(127, 1) << PolyTouch(64, 127, 1);
+		/// pd << NoteOn(64) << NoteOn(64, 60) << NoteOn(64, 60, 1);
+		/// pd << ControlChange(100, 64) << ProgramChange(100, 1) << PitchBend(2000, 1);
+		/// pd << Aftertouch(127, 1) << PolyAftertouch(64, 127, 1);
 		///
-		PdBase& operator<<(const pd::Note& var);
-		PdBase& operator<<(const pd::Ctl& var);
-		PdBase& operator<<(const pd::Pgm& var);
-		PdBase& operator<<(const pd::Bend& var);
-		PdBase& operator<<(const pd::Touch& var);
-		PdBase& operator<<(const pd::PolyTouch& var);
+		PdBase& operator<<(const pd::NoteOn& var);
+		PdBase& operator<<(const pd::ControlChange& var);
+		PdBase& operator<<(const pd::ProgramChange& var);
+		PdBase& operator<<(const pd::PitchBend& var);
+		PdBase& operator<<(const pd::Aftertouch& var);
+		PdBase& operator<<(const pd::PolyAftertouch& var);
 		
 		/// compound raw midi byte stream
 		///
 		/// pd << StartMidi() << 0xEF << 0x45 << Finish();
-		/// pd << StartSysEx() << 0xE7 << 0x45 << 0x56 << 0x17 << Finish();
+		/// pd << StartSysex() << 0xE7 << 0x45 << 0x56 << 0x17 << Finish();
 		///
 		PdBase& operator<<(const pd::StartMidi& var);
-		PdBase& operator<<(const pd::StartSysEx& var);
-		PdBase& operator<<(const pd::StartSysRt& var);
+		PdBase& operator<<(const pd::StartSysex& var);
+		PdBase& operator<<(const pd::StartSysRealTime& var);
         PdBase& operator<<(const pd::Finish& var);
 		
 		/// is a message or byte stream currently in progress?
-        inline bool isMsgInProgress() {return bMsgInProgress;}
+        inline bool isMessageInProgress() {return bMsgInProgress;}
 		
 		/// \section Array Access
 		
@@ -356,8 +356,8 @@ class PdBase {
 		static int blockSize();
         
         /// get/set the max length of messages and lists, default: 32
-        void setMaxMsgLength(unsigned int len);
-        unsigned int maxMsgLength();
+        void setMaxMessageLen(unsigned int len);
+        unsigned int maxMessageLen();
 		
     private:
 	

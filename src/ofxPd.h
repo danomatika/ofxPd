@@ -190,7 +190,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		
 		/// compound messages
 		///
-		/// pd.startMsg();
+		/// pd.startMessage();
 		/// pd.addSymbol("hello");
 		/// pd.addFloat(1.23);
 		/// pd.finishList("test");  // "test" is the reciever name in pd
@@ -200,16 +200,16 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// 
         /// finishMsg sends a typed message -> [; test msg1 hello 1.23(
         ///
-        /// pd.startMsg();
+        /// pd.startMessage();
         /// pd.addSymbol("hello");
 		/// pd.addFloat(1.23);
-		/// pd.finishMsg("test", "msg1");
+		/// pd.finishMessage("test", "msg1");
         ///
-		void startMsg();
+		void startMessage();
 		void addFloat(const float value);
 		void addSymbol(const std::string& symbol);
 		void finishList(const std::string& dest);
-        void finishMsg(const std::string& dest, const std::string& msg);
+        void finishMessage(const std::string& dest, const std::string& msg);
         
         /// compound messages using the ofxPd List type
         ///
@@ -227,12 +227,12 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
         /// stream operators work as well:
         ///
         /// list << "hello" << 1.23;
-        /// pd.sendMsg("test", "msg1", list);
+        /// pd.sendMessage("test", "msg1", list);
         /// 
         /// sends a typed message -> [; test msg1 hello 1.23(
         ///
         void sendList(const std::string& dest, const pd::List& list);
-        void sendMsg(const std::string& dest, const std::string& msg, const pd::List& list);
+        void sendMessage(const std::string& dest, const std::string& msg, const pd::List& list);
 		
 		/// midi
 		///
@@ -251,12 +251,12 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
         /// [bendin] takes 0 - 16383 while [bendout] returns -8192 - 8192
 		/// [pgmin] and [pgmout] are 1 - 128
         ///
-		void sendNote(const int channel, const int pitch, const int velocity=64);
-		void sendCtl(const int channel, const int controller, const int value);
-		void sendPgm(const int channel, const int value);
-		void sendBend(const int channel, const int value);
-		void sendTouch(const int channel, const int value);
-		void sendPolyTouch(const int channel, const int pitch, const int value);		
+		void sendNoteOn(const int channel, const int pitch, const int velocity=64);
+		void sendControlChange(const int channel, const int controller, const int value);
+		void sendProgramChange(const int channel, const int value);
+		void sendPitchBend(const int channel, const int value);
+		void sendAftertouch(const int channel, const int value);
+		void sendPolyAftertouch(const int channel, const int pitch, const int value);		
 		
 		/// raw midi bytes
 		///
@@ -270,8 +270,8 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
         /// so sending port 1 to [midiout] returns port 1 in ofxPd
         ///
 		void sendMidiByte(const int port, const int value);
-		void sendSysExByte(const int port, const int value);
-		void sendSysRtByte(const int port, const int value);
+		void sendSysex(const int port, const int value);
+		void sendSysRealTime(const int port, const int value);
 		
 		/// \section Sending Stream Interface
 		
@@ -283,18 +283,18 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		///
 		/// compound messages
 		///
-		/// pd << StartMsg() << 100 << 1.2 << "a symbol" << FinishList("test");
+		/// pd << StartMessage() << 100 << 1.2 << "a symbol" << FinishList("test");
 		///
 		/// midi
 		///
-		/// pd << Note(64) << Note(64, 60) << Note(64, 60, 1);
-		/// pd << Ctl(100, 64) << Pgm(100, 1) << Bend(2000, 1);
-		/// pd << Touch(127, 1) << PolyTouch(64, 127, 1);
+		/// pd << NoteOn(64) << NoteOn(64, 60) << NoteOn(64, 60, 1);
+		/// pd << ControlChange(100, 64) << ProgramChange(100, 1) << PitchBend(2000, 1);
+		/// pd << Aftertouch(127, 1) << PolyAftertouch(64, 127, 1);
 		///
 		/// compound raw midi byte stream
 		///
 		/// pd << StartMidi() << 0xEF << 0x45 << Finish();
-		/// pd << StartSysEx() << 0xE7 << 0x45 << 0x56 << 0x17 << Finish();
+		/// pd << StartSysex() << 0xE7 << 0x45 << 0x56 << 0x17 << Finish();
         ///
         /// see PdBase.h for function declarations
         	
@@ -353,7 +353,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
     protected:
     
         /// message callbacks
-        void receivePrint(const std::string& message);
+        void print(const std::string& message);
 		void receiveBang(const std::string& dest);
 		void receiveFloat(const std::string& dest, float value);
 		void receiveSymbol(const std::string& dest, const std::string& symbol);
@@ -361,12 +361,12 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void receiveMessage(const std::string& dest, const std::string& msg, const pd::List& list);
         
         /// midi callbacks
-        void receiveNote(const int channel, const int pitch, const int velocity);
-		void receiveCtl(const int channel, const int controller, const int value);
-		void receivePgm(const int channel, const int value);
-		void receiveBend(const int channel, const int value);
-		void receiveTouch(const int channel, const int value);
-		void receivePolyTouch(const int channel, const int pitch, const int value);
+        void receiveNoteOn(const int channel, const int pitch, const int velocity);
+		void receiveControlChange(const int channel, const int controller, const int value);
+		void receiveProgramChange(const int channel, const int value);
+		void receivePitchBend(const int channel, const int value);
+		void receiveAftertouch(const int channel, const int value);
+		void receivePolyAftertouch(const int channel, const int pitch, const int value);
 		void receiveMidiByte(const int port, const int byte);
         
     private:

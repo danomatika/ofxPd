@@ -525,9 +525,9 @@ void ofxPd::sendSymbol(const std::string& dest, const std::string& symbol) {
 }
 
 //----------------------------------------------------------
-void ofxPd::startMsg() {
+void ofxPd::startMessage() {
 	_LOCK();	
-	PdBase::startMsg();
+	PdBase::startMessage();
 	_UNLOCK();
 }
 
@@ -549,9 +549,9 @@ void ofxPd::finishList(const std::string& dest) {
     _UNLOCK();
 }
 
-void ofxPd::finishMsg(const std::string& dest, const std::string& msg) {
+void ofxPd::finishMessage(const std::string& dest, const std::string& msg) {
     _LOCK();
-    PdBase::finishMsg(dest, msg);
+    PdBase::finishMessage(dest, msg);
     _UNLOCK();
 }
 
@@ -562,46 +562,46 @@ void ofxPd::sendList(const std::string& dest, const List& list) {
 	_UNLOCK();
 }
 
-void ofxPd::sendMsg(const std::string& dest, const std::string& msg, const List& list) {
+void ofxPd::sendMessage(const std::string& dest, const std::string& msg, const List& list) {
 	_LOCK();	
-	PdBase::sendMsg(dest, msg, list);
+	PdBase::sendMessage(dest, msg, list);
 	_UNLOCK();
 }
 
 //----------------------------------------------------------
-void ofxPd::sendNote(const int channel, const int pitch, const int velocity) {
+void ofxPd::sendNoteOn(const int channel, const int pitch, const int velocity) {
 	_LOCK();
-	PdBase::sendNote(channel-1, pitch, velocity);
+	PdBase::sendNoteOn(channel-1, pitch, velocity);
 	_UNLOCK();
 }
 
-void ofxPd::sendCtl(const int channel, const int control, const int value) {
+void ofxPd::sendControlChange(const int channel, const int control, const int value) {
 	_LOCK();
-	PdBase::sendCtl(channel-1, control, value);
+	PdBase::sendControlChange(channel-1, control, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendPgm(const int channel, int program) {
+void ofxPd::sendProgramChange(const int channel, int program) {
 	_LOCK();
-	PdBase::sendPgm(channel-1, program-1);
+	PdBase::sendProgramChange(channel-1, program-1);
 	_UNLOCK();
 }
 
-void ofxPd::sendBend(const int channel, const int value) {
+void ofxPd::sendPitchBend(const int channel, const int value) {
 	_LOCK();
-	PdBase::sendBend(channel-1, value);
+	PdBase::sendPitchBend(channel-1, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendTouch(const int channel, const int value) {
+void ofxPd::sendAftertouch(const int channel, const int value) {
 	_LOCK();
-	PdBase::sendTouch(channel-1, value);
+	PdBase::sendAftertouch(channel-1, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendPolyTouch(const int channel, int pitch, int value) {
+void ofxPd::sendPolyAftertouch(const int channel, int pitch, int value) {
 	_LOCK();
-	PdBase::sendPolyTouch(channel-1, pitch, value);
+	PdBase::sendPolyAftertouch(channel-1, pitch, value);
 	_UNLOCK();
 }
 
@@ -612,15 +612,15 @@ void ofxPd::sendMidiByte(const int port, const int value) {
 	_UNLOCK();
 }
 
-void ofxPd::sendSysExByte(const int port, const int value) {
+void ofxPd::sendSysex(const int port, const int value) {
 	_LOCK();
-	PdBase::sendSysExByte(port, value);
+	PdBase::sendSysex(port, value);
 	_UNLOCK();
 }
 
-void ofxPd::sendSysRtByte(const int port, const int value) {
+void ofxPd::sendSysRealTime(const int port, const int value) {
 	_LOCK();
-	PdBase::sendSysRtByte(port, value);
+	PdBase::sendSysRealTime(port, value);
 	_UNLOCK();
 }
 
@@ -681,14 +681,14 @@ void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
 /* ***** PROTECTED ***** */
 
 //----------------------------------------------------------
-void ofxPd::receivePrint(const std::string& message) {
+void ofxPd::print(const std::string& message) {
 
     ofLog(OF_LOG_VERBOSE, "Pd: print: %s", message.c_str());
     
     // broadcast
     set<PdReceiver*>::iterator iter;
     for(iter = receivers.begin(); iter != receivers.end(); ++iter) {
-        (*iter)->receivePrint(message);
+        (*iter)->print(message);
     }
 }
 
@@ -814,10 +814,10 @@ void ofxPd::receiveMessage(const std::string& dest, const std::string& msg, cons
 }
 
 //----------------------------------------------------------
-void ofxPd::receiveNote(const int channel, const int pitch, const int velocity) {
+void ofxPd::receiveNoteOn(const int channel, const int pitch, const int velocity) {
 
     //int c = channel++;
-	ofLog(OF_LOG_VERBOSE, "Pd: note: %d %d %d", channel+1, pitch, velocity);
+	ofLog(OF_LOG_VERBOSE, "Pd: note on: %d %d %d", channel+1, pitch, velocity);
 	
     set<PdMidiReceiver*>::iterator r_iter;
 	set<PdMidiReceiver*>* r_set;
@@ -827,7 +827,7 @@ void ofxPd::receiveNote(const int channel, const int pitch, const int velocity) 
 	g_iter = channels.find(0);
 	r_set = &g_iter->second.receivers;
 	for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-		(*r_iter)->receiveNote(channel+1, pitch, velocity);
+		(*r_iter)->receiveNoteOn(channel+1, pitch, velocity);
 	}
 	
 	// send to subscribed receivers
@@ -836,12 +836,12 @@ void ofxPd::receiveNote(const int channel, const int pitch, const int velocity) 
     if(c_iter != channels.end()) {
         r_set = &c_iter->second.receivers;
         for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-            (*r_iter)->receiveNote(channel+1, pitch, velocity);
+            (*r_iter)->receiveNoteOn(channel+1, pitch, velocity);
         }
     }
 }
 
-void ofxPd::receiveCtl(const int channel, const int controller, const int value) {
+void ofxPd::receiveControlChange(const int channel, const int controller, const int value) {
 
 	ofLog(OF_LOG_VERBOSE, "Pd: control change: %d %d %d", channel+1, controller, value);
 
@@ -853,7 +853,7 @@ void ofxPd::receiveCtl(const int channel, const int controller, const int value)
 	g_iter = channels.find(0);
 	r_set = &g_iter->second.receivers;
 	for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-		(*r_iter)->receiveCtl(channel+1, controller, value);
+		(*r_iter)->receiveControlChange(channel+1, controller, value);
 	}
 	
 	// send to subscribed receivers
@@ -862,12 +862,12 @@ void ofxPd::receiveCtl(const int channel, const int controller, const int value)
     if(c_iter != channels.end()) {
         r_set = &c_iter->second.receivers;
         for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-            (*r_iter)->receiveCtl(channel+1, controller, value);
+            (*r_iter)->receiveControlChange(channel+1, controller, value);
         }
     }
 }
 
-void ofxPd::receivePgm(const int channel, const int value) {
+void ofxPd::receiveProgramChange(const int channel, const int value) {
 
 	ofLog(OF_LOG_VERBOSE, "Pd: program change: %d %d", channel+1, value+1);
 
@@ -879,7 +879,7 @@ void ofxPd::receivePgm(const int channel, const int value) {
 	g_iter = channels.find(0);
 	r_set = &g_iter->second.receivers;
 	for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-		(*r_iter)->receivePgm(channel+1, value+1);
+		(*r_iter)->receiveProgramChange(channel+1, value+1);
 	}
 	
 	// send to subscribed receivers
@@ -888,14 +888,14 @@ void ofxPd::receivePgm(const int channel, const int value) {
     if(c_iter != channels.end()) {
         r_set = &c_iter->second.receivers;
         for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-            (*r_iter)->receivePgm(channel+1, value+1);
+            (*r_iter)->receiveProgramChange(channel+1, value+1);
         }
     }
 }
 
-void ofxPd::receiveBend(const int channel, const int value) {
+void ofxPd::receivePitchBend(const int channel, const int value) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: pitchbend: %d %d", channel+1, value);
+	ofLog(OF_LOG_VERBOSE, "Pd: pitch bend: %d %d", channel+1, value);
 
     set<PdMidiReceiver*>::iterator r_iter;
 	set<PdMidiReceiver*>* r_set;
@@ -905,7 +905,7 @@ void ofxPd::receiveBend(const int channel, const int value) {
 	g_iter = channels.find(0);
 	r_set = &g_iter->second.receivers;
 	for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-		(*r_iter)->receiveBend(channel+1, value);
+		(*r_iter)->receivePitchBend(channel+1, value);
 	}
 	
 	// send to subscribed receivers
@@ -914,12 +914,12 @@ void ofxPd::receiveBend(const int channel, const int value) {
     if(c_iter != channels.end()) {
         r_set = &c_iter->second.receivers;
         for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-            (*r_iter)->receivePgm(channel+1, value);
+            (*r_iter)->receivePitchBend(channel+1, value);
         }
     }
 }
 
-void ofxPd::receiveTouch(const int channel, const int value) {
+void ofxPd::receiveAftertouch(const int channel, const int value) {
 
 	ofLog(OF_LOG_VERBOSE, "Pd: aftertouch: %d %d", channel+1, value);
 
@@ -931,7 +931,7 @@ void ofxPd::receiveTouch(const int channel, const int value) {
 	g_iter = channels.find(0);
 	r_set = &g_iter->second.receivers;
 	for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-		(*r_iter)->receiveTouch(channel+1, value);
+		(*r_iter)->receiveAftertouch(channel+1, value);
 	}
 	
 	// send to subscribed receivers
@@ -940,14 +940,14 @@ void ofxPd::receiveTouch(const int channel, const int value) {
     if(c_iter != channels.end()) {
         r_set = &c_iter->second.receivers;
         for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-            (*r_iter)->receiveTouch(channel+1, value);
+            (*r_iter)->receiveAftertouch(channel+1, value);
         }
     }
 }
 
-void ofxPd::receivePolyTouch(const int channel, const int pitch, const int value) {
+void ofxPd::receivePolyAftertouch(const int channel, const int pitch, const int value) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: polyaftertouch: %d %d %d", channel+1, pitch, value);
+	ofLog(OF_LOG_VERBOSE, "Pd: poly aftertouch: %d %d %d", channel+1, pitch, value);
 
     set<PdMidiReceiver*>::iterator r_iter;
 	set<PdMidiReceiver*>* r_set;
@@ -957,7 +957,7 @@ void ofxPd::receivePolyTouch(const int channel, const int pitch, const int value
 	g_iter = channels.find(0);
 	r_set = &g_iter->second.receivers;
 	for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-		(*r_iter)->receivePolyTouch(channel+1, pitch, value);
+		(*r_iter)->receivePolyAftertouch(channel+1, pitch, value);
 	}
 	
 	// send to subscribed receivers
@@ -966,14 +966,14 @@ void ofxPd::receivePolyTouch(const int channel, const int pitch, const int value
     if(c_iter != channels.end()) {
         r_set = &c_iter->second.receivers;
         for(r_iter = r_set->begin(); r_iter != r_set->end(); ++r_iter) {
-            (*r_iter)->receivePolyTouch(channel+1, pitch, value);
+            (*r_iter)->receivePolyAftertouch(channel+1, pitch, value);
         }
     }
 }
 
 void ofxPd::receiveMidiByte(const int port, const int byte) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: midibyte: %d %d", port, byte);
+	ofLog(OF_LOG_VERBOSE, "Pd: midi byte: %d %d", port, byte);
 
 	set<PdMidiReceiver*>& r_set = midiReceivers;
 	set<PdMidiReceiver*>::iterator iter;
