@@ -18,7 +18,6 @@
 #include "ofUtils.h"
 
 #include <algorithm>
-#include <Poco/Path.h>
 
 // needed for libpd audio passing
 #define USEAPI_DUMMY
@@ -92,9 +91,9 @@ void ofxPd::clear() {
 
 //--------------------------------------------------------------------
 void ofxPd::addToSearchPath(const std::string& path) {
-	Poco::Path fullPath(ofToDataPath(path));
+	string fullpath = ofFilePath::getAbsolutePath(ofToDataPath(path));
 	_LOCK();
-	PdBase::addToSearchPath(fullPath.toString().c_str());
+	PdBase::addToSearchPath(fullpath.c_str());
 	_UNLOCK();
 }
 		
@@ -105,28 +104,21 @@ void ofxPd::clearSearchPath() {
 }
 
 //--------------------------------------------------------------------
-//
-//	references http://pocoproject.org/docs/Poco.Path.html
-//
 Patch ofxPd::openPatch(const std::string& patch) {
 
-	Poco::Path path(ofToDataPath(patch));
-	string folder = path.parent().toString();
+	string fullpath = ofFilePath::getAbsolutePath(ofToDataPath(patch));
+	string file = ofFilePath::getFileName(fullpath);
+	string folder = ofFilePath::getEnclosingDirectory(fullpath);
 	
-	// trim the trailing slash Poco::Path always adds ... blarg
-	if(folder.size() > 0 && folder.at(folder.size()-1) == '/') {
-		folder.erase(folder.end()-1);
-	}
-	
-	ofLog(OF_LOG_VERBOSE, "Pd: Opening patch: "+path.getFileName()+
+	ofLog(OF_LOG_VERBOSE, "Pd: Opening patch: "+file+
 						  " path: "+folder);
 
 	// [; pd open file folder(
 	_LOCK();
-    Patch p = PdBase::openPatch(path.getFileName().c_str(), folder.c_str());
+    Patch p = PdBase::openPatch(file.c_str(), folder.c_str());
     _UNLOCK();
     if(!p.isValid()) {
-		ofLog(OF_LOG_ERROR, "Pd: Opening patch \"%s\" failed", path.getFileName().c_str());
+		ofLog(OF_LOG_ERROR, "Pd: Opening patch \"%s\" failed", file.c_str());
 	}
 	
 	return p;
