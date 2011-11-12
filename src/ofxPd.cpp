@@ -20,7 +20,9 @@
 #include <algorithm>
 
 // needed for libpd audio passing
-#define USEAPI_DUMMY
+#ifndef USEAPI_DUMMY
+	#define USEAPI_DUMMY
+#endif
 
 using namespace std;
 using namespace pd;

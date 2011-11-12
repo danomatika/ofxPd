@@ -10,8 +10,6 @@
  */
 #include "AppCore.h"
 
-#include <Poco/Path.h>
-
 //--------------------------------------------------------------
 void AppCore::setup(const int numOutChannels, const int numInChannels,
 				    const int sampleRate, const int ticksPerBuffer) {
@@ -20,7 +18,8 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	ofSetVerticalSync(true);
 	//ofSetLogLevel(OF_LOG_VERBOSE);
 	
-	cout << Poco::Path::current() << endl;
+	// double check where we are ...
+	cout << ofFilePath::getCurrentWorkingDirectory() << endl;
 	
 	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
 		ofLog(OF_LOG_ERROR, "Could not init pd");
