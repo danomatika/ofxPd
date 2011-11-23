@@ -119,32 +119,39 @@ void List::addSymbol(const std::string& symbol) {
 
 List& List::operator<<(const bool var) {
     addFloat((float) var);
+	return *this;
 }
 
 List& List::operator<<(const int var) {
     addFloat((float) var);
+	return *this;
 }
 
 List& List::operator<<(const float var) {
     addFloat((float) var);
+	return *this;
 }
 
 List& List::operator<<(const double var) {
     addFloat((float) var);
+	return *this;
 }
         
 List& List::operator<<(const char var) {
     std::string s;
 	s = var;
 	addSymbol(s);
+	return *this;
 }
 
 List& List::operator<<(const char* var) {
     addSymbol((std::string) var);
+	return *this;
 }
 
 List& List::operator<<(const std::string& var) {
     addSymbol((std::string) var);
+	return *this;
 }
 
 //----------------------------------------------------------
