@@ -33,7 +33,7 @@ v1.0.0: 2011 Oct, Nov
 		- added audio processing (processRaw, processShort, etc) functions
 		- Pd class source files (PdTypes, PdReceiver, etc) have been moved to src/pd/cpp
 	- added isInited function
-	- now checks if USEAPI_DUMMY is defined before defining
+	- now checks if HAVE_UNISTD_H & USEAPI_DUMMY are defined before defining
 	- PdBase instance calls now wrapped by a PdContext singleton (global instance until multiple
 	  context support is added to libpd)
 

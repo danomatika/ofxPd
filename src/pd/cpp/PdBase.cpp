@@ -18,7 +18,9 @@
 #include <iostream>
 
 // needed for libpd audio passing
-#define USEAPI_DUMMY
+#ifndef USEAPI_DUMMY
+    #define USEAPI_DUMMY
+#endif
 
 using namespace std;
 
@@ -26,12 +28,6 @@ namespace pd {
 
 //--------------------------------------------------------------------
 PdBase::PdBase() {
-//	pdPtr = this;
-//	bPdInited = false;
-//    receiver = NULL;
-//    midiReceiver = NULL;
-//	clear();
-//    maxMsgLen = 32;
     PdContext::instance().addBase();
 }
 
@@ -45,46 +41,11 @@ PdBase::~PdBase() {
 bool PdBase::init(const int numInChannels, const int numOutChannels, 
 				 const int sampleRate, const int ticksPerBuffer) {
 	clear();
-	
-//	// attach callbacks
-//	libpd_printhook = (t_libpd_printhook) _print;
-//	
-//	libpd_banghook = (t_libpd_banghook) _bang;
-//	libpd_floathook = (t_libpd_floathook) _float;
-//	libpd_symbolhook = (t_libpd_symbolhook) _symbol;
-//	libpd_listhook = (t_libpd_listhook) _list;
-//	libpd_messagehook = (t_libpd_messagehook) _message;
-//	
-//	libpd_noteonhook = (t_libpd_noteonhook) _noteon;
-//	libpd_controlchangehook = (t_libpd_controlchangehook) _controlchange;
-//	libpd_programchangehook = (t_libpd_programchangehook) _programchange;
-//	libpd_pitchbendhook = (t_libpd_pitchbendhook) _pitchbend;
-//	libpd_aftertouchhook = (t_libpd_aftertouchhook) _aftertouch;
-//	libpd_polyaftertouchhook = (t_libpd_polyaftertouchhook) _polyaftertouch;
-//	
-//	libpd_midibytehook = (t_libpd_midibytehook) _midibyte;
-	
-//	// init pd
-//	libpd_init();
-//	if(libpd_init_audio(numInChannels, numOutChannels, sampleRate, ticksPerBuffer) != 0) {
-//		return false;
-//	}
-//    bPdInited = true;
-//
-//    return bPdInited;
     return PdContext::instance().init(numInChannels, numOutChannels, sampleRate, ticksPerBuffer);
 }
 
 void PdBase::clear() {	
-//	bPdInited = false;
-//	
-//	bMsgInProgress = false;
-//    curMsgLen = 0;
-//	msgType = MSG;
-//	midiPort = 0;
-
     PdContext::instance().clear();
-
 	unsubscribeAll();
 }
 
