@@ -1,4 +1,4 @@
-v1.0.0: 2011 Oct
+v1.0.0: 2011 Oct, Nov
 
 	- added List building & sending
 	- wrapped Pd receiver and types within a "pd" namespace
@@ -25,7 +25,7 @@ v1.0.0: 2011 Oct
 		- renamed "getMaxMsgLength" function to "maxMessgeLen"
 		- renamed "getBlockSize" function to "blockSize"
 		- renamed "sendMsg" & "finishMsg" functions to "sendMessage" & finishMessage"
-		- renamed midi functions/objects to match java api (ie Note->NoteOn, Ctl->ControlChange, etc)
+		- renamed midi funcs/objects to match java api (ie Note->NoteOn, Ctl->ControlChange, etc)
 		- renamed "receivedPrint" function to "print"
 	- added receiveMidi/ignoreMidi functions to filter midi channel events for PdMidiReceivers
 	- separated base libpd wrapper into PdBase class, now extended by ofxPd
@@ -33,6 +33,9 @@ v1.0.0: 2011 Oct
 		- added audio processing (processRaw, processShort, etc) functions
 		- Pd class source files (PdTypes, PdReceiver, etc) have been moved to src/pd/cpp
 	- added isInited function
+	- now checks if USEAPI_DUMMY is defined before defining
+	- PdBase instance calls now wrapped by a PdContext singleton (global instance until multiple
+	  context support is added to libpd)
 
 v0.9.0: 2011 Sep
 
