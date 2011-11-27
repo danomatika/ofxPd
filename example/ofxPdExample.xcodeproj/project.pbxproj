@@ -135,11 +135,11 @@
 
 /* Begin PBXFileReference section */
 		3000D8E8145D1029009FC3EC /* PdBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdBase.cpp; sourceTree = "<group>"; };
-		3000D8E9145D1029009FC3EC /* PdBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdBase.h; sourceTree = "<group>"; };
-		3000D8EA145D1029009FC3EC /* PdMidiReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdMidiReceiver.h; sourceTree = "<group>"; };
-		3000D8EB145D1029009FC3EC /* PdReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdReceiver.h; sourceTree = "<group>"; };
+		3000D8E9145D1029009FC3EC /* PdBase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; path = PdBase.hpp; sourceTree = "<group>"; };
+		3000D8EA145D1029009FC3EC /* PdMidiReceiver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; path = PdMidiReceiver.hpp; sourceTree = "<group>"; };
+		3000D8EB145D1029009FC3EC /* PdReceiver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; path = PdReceiver.hpp; sourceTree = "<group>"; };
 		3000D8EC145D1029009FC3EC /* PdTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdTypes.cpp; sourceTree = "<group>"; };
-		3000D8ED145D1029009FC3EC /* PdTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdTypes.h; sourceTree = "<group>"; };
+		3000D8ED145D1029009FC3EC /* PdTypes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; path = PdTypes.hpp; sourceTree = "<group>"; };
 		30B2D0BF142B2C7A000AB5E1 /* AppCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppCore.cpp; sourceTree = "<group>"; };
 		30B2D0C0142B2C7A000AB5E1 /* AppCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppCore.h; sourceTree = "<group>"; };
 		30B2D0C4142B2CA5000AB5E1 /* ofxPd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPd.cpp; sourceTree = "<group>"; };
@@ -296,11 +296,11 @@
 			isa = PBXGroup;
 			children = (
 				3000D8E8145D1029009FC3EC /* PdBase.cpp */,
-				3000D8E9145D1029009FC3EC /* PdBase.h */,
-				3000D8EA145D1029009FC3EC /* PdMidiReceiver.h */,
-				3000D8EB145D1029009FC3EC /* PdReceiver.h */,
+				3000D8E9145D1029009FC3EC /* PdBase.hpp */,
+				3000D8EA145D1029009FC3EC /* PdMidiReceiver.hpp */,
+				3000D8EB145D1029009FC3EC /* PdReceiver.hpp */,
 				3000D8EC145D1029009FC3EC /* PdTypes.cpp */,
-				3000D8ED145D1029009FC3EC /* PdTypes.h */,
+				3000D8ED145D1029009FC3EC /* PdTypes.hpp */,
 			);
 			path = cpp;
 			sourceTree = "<group>";

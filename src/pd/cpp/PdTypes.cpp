@@ -8,7 +8,7 @@
  * See https://github.com/danomatika/ofxPd for documentation
  *
  */
-#include "PdTypes.h"
+#include "PdTypes.hpp"
 
 #include <iostream>
 #include <sstream>

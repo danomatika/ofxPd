@@ -19,7 +19,7 @@
 #include <set>
 #include <Poco/Mutex.h>
 
-#include "PdBase.h"
+#include "PdBase.hpp"
 
 ///
 ///	a Pure Data instance

@@ -19,8 +19,8 @@
 #include <map>
 
 #include "z_libpd.h"
-#include "PdReceiver.h"
-#include "PdMidiReceiver.h"
+#include "PdReceiver.hpp"
+#include "PdMidiReceiver.hpp"
 
 #ifndef HAVE_UNISTD_H
     #define HAVE_UNISTD_H

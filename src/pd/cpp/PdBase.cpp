@@ -13,7 +13,7 @@
  * See http://gitorious.org/pdlib/pages/Libpd for documentation
  *
  */
-#include "PdBase.h"
+#include "PdBase.hpp"
 
 #include <iostream>
 
