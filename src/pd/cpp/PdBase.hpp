@@ -31,7 +31,7 @@ namespace pd {
 ///
 ///	a Pure Data instance
 ///
-/// extend this class and any of its virtual functions
+/// use ithis class directly or extend it and any of its virtual functions
 ///
 ///	references:	http://gitorious.org/pdlib/pages/Libpd
 ///
@@ -39,6 +39,13 @@ namespace pd {
 ///
 /// note: libpd currently does not support multiple states and it is 
 ///       suggested that you use only one PdBase-derived object at a time
+///
+///       calls from multiple PdBase instances currently use a global context
+///       kept in a singleton object, thus only one Receiver & one MidiReceiver
+///       can be used within a single program
+///
+///       multiple context support will be added if/when it is included within
+///       libpd
 ///
 class PdBase {
 	
@@ -313,7 +320,7 @@ class PdBase {
         PdBase& operator<<(const pd::Finish& var);
 		
 		/// is a message or byte stream currently in progress?
-        inline bool isMessageInProgress() {return bMsgInProgress;}
+        bool isMessageInProgress();
 		
 		/// \section Array Access
 		
@@ -347,9 +354,9 @@ class PdBase {
 		/// clear array and set to a specific value
 		virtual void clearArray(const std::string& arrayName, int value=0);
 		
-		/// \section Utils
+		/// \section Global Utils
 		
-        /// has this pd instance been initialized?
+        /// has the global pd instance been initialized?
         bool isInited();
         
 		/// get the blocksize of pd (sample length per channel)
@@ -360,49 +367,96 @@ class PdBase {
         unsigned int maxMessageLen();
 		
     private:
-	
-		bool bPdInited;						///< is pd inited?
-		
-		bool bMsgInProgress;				///< is a compound message being constructed?
-        int maxMsgLen;                      ///< maximum allowed message length
-        int curMsgLen;                      ///< the length of the current message
-            
+		            
 		/// compound message status
 		enum MsgType {
 			MSG,
 			MIDI,
 			SYSEX,
 			SYSRT
-		} msgType;
+        };
 		
-		int midiPort;   ///< target midi port
-	
-        std::map<std::string,void*> sources;    ///< subscribed sources
-    
-        pd::PdReceiver* receiver;               ///< the message receiver
-		pd::PdMidiReceiver* midiReceiver;       ///< the midi receiver
+        /// a singleton libpd instance wrapper
+        class PdContext {
+            
+            public:
+            
+                /// singleton data access
+                /// returns a reference to itself
+                /// note: only creates a new object on the first call
+                static PdContext& instance();
+                
+                /// increments the num of pd base objects
+                void addBase();
+                
+                /// decrements the num of pd base objects
+                /// clears if removeing last base
+                void removeBase();
+                
+                /// init the pd instance
+                bool init(const int numInChannels, const int numOutChannels,
+                          const int sampleRate, const int ticksPerBuffer);
         
-		std::string printMsg;	///< used to build a print message
-		
-		// libpd static callback functions
-		static void _print(const char* s);
-				
-		static void _bang(const char* source);
-		static void _float(const char* source, float value);
-		static void _symbol(const char* source, const char* symbol);
-		
-		static void _list(const char* source, int argc, t_atom* argv); 
-		static void _message(const char* source, const char *symbol,
-												int argc, t_atom *argv);
+                /// clear the pd instance
+                void clear();
+                
+                /// turn dsp on/off
+                void computeAudio(bool state);
+                
+                /// is the instance inited?
+                inline bool isInited() {return bInited;}
+        
+                /// \section Variables
+                
+                bool bPdInited;         ///< is pd inited?
+        
+                bool bMsgInProgress;    ///< is a compound message being constructed?
+                int maxMsgLen;          ///< maximum allowed message length
+                int curMsgLen;          ///< the length of the current message
+                    
+                /// compound message status
+                PdBase::MsgType msgType;
+                
+                int midiPort;   ///< target midi port
+            
+                std::map<std::string,void*> sources;    ///< subscribed sources
+            
+                pd::PdReceiver* receiver;               ///< the message receiver
+                pd::PdMidiReceiver* midiReceiver;       ///< the midi receiver
+                
+                std::string printMsg;	///< used to build a print message
+        
+            private:
+            
+                bool bInited;           ///< is pd inited?
+                
+                unsigned int numBases;  ///< number of pd base objects
+            
+                // hide all the constructors, copy functions here
+                PdContext();                        // cannot create
+                virtual ~PdContext();               // cannot destroy
+                void operator =(PdContext& from) {} // not copyable
+        
+                /// libpd static callback functions
+                static void _print(const char* s);
+                        
+                static void _bang(const char* source);
+                static void _float(const char* source, float value);
+                static void _symbol(const char* source, const char* symbol);
+                
+                static void _list(const char* source, int argc, t_atom* argv); 
+                static void _message(const char* source, const char *symbol,
+                                                        int argc, t_atom *argv);
 
-		static void _noteon(int channel, int pitch, int velocity);
-		static void _controlchange(int channel, int controller, int value);
-		static void _programchange(int channel, int value);
-		static void _pitchbend(int channel, int value);
-		static void _aftertouch(int channel, int value);
-		static void _polyaftertouch(int channel, int pitch, int value);
-		
-		static void _midibyte(int port, int byte);
+                static void _noteon(int channel, int pitch, int velocity);
+                static void _controlchange(int channel, int controller, int value);
+                static void _programchange(int channel, int value);
+                static void _pitchbend(int channel, int value);
+                static void _aftertouch(int channel, int value);
+                static void _polyaftertouch(int channel, int pitch, int value);
+                
+                static void _midibyte(int port, int byte);
+        };
 };
 
 } // namespace
