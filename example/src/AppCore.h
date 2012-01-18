@@ -14,7 +14,10 @@
 
 #include "ofxPd.h"
 
-class AppCore : public ofxPdListener {
+// a namespace for the Pd types
+using namespace pd;
+
+class AppCore : public PdReceiver, public PdMidiReceiver {
 
 	public:
 
@@ -35,24 +38,27 @@ class AppCore : public ofxPdListener {
 		void audioReceived(float * input, int bufferSize, int nChannels);
 		void audioRequested(float * output, int bufferSize, int nChannels);
 		
-		// pd callbacks
-		void printReceived(const std::string& message);
+		// pd message receiver callbacks
+		void print(const std::string& message);
 		
-		void bangReceived(const std::string& dest);
-		void floatReceived(const std::string& dest, float value);
-		void symbolReceived(const std::string& dest, const std::string& symbol);
-		void listReceived(const std::string& dest, const List& list);
-		void messageReceived(const std::string& dest, const std::string& msg, const List& list);
+		void receiveBang(const std::string& dest);
+		void receiveFloat(const std::string& dest, float value);
+		void receiveSymbol(const std::string& dest, const std::string& symbol);
+		void receiveList(const std::string& dest, const List& list);
+		void receiveMessage(const std::string& dest, const std::string& msg, const List& list);
 		
-		void noteReceived(const int channel, const int pitch, const int velocity);
-		void ctlReceived(const int channel, const int controller, const int value);
-		void pgmReceived(const int channel, const int value);
-		void bendReceived(const int channel, const int value);
-		void touchReceived(const int channel, const int value);
-		void polyTouchReceived(const int channel, const int pitch, const int value);
+        // pd midi receiver callbacks
+		void receiveNoteOn(const int channel, const int pitch, const int velocity);
+		void receiveControlChange(const int channel, const int controller, const int value);
+		void receiveProgramChange(const int channel, const int value);
+		void receivePitchBend(const int channel, const int value);
+		void receiveAftertouch(const int channel, const int value);
+		void receivePolyAftertouch(const int channel, const int pitch, const int value);
 		
-		void midiByteReceived(const int port, const int byte);
+		void receiveMidiByte(const int port, const int byte);
 		
 		ofxPd pd;
 		vector<float> scopeArray;
+        
+        int midiChan;
 };

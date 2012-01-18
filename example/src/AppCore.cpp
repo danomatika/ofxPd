@@ -10,8 +10,6 @@
  */
 #include "AppCore.h"
 
-#include <Poco/Path.h>
-
 //--------------------------------------------------------------
 void AppCore::setup(const int numOutChannels, const int numInChannels,
 				    const int sampleRate, const int ticksPerBuffer) {
@@ -20,31 +18,38 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	ofSetVerticalSync(true);
 	//ofSetLogLevel(OF_LOG_VERBOSE);
 	
-	cout << Poco::Path::current() << endl;
+	// double check where we are ...
+	cout << ofFilePath::getCurrentWorkingDirectory() << endl;
 	
 	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
 		ofLog(OF_LOG_ERROR, "Could not init pd");
 		OF_EXIT_APP(1);
 	}
+    
+    midiChan = 1; // midi channels are 1-16
 	
-	// add recieve source names
-	pd.addSource("toOF");
-	pd.addSource("env");
+	// subscribe to receive source names
+	pd.subscribe("toOF");
+	pd.subscribe("env");
+
+	// add message receiver
+	pd.addReceiver(*this);   // automatically receives from all subscribed sources
+	pd.ignore(*this, "env"); // don't receive from "env"
+    //pd.ignore(*this);             // ignore all sources
+	//pd.receive(*this, "toOF");	// receive only from "toOF"
 	
-	// add listener
-	pd.addListener(*this);
-	pd.subscribe(*this);			// listen to everything
-	pd.unsubscribe(*this, "env");	// don't listen to "env"
-	
-	//pd.subscribe(*this, "toOF");	// listen to "toOF"
-	//pd.unsubscribe(*this);		// don't listen to anything
-	
+    // add midi receiver
+    pd.addMidiReceiver(*this);  // automatically receives from all channels
+    //pd.ignoreMidi(*this, 1);     // ignore midi channel 1
+    //pd.ignoreMidi(*this);        // ignore all channels
+    //pd.receiveMidi(*this, 1);    // receive only from channel 1
+
 	// add the data/pd folder to the search path
 	pd.addToSearchPath("pd");
-	
+
 	// audio processing on
-	pd.dspOn();
-	
+	pd.start();
+
 	
 	cout << endl << "BEGIN Patch Test" << endl;
 	
@@ -63,32 +68,39 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << "FINISH Patch Test" << endl;
 	
 	
-	
 	cout << endl << "BEGIN Message Test" << endl;
 	
 	// test basic atoms
 	pd.sendBang("fromOF");
 	pd.sendFloat("fromOF", 100);
 	pd.sendSymbol("fromOF", "test string");
+    
+    // stream interface
+    pd << Bang("fromOF")
+       << Float("fromOF", 100)
+       << Symbol("fromOF", "test string");
 	
 	// send a list
-	pd.startList("fromOF");
+	pd.startMessage();
 		pd.addFloat(1.23);
 		pd.addSymbol("a symbol");
-	pd.finish();
+	pd.finishList("fromOF");
 	
-	// send a message to the $0 reciever ie $0-toOF
-	pd.startList(patch.dollarZeroStr()+"-fromOF");
+	// send a message to the $0 receiver ie $0-toOF
+	pd.startMessage();
 		pd.addFloat(1.23);
 		pd.addSymbol("a symbol");
-	pd.finish();
+	pd.finishList(patch.dollarZeroStr()+"-fromOF");
 	
     // send a list using the List object
     List testList;
     testList.addFloat(1.23);
     testList.addSymbol("sent from a List object");
     pd.sendList("fromOF", testList);
-    pd.sendMsg("fromOF", "msg", testList);
+    pd.sendMessage("fromOF", "msg", testList);
+    
+    // stream interface for list
+    pd << StartMessage() << 1.23 << "sent from a streamed list" << FinishList("fromOF");
     
 	cout << "FINISH Message Test" << endl;
 	
@@ -96,22 +108,24 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << endl << "BEGIN MIDI Test" << endl;
 	
 	// send functions
-	pd.sendNote(60);
-	pd.sendCtl(100, 64);
-	pd.sendPgm(100);
-	pd.sendBend(2000);
-	pd.sendTouch(100);
-	pd.sendPolyTouch(64, 100);
-	pd.sendMidiByte(239, 1);
-	pd.sendSysExByte(239, 1);
-	pd.sendSysRTByte(239, 1);
+	pd.sendNoteOn(midiChan, 60);
+	pd.sendControlChange(midiChan, 0, 64);
+	pd.sendProgramChange(midiChan, 100);    // note: pgm num range is 1 - 128
+	pd.sendPitchBend(midiChan, 2000);   // note: ofxPd uses -8192 - 8192 while [bendin] returns 0 - 16383,
+                                        // so sending a val of 2000 gives 10192 in pd
+	pd.sendAftertouch(midiChan, 100);
+	pd.sendPolyAftertouch(midiChan, 64, 100);
+	pd.sendMidiByte(0, 239);    // note: pd adds +2 to the port number from [midiin], [sysexin], & [realtimein]
+	pd.sendSysex(0, 239);       // so sending to port 0 gives port 2 in pd
+	pd.sendSysRealTime(0, 239);
 	
 	// stream
-	pd << Note(60) << Ctl(100, 64) << Bend(2000)
-	   << Touch(100) << PolyTouch(64, 100)
-	   << StartMidi(1) << 239 << Finish()
-	   << StartSysEx(1) << 239 << Finish()
-	   << StartSysRT(1) << 239 << Finish();
+	pd << NoteOn(midiChan, 60) << ControlChange(midiChan, 100, 64)
+       << ProgramChange(midiChan, 100) << PitchBend(midiChan, 2000)
+       << Aftertouch(midiChan, 100) << PolyAftertouch(midiChan, 64, 100)
+	   << StartMidi(0) << 239 << Finish()
+	   << StartSysex(0) << 239 << Finish()
+	   << StartSysRealTime(0) << 239 << Finish();
     
 	cout << "FINISH MIDI Test" << endl;
 	
@@ -119,7 +133,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << endl << "BEGIN Array Test" << endl;
 	
 	// array check length
-	cout << "array1 len: " << pd.getArrayLen("array1") << endl;
+	cout << "array1 len: " << pd.arraySize("array1") << endl;
 	
 	// read array
 	std::vector<float> array1;
@@ -163,11 +177,12 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	// play a tone by sending a list
 	// [list tone pitch 72 (
-	pd.startList("tone");
+	pd.startMessage();
 		pd.addSymbol("pitch");
 		pd.addFloat(72);
-	pd.finish();
+	pd.finishList("tone");
 	pd.sendBang("tone");
+
 }
 
 //--------------------------------------------------------------
@@ -197,7 +212,7 @@ void AppCore::exit() {}
 
 //--------------------------------------------------------------
 void AppCore::playTone(int pitch) {
-	pd << StartList("tone") << "pitch" << pitch << Finish() << Bang("tone");
+	pd << StartMessage() << "pitch" << pitch << FinishList("tone") << Bang("tone");
 }
 
 //--------------------------------------------------------------
@@ -246,11 +261,13 @@ void AppCore::keyPressed (int key) {
 			break;
 			
 		case ' ':
-			if(pd.isSubscribed(*this, "env")) {
-				pd.unsubscribe(*this, "env");
+			if(pd.isReceiving(*this, "env")) {
+				pd.ignore(*this, "env");
+                cout << "ignoring env" << endl;
 			}
 			else {
-				pd.subscribe(*this, "env");
+				pd.receive(*this, "env");
+                cout << "receiving from env" << endl;
 			}
 			break;
 			
@@ -270,24 +287,24 @@ void AppCore::audioRequested(float * output, int bufferSize, int nChannels) {
 }
 
 //--------------------------------------------------------------
-void AppCore::printReceived(const std::string& message) {
+void AppCore::print(const std::string& message) {
 	cout << message << endl;
 }
 
 //--------------------------------------------------------------		
-void AppCore::bangReceived(const std::string& dest) {
+void AppCore::receiveBang(const std::string& dest) {
 	cout << "OF: bang " << dest << endl;
 }
 
-void AppCore::floatReceived(const std::string& dest, float value) {
+void AppCore::receiveFloat(const std::string& dest, float value) {
 	cout << "OF: float " << dest << ": " << value << endl;
 }
 
-void AppCore::symbolReceived(const std::string& dest, const std::string& symbol) {
+void AppCore::receiveSymbol(const std::string& dest, const std::string& symbol) {
 	cout << "OF: symbol " << dest << ": " << symbol << endl;
 }
 
-void AppCore::listReceived(const std::string& dest, const List& list) {
+void AppCore::receiveList(const std::string& dest, const List& list) {
 	cout << "OF: list " << dest << ": ";
 	
 	// step through the list
@@ -306,35 +323,38 @@ void AppCore::listReceived(const std::string& dest, const List& list) {
 	cout << list.types() << endl;
 }
 
-void AppCore::messageReceived(const std::string& dest, const std::string& msg, const List& list) {
-	cout << "OF: msg " << dest << ": " << msg << " " << list.toString() << list.types() << endl;
+void AppCore::receiveMessage(const std::string& dest, const std::string& msg, const List& list) {
+	cout << "OF: message " << dest << ": " << msg << " " << list.toString() << list.types() << endl;
 }
 
 //--------------------------------------------------------------
-void AppCore::noteReceived(const int channel, const int pitch, const int velocity) {
-	cout << "OF: note: " << channel << " " << pitch << " " << velocity << endl;
+void AppCore::receiveNoteOn(const int channel, const int pitch, const int velocity) {
+	cout << "OF MIDI: note on: " << channel << " " << pitch << " " << velocity << endl;
 }
 
-void AppCore::ctlReceived(const int channel, const int controller, const int value) {
-	cout << "OF: ctl: " << channel << " " << controller << " " << value << endl;
+void AppCore::receiveControlChange(const int channel, const int controller, const int value) {
+	cout << "OF MIDI: control change: " << channel << " " << controller << " " << value << endl;
 }
 
-void AppCore::pgmReceived(const int channel, const int value) {
-	cout << "OF: pgm: " << channel << " " << value << endl;
+// note: pgm nums are 1-128 to match pd
+void AppCore::receiveProgramChange(const int channel, const int value) {
+	cout << "OF MIDI: program change: " << channel << " " << value << endl;
 }
 
-void AppCore::bendReceived(const int channel, const int value) {
-	cout << "OF: bend: " << channel << " " << value << endl;
+void AppCore::receivePitchBend(const int channel, const int value) {
+	cout << "OF MIDI: pitch bend: " << channel << " " << value << endl;
 }
 
-void AppCore::touchReceived(const int channel, const int value) {
-	cout << "OF: touch: " << channel << " " << value << endl;
+void AppCore::receiveAftertouch(const int channel, const int value) {
+	cout << "OF MIDI: aftertouch: " << channel << " " << value << endl;
 }
 
-void AppCore::polyTouchReceived(const int channel, const int pitch, const int value) {
-	cout << "OF: polytouch: " << channel << " " << pitch << " " << value << endl;
+void AppCore::receivePolyAftertouch(const int channel, const int pitch, const int value) {
+	cout << "OF MIDI: poly aftertouch: " << channel << " " << pitch << " " << value << endl;
 }
 
-void AppCore::midiByteReceived(const int port, const int byte) {
-	cout << "OF: midibyte: " << port << " " << byte << endl;
+// note: pd adds +2 to the port num, so sending to port 3 in pd to [midiout],
+//       shows up at port 1 in ofxPd
+void AppCore::receiveMidiByte(const int port, const int byte) {
+	cout << "OF MIDI: midi byte: " << port << " " << byte << endl;
 }

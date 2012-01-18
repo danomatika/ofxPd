@@ -10,11 +10,12 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		3000D900145D10F8009FC3EC /* PdBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3000D8FA145D10F8009FC3EC /* PdBase.cpp */; };
+		3000D901145D10F8009FC3EC /* PdTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3000D8FE145D10F8009FC3EC /* PdTypes.cpp */; };
 		30B2D285142B3530000AB5E1 /* AppCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D280142B3530000AB5E1 /* AppCore.cpp */; };
 		30B2D286142B3530000AB5E1 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D282142B3530000AB5E1 /* main.mm */; };
 		30B2D287142B3530000AB5E1 /* testApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D284142B3530000AB5E1 /* testApp.mm */; };
 		30B2D2FD142B3566000AB5E1 /* ofxPd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D28C142B3566000AB5E1 /* ofxPd.cpp */; };
-		30B2D2FE142B3566000AB5E1 /* ofxPdTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D28F142B3566000AB5E1 /* ofxPdTypes.cpp */; };
 		30B2D2FF142B3566000AB5E1 /* s_libpdmidi.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D293142B3566000AB5E1 /* s_libpdmidi.c */; };
 		30B2D300142B3566000AB5E1 /* x_libpdreceive.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D294142B3566000AB5E1 /* x_libpdreceive.c */; };
 		30B2D301142B3566000AB5E1 /* z_libpd.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B2D296142B3566000AB5E1 /* z_libpd.c */; };
@@ -145,6 +146,12 @@
 		1D6058910D05DD3D006BFB54 /* ofxPdExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ofxPdExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		3000D8FA145D10F8009FC3EC /* PdBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdBase.cpp; sourceTree = "<group>"; };
+		3000D8FB145D10F8009FC3EC /* PdBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdBase.h; sourceTree = "<group>"; };
+		3000D8FC145D10F8009FC3EC /* PdMidiReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdMidiReceiver.h; sourceTree = "<group>"; };
+		3000D8FD145D10F8009FC3EC /* PdReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdReceiver.h; sourceTree = "<group>"; };
+		3000D8FE145D10F8009FC3EC /* PdTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PdTypes.cpp; sourceTree = "<group>"; };
+		3000D8FF145D10F8009FC3EC /* PdTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdTypes.h; sourceTree = "<group>"; };
 		30B2D280142B3530000AB5E1 /* AppCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppCore.cpp; sourceTree = "<group>"; };
 		30B2D281142B3530000AB5E1 /* AppCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppCore.h; sourceTree = "<group>"; };
 		30B2D282142B3530000AB5E1 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = ios/main.mm; sourceTree = "<group>"; };
@@ -152,9 +159,6 @@
 		30B2D284142B3530000AB5E1 /* testApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = testApp.mm; path = ios/testApp.mm; sourceTree = "<group>"; };
 		30B2D28C142B3566000AB5E1 /* ofxPd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPd.cpp; sourceTree = "<group>"; };
 		30B2D28D142B3566000AB5E1 /* ofxPd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPd.h; sourceTree = "<group>"; };
-		30B2D28E142B3566000AB5E1 /* ofxPdListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPdListener.h; sourceTree = "<group>"; };
-		30B2D28F142B3566000AB5E1 /* ofxPdTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPdTypes.cpp; sourceTree = "<group>"; };
-		30B2D290142B3566000AB5E1 /* ofxPdTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPdTypes.h; sourceTree = "<group>"; };
 		30B2D293142B3566000AB5E1 /* s_libpdmidi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = s_libpdmidi.c; sourceTree = "<group>"; };
 		30B2D294142B3566000AB5E1 /* x_libpdreceive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_libpdreceive.c; sourceTree = "<group>"; };
 		30B2D295142B3566000AB5E1 /* x_libpdreceive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x_libpdreceive.h; sourceTree = "<group>"; };
@@ -340,6 +344,19 @@
 			name = "core frameworks";
 			sourceTree = "<group>";
 		};
+		3000D8F9145D10F8009FC3EC /* cpp */ = {
+			isa = PBXGroup;
+			children = (
+				3000D8FA145D10F8009FC3EC /* PdBase.cpp */,
+				3000D8FB145D10F8009FC3EC /* PdBase.h */,
+				3000D8FC145D10F8009FC3EC /* PdMidiReceiver.h */,
+				3000D8FD145D10F8009FC3EC /* PdReceiver.h */,
+				3000D8FE145D10F8009FC3EC /* PdTypes.cpp */,
+				3000D8FF145D10F8009FC3EC /* PdTypes.h */,
+			);
+			path = cpp;
+			sourceTree = "<group>";
+		};
 		30B2D28A142B3553000AB5E1 /* ofxPd */ = {
 			isa = PBXGroup;
 			children = (
@@ -353,9 +370,6 @@
 			children = (
 				30B2D28C142B3566000AB5E1 /* ofxPd.cpp */,
 				30B2D28D142B3566000AB5E1 /* ofxPd.h */,
-				30B2D28E142B3566000AB5E1 /* ofxPdListener.h */,
-				30B2D28F142B3566000AB5E1 /* ofxPdTypes.cpp */,
-				30B2D290142B3566000AB5E1 /* ofxPdTypes.h */,
 				30B2D291142B3566000AB5E1 /* pd */,
 			);
 			name = src;
@@ -365,6 +379,7 @@
 		30B2D291142B3566000AB5E1 /* pd */ = {
 			isa = PBXGroup;
 			children = (
+				3000D8F9145D10F8009FC3EC /* cpp */,
 				30B2D292142B3566000AB5E1 /* libpd_wrapper */,
 				30B2D298142B3566000AB5E1 /* LICENSE.txt */,
 				30B2D299142B3566000AB5E1 /* pure-data */,
@@ -713,7 +728,6 @@
 				30B2D286142B3530000AB5E1 /* main.mm in Sources */,
 				30B2D287142B3530000AB5E1 /* testApp.mm in Sources */,
 				30B2D2FD142B3566000AB5E1 /* ofxPd.cpp in Sources */,
-				30B2D2FE142B3566000AB5E1 /* ofxPdTypes.cpp in Sources */,
 				30B2D2FF142B3566000AB5E1 /* s_libpdmidi.c in Sources */,
 				30B2D300142B3566000AB5E1 /* x_libpdreceive.c in Sources */,
 				30B2D301142B3566000AB5E1 /* z_libpd.c in Sources */,
@@ -787,6 +801,8 @@
 				30B2D357142B3567000AB5E1 /* x_net.c in Sources */,
 				30B2D358142B3567000AB5E1 /* x_qlist.c in Sources */,
 				30B2D359142B3567000AB5E1 /* x_time.c in Sources */,
+				3000D900145D10F8009FC3EC /* PdBase.cpp in Sources */,
+				3000D901145D10F8009FC3EC /* PdTypes.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
