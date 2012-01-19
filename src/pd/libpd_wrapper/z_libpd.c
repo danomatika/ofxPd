@@ -148,6 +148,8 @@ int libpd_process_double(double *inBuffer, double *outBuffer) {
 }
  
 #define GETARRAY \
+  t_word *vec; \
+  int i; \
   t_garray *garray = (t_garray *) pd_findbyclass(gensym(name), garray_class); \
   if (!garray) return -1; \
 
@@ -159,8 +161,7 @@ int libpd_arraysize(const char *name) {
 #define MEMCPY(_x, _y) \
   GETARRAY \
   if (n < 0 || offset < 0 || offset + n > garray_npoints(garray)) return -2; \
-  t_word *vec = ((t_word *) garray_vec(garray)) + offset; \
-  int i; \
+  vec = ((t_word *) garray_vec(garray)) + offset; \
   for (i = 0; i < n; i++) _x = _y;
 
 int libpd_read_array(float *dest, const char *name, int offset, int n) {
@@ -168,8 +169,14 @@ int libpd_read_array(float *dest, const char *name, int offset, int n) {
   return 0;
 }
 
+
 int libpd_write_array(const char *name, int offset, float *src, int n) {
-  MEMCPY(*vec++, (t_word) *src++)
+#if defined(WIN32)
+	// Changed this for Win32 / Visual Studio2010
+	MEMCPY((vec++)->w_float, *src++)
+#else
+	MEMCPY(*vec++, (t_word) *src++)
+#endif
   return 0;
 }
 
@@ -351,8 +358,9 @@ void libpd_closefile(void *x) {
 }
 
 int libpd_getdollarzero(void *x) {
+  int dzero;
   pd_pushsym((t_pd *)x);
-  int dzero = canvas_getdollarzero();
+  dzero = canvas_getdollarzero();
   pd_popsym((t_pd *)x);
   return dzero;
 }
