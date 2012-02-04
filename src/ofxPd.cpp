@@ -94,12 +94,14 @@ void ofxPd::clear() {
 //--------------------------------------------------------------------
 void ofxPd::addToSearchPath(const std::string& path) {
 	string fullpath = ofFilePath::getAbsolutePath(ofToDataPath(path));
+	ofLog(OF_LOG_VERBOSE, "Pd: Adding search path: "+fullpath);
 	_LOCK();
 	PdBase::addToSearchPath(fullpath.c_str());
 	_UNLOCK();
 }
 		
 void ofxPd::clearSearchPath() {
+	ofLog(OF_LOG_VERBOSE, "Pd: Clearing search paths");
 	_LOCK();
 	PdBase::clearSearchPath();
 	_UNLOCK();
@@ -112,8 +114,12 @@ Patch ofxPd::openPatch(const std::string& patch) {
 	string file = ofFilePath::getFileName(fullpath);
 	string folder = ofFilePath::getEnclosingDirectory(fullpath);
 	
-	ofLog(OF_LOG_VERBOSE, "Pd: Opening patch: "+file+
-						  " path: "+folder);
+	// trim the trailing slash Poco::Path always adds ... blarg
+	if(folder.size() > 0 && folder.at(folder.size()-1) == '/') {
+		folder.erase(folder.end()-1);
+	}
+	
+	ofLog(OF_LOG_VERBOSE, "Pd: Opening patch: "+file+" path: "+folder);
 
 	// [; pd open file folder(
 	_LOCK();
