@@ -371,7 +371,8 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
         
     private:
 
-		float* inputBuffer;  				///< interleaved input audio buffer
+		int ticksPerBuffer;	///< number of ticks per buffer
+		float* inputBuffer;		///< interleaved input audio buffer
 	
 		/// a receiving source's pointer and receivers
 		struct Source {
