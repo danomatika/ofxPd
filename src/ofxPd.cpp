@@ -35,7 +35,8 @@ Poco::Mutex mutex;
 
 //--------------------------------------------------------------------
 ofxPd::ofxPd() : PdBase() {
-    inputBuffer = NULL;
+    ticksPerBuffer = 32;
+	inputBuffer = NULL;
     clear();
     PdBase::setReceiver(this);
     PdBase::setMidiReceiver(this);
@@ -49,9 +50,12 @@ ofxPd::~ofxPd() {
 //--------------------------------------------------------------------
 bool ofxPd::init(const int numOutChannels, const int numInChannels, 
 				 const int sampleRate, const int ticksPerBuffer) {
+	
+	this->ticksPerBuffer = ticksPerBuffer;			 
+	
 	// init pd
 	_LOCK();
-	if(!PdBase::init(numInChannels, numOutChannels, sampleRate, ticksPerBuffer)) {
+	if(!PdBase::init(numInChannels, numOutChannels, sampleRate)) {
 		_UNLOCK();
 		ofLog(OF_LOG_ERROR, "Pd: Could not init");
         clear();
@@ -514,13 +518,13 @@ void ofxPd::sendBang(const std::string& dest) {
 
 void ofxPd::sendFloat(const std::string& dest, float value) {
 	_LOCK();
-	libpd_float(dest.c_str(), value);
+	PdBase::sendFloat(dest, value);
 	_UNLOCK();
 }
 
 void ofxPd::sendSymbol(const std::string& dest, const std::string& symbol) {
 	_LOCK();
-	libpd_symbol(dest.c_str(), symbol.c_str());
+	PdBase::sendSymbol(dest, symbol);
 	_UNLOCK();
 }
 
@@ -670,7 +674,7 @@ void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
 void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
     if(inputBuffer != NULL) {
         _LOCK();
-        if(!PdBase::processFloat(inputBuffer, output)) {
+        if(!PdBase::processFloat(ticksPerBuffer, inputBuffer, output)) {
             ofLog(OF_LOG_ERROR, (string) "Pd: could not process output buffer, " +
                 "check your buffer size and num channels");
         }
