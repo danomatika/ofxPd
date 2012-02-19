@@ -18,11 +18,7 @@
 #include "m_imp.h"
 #include "g_all_guis.h"
 
-/* some missing prototypes... */
 void pd_init(void);
-void inmidi_byte(int, int);
-void inmidi_sysex(int, int);
-void inmidi_realtimein(int, int);
 
 t_libpd_printhook libpd_printhook = NULL;
 t_libpd_banghook libpd_banghook = NULL;
@@ -38,8 +34,6 @@ t_libpd_pitchbendhook libpd_pitchbendhook = NULL;
 t_libpd_aftertouchhook libpd_aftertouchhook = NULL;
 t_libpd_polyaftertouchhook libpd_polyaftertouchhook = NULL;
 t_libpd_midibytehook libpd_midibytehook = NULL;
-
-static int ticks_per_buffer;
 
 static t_atom *argv = NULL, *curr;
 static int argm = 0, argc;
@@ -83,10 +77,9 @@ void libpd_add_to_search_path(const char *s) {
   sys_searchpath = namelist_append(sys_searchpath, s, 0);
 }
 
-int libpd_init_audio(int inChans, int outChans, int sampleRate, int tpb) {
+int libpd_init_audio(int inChans, int outChans, int sampleRate) {
   int indev[MAXAUDIOINDEV], inch[MAXAUDIOINDEV],
        outdev[MAXAUDIOOUTDEV], outch[MAXAUDIOOUTDEV];
-  ticks_per_buffer = tpb;
   indev[0] = outdev[0] = DEFAULTAUDIODEV;
   inch[0] = inChans;
   outch[0] = outChans;
@@ -119,7 +112,7 @@ static const t_sample sample_to_short = SHRT_MAX,
 #define PROCESS(_x, _y) \
   int i, j, k; \
   t_sample *p0, *p1; \
-  for (i = 0; i < ticks_per_buffer; i++) { \
+  for (i = 0; i < ticks; i++) { \
     for (j = 0, p0 = sys_soundin; j < DEFDACBLKSIZE; j++, p0++) { \
       for (k = 0, p1 = p0; k < sys_inchannels; k++, p1 += DEFDACBLKSIZE) { \
         *p1 = *inBuffer++ _x; \
@@ -135,21 +128,19 @@ static const t_sample sample_to_short = SHRT_MAX,
   } \
   return 0;
 
-int libpd_process_short(short *inBuffer, short *outBuffer) {
+int libpd_process_short(int ticks, short *inBuffer, short *outBuffer) {
   PROCESS(* short_to_sample, * sample_to_short)
 }
 
-int libpd_process_float(float *inBuffer, float *outBuffer) {
+int libpd_process_float(int ticks, float *inBuffer, float *outBuffer) {
   PROCESS(,)
 }
 
-int libpd_process_double(double *inBuffer, double *outBuffer) {
+int libpd_process_double(int ticks, double *inBuffer, double *outBuffer) {
   PROCESS(,)
 }
  
 #define GETARRAY \
-  t_word *vec; \
-  int i; \
   t_garray *garray = (t_garray *) pd_findbyclass(gensym(name), garray_class); \
   if (!garray) return -1; \
 
@@ -161,7 +152,8 @@ int libpd_arraysize(const char *name) {
 #define MEMCPY(_x, _y) \
   GETARRAY \
   if (n < 0 || offset < 0 || offset + n > garray_npoints(garray)) return -2; \
-  vec = ((t_word *) garray_vec(garray)) + offset; \
+  t_word *vec = ((t_word *) garray_vec(garray)) + offset; \
+  int i; \
   for (i = 0; i < n; i++) _x = _y;
 
 int libpd_read_array(float *dest, const char *name, int offset, int n) {
@@ -169,14 +161,8 @@ int libpd_read_array(float *dest, const char *name, int offset, int n) {
   return 0;
 }
 
-
 int libpd_write_array(const char *name, int offset, float *src, int n) {
-#if defined(WIN32)
-	// Changed this for Win32 / Visual Studio2010
-	MEMCPY((vec++)->w_float, *src++)
-#else
-	MEMCPY(*vec++, (t_word) *src++)
-#endif
+  MEMCPY((vec++)->w_float, *src++)
   return 0;
 }
 
@@ -358,9 +344,8 @@ void libpd_closefile(void *x) {
 }
 
 int libpd_getdollarzero(void *x) {
-  int dzero;
   pd_pushsym((t_pd *)x);
-  dzero = canvas_getdollarzero();
+  int dzero = canvas_getdollarzero();
   pd_popsym((t_pd *)x);
   return dzero;
 }

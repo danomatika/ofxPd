@@ -268,7 +268,7 @@ The `extern "C"` keywords tell the compiler to look for a pure C function, not a
 
 ### External library licensing on iOS
 
-Apple's iOS and App Store policies forbid dynamically linking libraries. As such, you cannot include any GPL licensed externals as the GPL expressly requires dynamic linking. Submitting an app using a GPL library, such as expr~, is in violation of the GPL and will most likely result in your app being rejected from distribution in the App Store.
+Apple's iOS and App Store policies forbid dynamically linking libraries. As such, you cannot include any GPL licensed externals as the GPL expressly requires dynamic linking. Submitting an app using a GPL library is in violation of the GPL and will most likely result in your app being rejected from distribution in the App Store.
 
 GPL patches, however, are not in violation of GPL distribution policies and can be included. They are not compiled into an application binary and can be replaced by the user.
 
