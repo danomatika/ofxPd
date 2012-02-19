@@ -18,13 +18,14 @@
 #include <vector>
 #include <map>
 
-#include "z_libpd.h"
 #include "PdReceiver.hpp"
 #include "PdMidiReceiver.hpp"
 
 #ifndef HAVE_UNISTD_H
     #define HAVE_UNISTD_H
 #endif
+
+typedef struct _atom t_atom;
 
 namespace pd {
 
@@ -71,8 +72,7 @@ class PdBase {
         ///
         /// note: must be called before processing
 		///
-		virtual bool init(const int numInChannels, const int numOutChannels,
-                          const int sampleRate, const int ticksPerBuffer=32);
+		virtual bool init(const int numInChannels, const int numOutChannels, const int sampleRate);
         
         /// clear resources
         virtual void clear();
@@ -116,7 +116,7 @@ class PdBase {
         ///
         /// one of these must be called for audio dsp and message computation to occur
         ///
-        /// rocesses one pd tick, writes raw data to buffers 
+        /// processes one pd tick, writes raw data to buffers
         ///
         /// inBuffer must be an array of the right size, never null
         /// use inBuffer = new type[0] if no input is desired
@@ -127,9 +127,9 @@ class PdBase {
         /// note: raw does not interlace the buffers
         ///
         bool processRaw(float* inBuffer, float* outBuffer);
-        bool processShort(short* inBuffer, short* outBuffer);
-        bool processFloat(float* inBuffer, float* outBuffer);
-        bool processDouble(double* inBuffer, double* outBuffer);
+        bool processShort(int ticks, short* inBuffer, short* outBuffer);
+        bool processFloat(int ticks, float* inBuffer, float* outBuffer);
+        bool processDouble(int ticks, double* inBuffer, double* outBuffer);
         
 		/// \section Audio Processing Control
 		
@@ -224,7 +224,7 @@ class PdBase {
         /// sends a typed message -> [; test msg1 hello 1.23(
         ///
         virtual void sendList(const std::string& dest, const pd::List& list);
-        virtual void sendMessage(const std::string& dest, const std::string& msg, const pd::List& list);
+        virtual void sendMessage(const std::string& dest, const std::string& msg, const pd::List& list = pd::List());
         
 		/// midi
 		///
@@ -394,8 +394,7 @@ class PdBase {
                 void removeBase();
                 
                 /// init the pd instance
-                bool init(const int numInChannels, const int numOutChannels,
-                          const int sampleRate, const int ticksPerBuffer);
+                bool init(const int numInChannels, const int numOutChannels, const int sampleRate);
         
                 /// clear the pd instance
                 void clear();
