@@ -20,3 +20,7 @@ example/obj
 # Win
 *.exe
 *.dll
+*.sdf
+*.suo
+*.vcxproj.user
+example/ipch

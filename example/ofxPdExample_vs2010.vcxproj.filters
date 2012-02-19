@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\testApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\ofxPd.cpp">
+      <Filter>addons\ofxPd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\cpp\PdBase.cpp">
+      <Filter>addons\ofxPd\src\pd\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\cpp\PdTypes.cpp">
+      <Filter>addons\ofxPd\src\pd\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\s_libpdmidi.c">
+      <Filter>addons\ofxPd\src\pd\libpd_wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\x_libpdreceive.c">
+      <Filter>addons\ofxPd\src\pd\libpd_wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\z_libpd.c">
+      <Filter>addons\ofxPd\src\pd\libpd_wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_arithmetic.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_connective.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_gui.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_interface.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_list.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_midi.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_misc.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_net.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_qlist.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_time.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_arithmetic.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_array.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_ctl.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_dac.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_delay.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_fft.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_fft_mayer.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_fftroutine.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_filter.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_global.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_math.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_misc.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_osc.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_resample.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_soundfile.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_ugen.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_all_guis.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_array.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_bang.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_canvas.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_editor.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_graph.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_guiconnect.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_hdial.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_hslider.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_io.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_mycanvas.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_numbox.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_readwrite.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_rtext.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_scalar.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_template.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_text.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_toggle.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_traversal.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_vdial.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_vslider.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_vumeter.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_atom.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_binbuf.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_class.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_conf.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_glob.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_memory.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_obj.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_pd.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_sched.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_audio.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_audio_dummy.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_file.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_inter.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_loader.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_main.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_path.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_print.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_utf8.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_acoustics.c">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{5adeb282-fa58-4ec6-a921-92912a3ed121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{39b6f7ea-8ad7-4693-8c13-8adf92664f61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPd">
+      <UniqueIdentifier>{714c27a8-7eab-44e6-a1ec-43979cd5ccff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPd\src">
+      <UniqueIdentifier>{3387ccca-06e1-4004-bf2f-faab87283f10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPd\src\pd">
+      <UniqueIdentifier>{eea003b2-1036-4fbc-bf1f-86e3a943dc02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPd\src\pd\cpp">
+      <UniqueIdentifier>{c7f1031d-226f-43ef-a8f5-ba6501fad3b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPd\src\pd\libpd_wrapper">
+      <UniqueIdentifier>{945d3079-bce5-4f86-a901-caab9c06cf26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPd\src\pd\pure-data">
+      <UniqueIdentifier>{92343717-632d-4f8f-bffb-6e347741d231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxPd\src\pd\pure-data\src">
+      <UniqueIdentifier>{958248c8-8234-4624-bd8d-3e895c98f045}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\testApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\ofxPd.h">
+      <Filter>addons\ofxPd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\cpp\PdBase.hpp">
+      <Filter>addons\ofxPd\src\pd\cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\cpp\PdMidiReceiver.hpp">
+      <Filter>addons\ofxPd\src\pd\cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\cpp\PdReceiver.hpp">
+      <Filter>addons\ofxPd\src\pd\cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\cpp\PdTypes.hpp">
+      <Filter>addons\ofxPd\src\pd\cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\x_libpdreceive.h">
+      <Filter>addons\ofxPd\src\pd\libpd_wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\z_libpd.h">
+      <Filter>addons\ofxPd\src\pd\libpd_wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_all_guis.h">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_canvas.h">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_fixed.h">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_imp.h">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_pd.h">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_stuff.h">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_utf8.h">
+      <Filter>addons\ofxPd\src\pd\pure-data\src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

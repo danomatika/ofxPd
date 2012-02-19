@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
+    <RootNamespace>emptyExample</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">obj\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">obj\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)_debug</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\libs\openFrameworks;..\..\..\libs\openFrameworks\graphics;..\..\..\libs\openFrameworks\app;..\..\..\libs\openFrameworks\sound;..\..\..\libs\openFrameworks\utils;..\..\..\libs\openFrameworks\communication;..\..\..\libs\openFrameworks\video;..\..\..\libs\openFrameworks\math;..\..\..\libs\openFrameworks\types;..\..\..\libs\openFrameworks\events;..\..\..\libs\glut\include;..\..\..\libs\rtAudio\include;..\..\..\libs\quicktime\include;..\..\..\libs\freetype\include;..\..\..\libs\freetype\include\freetype2;..\..\..\libs\freeImage\include;..\..\..\libs\fmodex\include;..\..\..\libs\videoInput\include;..\..\..\libs\glew\include\;..\..\..\libs\glu\include;..\..\..\libs\poco\include;..\..\..\addons;..\..\..\libs\openFrameworks\gl;..\..\..\libs\openFrameworks\3d;..\..\..\libs\cairo\include;..\..\..\libs\cairo\include\cairo;..\..\..\libs\tess2\include;..\..\..\addons\ofxPd\src;..\..\..\addons\ofxPd\src\pd;..\..\..\addons\ofxPd\src\pd\cpp;..\..\..\addons\ofxPd\src\pd\libpd_wrapper;..\..\..\addons\ofxPd\src\pd\pure-data;..\..\..\addons\ofxPd\src\pd\pure-data\src;..\..\..\addons\ofxPd\libs\pthreads-win32\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;MSW;_DEBUG;_CONSOLE;POCO_STATIC;CAIRO_WIN32_STATIC_BUILD;DISABLE_SOME_FLOATING_POINT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>openframeworksLibDebug.lib;cairo-static.lib;pixman-1.lib;msimg32.lib;OpenGL32.lib;GLu32.lib;kernel32.lib;setupapi.lib;Vfw32.lib;comctl32.lib;glut32.lib;rtAudioD.lib;videoInput.lib;libfreetype.lib;FreeImage.lib;qtmlClient.lib;dsound.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;glew32s.lib;fmodex_vc.lib;glu32.lib;PocoFoundationmdd.lib;PocoNetmdd.lib;PocoUtilmdd.lib;PocoXMLmdd.lib;Ws2_32.lib;tess2.lib;%(AdditionalDependencies);..\..\..\addons\ofxPd\libs\pthreads-win32\lib\pthreadVC2.lib;pthreadVC2.lib</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\libs\glut\lib\vs2010;..\..\..\libs\rtAudio\lib\vs2010;..\..\..\libs\FreeImage\lib\vs2010;..\..\..\libs\freetype\lib\vs2010;..\..\..\libs\quicktime\lib\vs2010;..\..\..\libs\fmodex\lib\vs2010;..\..\..\libs\videoInput\lib\vs2010;..\..\..\libs\cairo\lib\vs2010;..\..\..\libs\glew\lib\vs2010;..\..\..\libs\glu\lib\vs2010;..\..\..\libs\Poco\lib\vs2010;..\..\..\libs\openFrameworksCompiled\lib\vs2010;..\..\..\libs\tess2\lib\vs2010;..\..\..\addons\ofxPd\libs\pthread-win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>atlthunk.lib; LIBC.lib; LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(TargetDir)$(TargetName)_debugInfo.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>adding DLLs and creating data folder</Message>
+      <Command>xcopy /e /i /y "$(ProjectDir)..\..\..\export\vs2010\*.dll" "$(ProjectDir)bin"
+if not exist "$(ProjectDir)bin\data" mkdir  "$(ProjectDir)bin\data"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\..\..\libs\openFrameworks;..\..\..\libs\openFrameworks\graphics;..\..\..\libs\openFrameworks\app;..\..\..\libs\openFrameworks\sound;..\..\..\libs\openFrameworks\utils;..\..\..\libs\openFrameworks\communication;..\..\..\libs\openFrameworks\video;..\..\..\libs\openFrameworks\math;..\..\..\libs\openFrameworks\types;..\..\..\libs\openFrameworks\events;..\..\..\libs\glut\include;..\..\..\libs\rtAudio\include;..\..\..\libs\quicktime\include;..\..\..\libs\freetype\include;..\..\..\libs\freetype\include\freetype2;..\..\..\libs\freeImage\include;..\..\..\libs\fmodex\include;..\..\..\libs\videoInput\include;..\..\..\libs\glew\include\;..\..\..\libs\glu\include;..\..\..\libs\poco\include;..\..\..\addons;..\..\..\libs\openFrameworks\gl;..\..\..\libs\openFrameworks\3d;..\..\..\libs\tess2\include;..\..\..\addons\ofxPd\src\pd;..\..\..\addons\ofxPd\src;..\..\..\addons\ofxPd\src\pd\cpp;..\..\..\addons\ofxPd\src\pd\libpd_wrapper;..\..\..\addons\ofxPd\src\pd\pure-data;..\..\..\addons\ofxPd\src\pd\pure-data\src;%(AdditionalIncludeDirectories);..\..\..\addons\ofxPd\src;..\..\..\addons\ofxPd\src\pd;..\..\..\addons\ofxPd\src\pd\cpp;..\..\..\addons\ofxPd\src\pd\libpd_wrapper;..\..\..\addons\ofxPd\src\pd\pure-data;..\..\..\addons\ofxPd\src\pd\pure-data\src;..\..\..\addons\ofxPd\libs\pthread-win32\include;..\..\..\addons\ofxPd\src;..\..\..\addons\ofxPd\src\pd;..\..\..\addons\ofxPd\src\pd\cpp;..\..\..\addons\ofxPd\src\pd\libpd_wrapper;..\..\..\addons\ofxPd\src\pd\pure-data;..\..\..\addons\ofxPd\src\pd\pure-data\src;..\..\..\addons\ofxPd\libs\pthreads-win32\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;MSW;NDEBUG;_CONSOLE;POCO_STATIC;CAIRO_WIN32_STATIC_BUILD;DISABLE_SOME_FLOATING_POINT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>openframeworksLib.lib;cairo-static.lib;pixman-1.lib;msimg32.lib;OpenGL32.lib;GLu32.lib;kernel32.lib;setupapi.lib;glut32.lib;rtAudio.lib;videoInput.lib;libfreetype.lib;FreeImage.lib;qtmlClient.lib;dsound.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;glew32s.lib;fmodex_vc.lib;glu32.lib;PocoFoundationmd.lib;PocoNetmd.lib;PocoUtilmd.lib;PocoXMLmd.lib;tess2.lib;%(AdditionalDependencies);..\..\..\addons\ofxPd\libs\pthreads-win32\lib\pthreadVC2.lib;pthreadVC2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\libs\glut\lib\vs2010;..\..\..\libs\rtAudio\lib\vs2010;..\..\..\libs\FreeImage\lib\vs2010;..\..\..\libs\freetype\lib\vs2010;..\..\..\libs\quicktime\lib\vs2010;..\..\..\libs\fmodex\lib\vs2010;..\..\..\libs\videoInput\lib\vs2010;..\..\..\libs\cairo\lib\vs2010;..\..\..\libs\glew\lib\vs2010;..\..\..\libs\glu\lib\vs2010;..\..\..\libs\Poco\lib\vs2010;..\..\..\libs\openFrameworksCompiled\lib\vs2010;..\..\..\libs\tess2\lib\vs2010;..\..\..\addons\ofxPd\libs\pthread-win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>atlthunk.lib; LIBC.lib; LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+    <PostBuildEvent>
+      <Message>adding DLLs and creating data folder</Message>
+      <Command>xcopy /e /i /y "$(ProjectDir)\..\..\..\export\vs2010\*.dll" "$(ProjectDir)\bin"
+if not exist "$(ProjectDir)\bin\data" mkdir  "$(ProjectDir)\bin\data"
+
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\addons\ofxPd\src\ofxPd.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\cpp\PdBase.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\cpp\PdTypes.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\s_libpdmidi.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\x_libpdreceive.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\z_libpd.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_arithmetic.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_array.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_ctl.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_dac.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_delay.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_fft.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_fftroutine.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_fft_mayer.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_filter.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_global.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_math.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_misc.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_osc.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_resample.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_soundfile.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\d_ugen.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_all_guis.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_array.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_bang.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_canvas.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_editor.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_graph.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_guiconnect.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_hdial.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_hslider.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_io.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_mycanvas.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_numbox.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_readwrite.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_rtext.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_scalar.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_template.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_text.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_toggle.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_traversal.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_vdial.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_vslider.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_vumeter.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_atom.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_binbuf.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_class.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_conf.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_glob.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_memory.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_obj.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_pd.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_sched.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_audio.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_audio_dummy.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_file.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_inter.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_loader.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_main.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_path.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_print.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_utf8.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_acoustics.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_arithmetic.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_connective.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_gui.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_interface.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_list.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_midi.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_misc.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_net.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_qlist.c" />
+    <ClCompile Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\x_time.c" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\testApp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\addons\ofxPd\src\ofxPd.h" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\cpp\PdBase.hpp" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\cpp\PdMidiReceiver.hpp" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\cpp\PdReceiver.hpp" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\cpp\PdTypes.hpp" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\x_libpdreceive.h" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\z_libpd.h" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_all_guis.h" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\g_canvas.h" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_fixed.h" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_imp.h" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\m_pd.h" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_stuff.h" />
+    <ClInclude Include="..\..\..\addons\ofxPd\src\pd\pure-data\src\s_utf8.h" />
+    <ClInclude Include="src\testApp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\openFrameworksCompiled\project\vs2010\openframeworksLib.vcxproj">
+      <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

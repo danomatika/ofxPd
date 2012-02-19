@@ -30,7 +30,7 @@ On Mac OSX, you will need to install Xcode from the Mac Developer Tools.
 
 On Linux, you can use the Makefile and/or Codeblocks project files (without the "_win" suffix).
 
-On Win, you will need [Codeblocks+MiniGW](http://www.codeblocks.org/downloads/26) and the [Win Codeblocks OF package](http://www.openframeworks.cc/download). Use the Codeblocks projects files with the "_win" suffix. 
+On Win, you can use Visual Studio. Another option is [Codeblocks+MiniGW](http://www.codeblocks.org/downloads/26) and the [Win Codeblocks OF package](http://www.openframeworks.cc/download). Use the Codeblocks projects files with the "_win" suffix.
 
 Installation
 ------------
@@ -86,7 +86,7 @@ cd bin
 
 ### Windows
 
-An example Visual Studio 2010 solution as well as a Codeblocks workspace are included.
+An example Visual Studio 2010 solution and Codeblocks workspace are included.
 
 How to Create a New ofxPd Project
 ---------------------------------
@@ -103,13 +103,25 @@ Then after renaming:
 openFrameworks/apps/myApps/myPdProject/
 </pre>
 
-### For XCode:
+#### Xcode
 
-Rename the project in XCode (do not rename the .xcodeproj file in Finder!): XCode Menu->Project->Rename
+Rename the project in Xcode (do not rename the .xcodeproj file in Finder!):
+* Xcode Menu->Project->Rename
 
-### For Codeblocks (Win & Linux):
+#### Codeblocks (Win & Linux)
 
-Rename the *.cbp and *workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
+* rename the *.cbp and *.workspace files
+* open the workspace and readd the renamed project file by dragging it onto the project tree (it will complain about the missing project you renamed)
+* if you renamed the project *folder* make sure to set the project name to this folder name or C::B will not be able to run the binary:
+	* right click on project in the tree (not the workspace)
+	* Properties...->Title
+
+#### For Visual Studio
+
+* rename the *.sln, *.vcxproj, & *.vcxproj.filters files
+* open the solution and delete the old project from the projects tree
+* go to File->Add->Existing Projects/Solutions and select the *.vcxproj file
+* right click on the project in the projects tree and rename it
 
 Adding ofxPd to an Existing Project
 -----------------------------------
@@ -121,14 +133,14 @@ openFrameworks/addons/ofxPd/src
 
 You will also need to include some additional C Flags for building the libpd source:
 
-### For XCode:
+### Xcode:
 
 * create a new group "ofxPd" * drag these directories from ofxpd into this new group: ofxPd/src & ofxPd/libs
 * add a search path to: `../../../addons/ofxPd/src/pd/pure-data/src` under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
 * under Targets->YourApp->Build->Other C Flags (make sure All Configurations and All Settings are selected), add
 	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -dynamiclib -ldl -lm</pre>
 
-### For Linux (Makefiles & Codeblocks):
+### Linux (Makefiles & Codeblocks):
 
 * edit addons.make in your project folder and add the following line to the end of the file: 
 	<pre>ofxPd</pre>
@@ -139,7 +151,7 @@ You will also need to include some additional C Flags for building the libpd sou
 	USER_LIBS = -ldl -lm
 	</pre>
 
-### For Codeblocks (Win):
+### Codeblocks (Win):
 
 * add the ofxPd sources to the project:
 	* right-click on your project in the project tree
@@ -168,6 +180,46 @@ You will also need to include some additional C Flags for building the libpd sou
 	m
 	pthread
 	</pre>
+	
+### Visual Studio
+
+* add the ofxPd sources to the project tree
+	* drag the ofxMidi/src folder on the project tree
+* add the following search paths:
+<pre>
+..\\..\\..\addons\ofxPd\src
+..\\..\\..\addons\ofxPd\src\pd
+..\\..\\..\addons\ofxPd\src\pd\cpp
+..\\..\\..\addons\ofxPd\src\pd\libpd_wrapper
+..\\..\\..\addons\ofxPd\src\pd\pure-data
+..\\..\\..\addons\ofxPd\src\pd\pure-data\src
+..\\..\\..\addons\ofxPd\libs\pthreads-win32\include
+</pre>
+		* right click on the project in the project tree and select Properties
+		* set the Configuration to All Configurations
+		* Configuration Properties->C/C++->General->Additional Directories
+* add the following definitions:
+<pre>
+MSW
+</pre>
+	* right click on the project in the project tree and select Properties
+	* set the Configuration to All Configurations
+	* Configuration Properties->C/C++->Preprocessor->PreProcessor Definitions
+* add the pthreads-win32 lib search path:
+<pre>
+..\..\..\addons\ofxPd\libs\pthread-win32\lib
+</pre>
+	* right click on the project in the project tree and select Properties
+	* set the Configuration to All Configurations
+	* Configuration Properties->Linker->General->Additional Library Directories
+* add the pthreads-win32 lib:
+<pre>
+pthreadVC2.lib
+</pre>
+	* right click on the project in the project tree and select Properties
+	* set the Configuration to All Configurations
+	* Configuration Properties->Linker->General->Additional Dependencies
+
 	
 Notes
 -----
