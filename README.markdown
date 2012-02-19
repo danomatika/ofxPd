@@ -207,7 +207,7 @@ MSW
 	* Configuration Properties->C/C++->Preprocessor->PreProcessor Definitions
 * add the pthreads-win32 lib search path:
 <pre>
-..\..\..\addons\ofxPd\libs\pthread-win32\lib
+..\\..\\..\addons\ofxPd\libs\pthread-win32\lib
 </pre>
 	* right click on the project in the project tree and select Properties
 	* set the Configuration to All Configurations
