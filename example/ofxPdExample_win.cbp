@@ -143,6 +143,7 @@
 			<Add directory="..\..\..\addons\ofxThreadedImageLoader\src" />
 			<Add directory="..\..\..\addons\ofxPd\src\pd\pure-data\src" />
 			<Add directory="..\..\..\addons\ofxPd\src\pd\libpd_wrapper" />
+			<Add directory="..\..\..\addons\ofxPd\src\pd\cpp" />
 			<Add directory="..\..\..\addons\ofxPd\src" />
 		</Compiler>
 		<Linker>
@@ -204,9 +205,12 @@
 		</ExtraCommands>
 		<Unit filename="..\..\..\addons\ofxPd\src\ofxPd.cpp" />
 		<Unit filename="..\..\..\addons\ofxPd\src\ofxPd.h" />
-		<Unit filename="..\..\..\addons\ofxPd\src\ofxPdListener.h" />
-		<Unit filename="..\..\..\addons\ofxPd\src\ofxPdTypes.cpp" />
-		<Unit filename="..\..\..\addons\ofxPd\src\ofxPdTypes.h" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\cpp\PdBase.cpp" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\cpp\PdBase.hpp" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\cpp\PdMidiReceiver.hpp" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\cpp\PdReceiver.hpp" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\cpp\PdTypes.cpp" />
+		<Unit filename="..\..\..\addons\ofxPd\src\pd\cpp\PdTypes.hpp" />
 		<Unit filename="..\..\..\addons\ofxPd\src\pd\libpd_wrapper\s_libpdmidi.c">
 			<Option compilerVar="CC" />
 		</Unit>
