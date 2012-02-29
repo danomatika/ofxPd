@@ -35,7 +35,7 @@ void testApp::setup() {
 	core.setup(2, 1, 44100, ticksPerBuffer);
 
 	// setup OF sound stream
-	ofSoundStreamSetup(2, 1, this, 44100, ofxPd::getBlockSize()*ticksPerBuffer, 3);
+	ofSoundStreamSetup(2, 1, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
 }
 
 //--------------------------------------------------------------
