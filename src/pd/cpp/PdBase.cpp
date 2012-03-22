@@ -1,16 +1,14 @@
 /*
- * Copyright (c) 2011 Dan Wilcox <danomatika@gmail.com>
+ * Copyright (c) 2012 Dan Wilcox <danomatika@gmail.com>
  *
  * BSD Simplified License.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
  *
- * See https://github.com/danomatika/ofxPd for documentation
+ * See https://github.com/libpd/libpd for documentation
  *
- * This project uses libpd, copyrighted by Miller Puckette and others using the
- * "Standard Improved BSD License". See the file "LICENSE.txt" in src/pd.
- *
- * See http://gitorious.org/pdlib/pages/Libpd for documentation
+ * This file was originally written for the ofxPd openFrameworks addon:
+ * https://github.com/danomatika/ofxPd
  *
  */
 #include "PdBase.hpp"
@@ -59,9 +57,6 @@ void PdBase::clearSearchPath() {
 }
 
 //--------------------------------------------------------------------
-//
-//	references http://pocoproject.org/docs/Poco.Path.html
-//
 Patch PdBase::openPatch(const std::string& patch, const std::string& path) {
     // [; pd open file folder(
 	void* handle = libpd_openfile(patch.c_str(), path.c_str());
@@ -70,6 +65,10 @@ Patch PdBase::openPatch(const std::string& patch, const std::string& path) {
 	}
 	int dollarZero = libpd_getdollarzero(handle);
 	return Patch(handle, dollarZero, patch, path);
+}
+
+Patch PdBase::openPatch(pd::Patch& patch) {
+	return openPatch(patch.filename(), patch.path());
 }
 
 void PdBase::closePatch(const std::string& patch) {
@@ -81,6 +80,9 @@ void PdBase::closePatch(const std::string& patch) {
 }
 
 void PdBase::closePatch(Patch& patch) {
+	if(!patch.isValid()) {
+		return;
+	}
 	libpd_closefile(patch.handle());
 	patch.clear();
 }	
@@ -295,9 +297,9 @@ void PdBase::sendList(const std::string& dest, const List& list) {
     // step through list
     for(int i = 0; i < list.len(); ++i) {
 		if(list.isFloat(i))
-			addFloat(list.asFloat(i));
+			addFloat(list.getFloat(i));
 		else if(list.isSymbol(i))
-			addSymbol(list.asSymbol(i));
+			addSymbol(list.getSymbol(i));
 	}
     
     finishList(dest);
@@ -319,9 +321,9 @@ void PdBase::sendMessage(const std::string& dest, const std::string& msg, const 
     // step through list
     for(int i = 0; i < list.len(); ++i) {
 		if(list.isFloat(i))
-			addFloat(list.asFloat(i));
+			addFloat(list.getFloat(i));
 		else if(list.isSymbol(i))
-			addSymbol(list.asSymbol(i));
+			addSymbol(list.getSymbol(i));
 	}
     
     finishMessage(dest, msg);

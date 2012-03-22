@@ -1,11 +1,14 @@
 /*
- * Copyright (c) 2011 Dan Wilcox <danomatika@gmail.com>
+ * Copyright (c) 2012 Dan Wilcox <danomatika@gmail.com>
  *
  * BSD Simplified License.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
  *
- * See https://github.com/danomatika/ofxPd for documentation
+ * See https://github.com/libpd/libpd for documentation
+ *
+ * This file was originally written for the ofxPd openFrameworks addon:
+ * https://github.com/danomatika/ofxPd
  *
  */
 #pragma once
@@ -17,11 +20,17 @@ namespace pd {
 
 /// \section Pd Patch
 
+/// a pd patch
+///
+/// if you use the copy constructor/operator, keep in mind the libpd void* pointer
+/// patch handle is copied and problems can arise if one object is used to close
+/// a patch that other copies may be referring to 
 class Patch {
 
 	public:
 
 		Patch();
+		Patch(const std::string& filename, const std::string& path);
 		Patch(void* handle, int dollarZero, const std::string& filename, const std::string& path);
 			
 		/// data access
@@ -36,7 +45,10 @@ class Patch {
 		/// is the patch pointer valid?
 		bool isValid() const;
 		
-		/// clear data in this object (does not close patch!)
+		/// clear patch pointer and dollar zero (does not close patch!)
+		///
+		/// note: does not clear filename and path so the object can be reused
+		//        for opening multiple instances
 		void clear();
 
 		/// copy constructor
@@ -101,8 +113,8 @@ class List : public Bang {
 		bool isSymbol(const unsigned int index) const;
 
 		/// get item as type
-		float asFloat(const unsigned int index) const;
-		std::string asSymbol(const unsigned int index) const;
+		float getFloat(const unsigned int index) const;
+		std::string getSymbol(const unsigned int index) const;
 
 		/// \section Write
 		

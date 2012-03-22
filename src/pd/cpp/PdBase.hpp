@@ -1,16 +1,14 @@
 /*
- * Copyright (c) 2011 Dan Wilcox <danomatika@gmail.com>
+ * Copyright (c) 2012 Dan Wilcox <danomatika@gmail.com>
  *
  * BSD Simplified License.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
  *
- * See https://github.com/danomatika/ofxPd for documentation
+ * See https://github.com/libpd/libpd for documentation
  *
- * This project uses libpd, copyrighted by Miller Puckette and others using the
- * "Standard Improved BSD License". See the file "LICENSE.txt" in src/pd.
- *
- * See http://gitorious.org/pdlib/pages/Libpd for documentation
+ * This file was originally written for the ofxPd openFrameworks addon:
+ * https://github.com/danomatika/ofxPd
  *
  */
 #pragma once
@@ -32,11 +30,12 @@ namespace pd {
 ///
 ///	a Pure Data instance
 ///
-/// use ithis class directly or extend it and any of its virtual functions
+/// use this class directly or extend it and any of its virtual functions
 ///
-///	references:	http://gitorious.org/pdlib/pages/Libpd
 ///
 /// note: this object is not thread safe! use your own mutexes ...
+///
+///		  see https://github.com/danomatika/ofxPd/tree/master/src for an example
 ///
 /// note: libpd currently does not support multiple states and it is 
 ///       suggested that you use only one PdBase-derived object at a time
@@ -101,6 +100,22 @@ class PdBase {
         ///     cout << "aww ... p1 couldn't be opened" << endl;
         /// }
 		virtual pd::Patch openPatch(const std::string& patch, const std::string& path);
+		
+		/// open a patch file using the filename and path of an existing patch
+		///
+		/// set the filename within the patch object or use a previously opened
+		/// object
+		///
+		/// // open an instance of "somefile.pd"
+		/// Patch p2("somefile.pd", "/some/path");	// set file and path
+		/// pd.openPatch(p2);
+		///
+		/// // open a new instance of "somefile.pd"
+		/// Patch p3 = pd.openPatch(p2);
+		///
+		/// // p2 and p3 refer to 2 different instances of "somefile.pd"
+		///
+		virtual pd::Patch openPatch(pd::Patch& patch);
 		
 		/// close a patch file
         /// takes only the patch's basename (filename without extension)

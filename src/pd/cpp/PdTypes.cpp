@@ -1,11 +1,14 @@
 /*
- * Copyright (c) 2011 Dan Wilcox <danomatika@gmail.com>
+ * Copyright (c) 2012 Dan Wilcox <danomatika@gmail.com>
  *
  * BSD Simplified License.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
  *
- * See https://github.com/danomatika/ofxPd for documentation
+ * See https://github.com/libpd/libpd for documentation
+ *
+ * This file was originally written for the ofxPd openFrameworks addon:
+ * https://github.com/danomatika/ofxPd
  *
  */
 #include "PdTypes.hpp"
@@ -20,10 +23,13 @@ namespace pd {
 Patch::Patch() : _handle(NULL), _dollarZero(0), _dollarZeroStr("0"),
 	_filename(""), _path("") {}
 
+Patch::Patch(const std::string& filename, const std::string& path) :
+	_handle(NULL), _dollarZero(0), _dollarZeroStr("0"), 
+	_filename(filename), _path(path) {}
+
 Patch::Patch(void* handle, int dollarZero, const std::string& filename, const std::string& path) :
-	_handle(handle), _dollarZero(dollarZero), _dollarZeroStr(""), 
-	_filename(filename), _path(path) {
-    std::stringstream itoa;
+	_handle(handle), _dollarZero(dollarZero), _filename(filename), _path(path) {
+	std::stringstream itoa;
     itoa << dollarZero;
 	_dollarZeroStr = itoa.str();
 }
@@ -34,16 +40,12 @@ bool Patch::isValid() const {
 	return true;
 }
 
-/// clear data
 void Patch::clear() {
 	_handle = NULL;
 	_dollarZero = 0;
 	_dollarZeroStr = "0";
-	_filename = "";
-	_path = "";
 }
 
-/// copy constructor
 Patch::Patch(const Patch& from) {
 	_handle = from._handle;
 	_dollarZero = from._dollarZero;
@@ -52,7 +54,6 @@ Patch::Patch(const Patch& from) {
 	_path = from._path;
 }
 
-/// copy operator
 void Patch::operator=(const Patch& from) {
 	_handle = from._handle;
 	_dollarZero = from._dollarZero;
@@ -61,7 +62,6 @@ void Patch::operator=(const Patch& from) {
 	_path = from._path;
 }
 
-/// print to ostream
 std::ostream& operator<<(std::ostream& os, const Patch& from) {
 	return os << "Patch: \"" << from.filename() << "\" $0: " << from.dollarZeroStr()
 	   		  << " valid: " << from.isValid();
@@ -84,17 +84,17 @@ bool List::isSymbol(const unsigned int index) const {
 }
 
 //----------------------------------------------------------
-float List::asFloat(const unsigned int index) const {
+float List::getFloat(const unsigned int index) const {
 	if(!isFloat(index)) {
-		std::cerr << "Pd: List: object is not a float" << std::endl;
+		std::cerr << "Pd: List: object " << index << " is not a float" << std::endl;
 		return 0;
 	}
 	return objects[index].value;
 }
 
-std::string List::asSymbol(const unsigned int index) const {
+std::string List::getSymbol(const unsigned int index) const {
 	if(!isSymbol(index)) {
-		std::cerr << "Pd: List: object is not a symbol" << std::endl;
+		std::cerr << "Pd: List: object " << index << " is not a symbol" << std::endl;
 		return "";
 	}
 	return objects[index].symbol;
@@ -175,12 +175,12 @@ std::string List::toString() const {
 	
 	for(int i = 0; i < objects.size(); ++i) {
 		if(isFloat(i)) {
-            itoa << asFloat(i);
+            itoa << getFloat(i);
 			line += itoa.str();
             itoa.str("");
         }
 		else
-			line += asSymbol(i);
+			line += getSymbol(i);
 		line += " ";
 	}
 	

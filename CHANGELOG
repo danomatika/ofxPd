@@ -1,3 +1,8 @@
+v1..0.1: 2012 Mar
+
+	- updated to latest libpd
+	- List::asFloat() & List::asSymbol() are now List::getFloat() & List::getSymbol()
+
 v1.0.0: 2011 Oct, Nov
 
 	- added List building & sending
