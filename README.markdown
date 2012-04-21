@@ -53,14 +53,14 @@ git checkout 0062
 
 #### Using the latest ofxPd
 
-The master branch of ofxPd will work with the current master of OpenFrameworks and can be considered *realtively* stable. The develop branch is used for testing new features and bugfixes before they are applied to master.
+The master branch of ofxPd will work with the current master of OpenFrameworks and can be considered *relatively* stable. The develop branch is used for testing new features and bugfixes before they are applied to master.
 
 If you want to work with the latest unstable (still in development) ofxPd, download the source from the develop branch [https://github.com/danomatika/ofxPd/tree/develop](https://github.com/danomatika/ofxPd/tree/develop) or via git clone:
 <pre>
 git clone git://github.com/danomatika/ofxPd.git -b develop
 </pre> 
 
-Warning: The develop branch will be in flux, so don't be suprised if things do not always work as expected!
+Warning: The develop branch will be in flux, so don't be surprised if things do not always work as expected!
 
 Running the Example Project
 ---------------------------
@@ -157,7 +157,7 @@ You will also need to include some additional C Flags for building the libpd sou
 	PD
 	PD_INTERNAL
 	</pre>
-	* select the "Search diectories" tab, click add the search paths:
+	* select the "Search directories" tab, click add the search paths:
 	<pre>
 	..\\..\\..\addons\ofxPd\src
 	..\\..\\..\addons\ofxPd\src\pd\pure-data\src
@@ -193,15 +193,6 @@ you need to change the Base SDK to 10.6: Project > Edit Project Settings
 
 RtAudio will hang on app exit in OF 0062. The only way to fix this is to make a small edit to the OF 0062 core by editing `lib/openFrameworks/sound/ofSoundStream.cpp` and commenting line 143 so close() is not called.
 
-### Distorted Sound on iOS in 007
-
-There's a bug in the 007 release that causes distorted sound due to a typo when assigning a pointer. Edit `lib/openFrameworks/sound/ofxiPhoneSoundStream.mm` and change line 171 from
-<pre>soundOutput = soundOutput;</pre>
-to
-<pre>soundOutputPtr = soundOutput;</pre>
-
-Hopefully this will be fixed in the official release soon. [Fix from JonBro](https://github.com/openframeworks/openFrameworks/pull/690).
-
 ### "verbose" redefinition in Win Codeblocks
 
 Currently, there is a static function in the videoinput lib on Win that conflicts with a #define in the Pure Data sources. The easy fix, until the OF core is updated, is to comment out line 115 in `libs\videoInput\include\videoInput.h`.
@@ -211,7 +202,7 @@ Note: This change hasn't been tested while using the ofVideoGrabber yet ... ther
 Adding Pure Data external libraries to ofxPd
 --------------------------------------------
 
-ofxPd only includes the standard set of Pure Data objects as found in the "Vanilla" version of PD. If you wish to include an external library from Pd-Extended, etc you need to include the source files in your project and call the library setup function after intiializing ofxPd in order to load the lib.
+ofxPd only includes the standard set of Pure Data objects as found in the "Vanilla" version of PD. If you wish to include an external library from Pd-Extended, etc you need to include the source files in your project and call the library setup function after initializing ofxPd in order to load the lib.
 
 ### Adding external source files
 
@@ -264,7 +255,7 @@ extern "C" {
 }
 </pre>
 
-The `extern "C"` keywords tell the compiler to look for a pure C function, not a C++ function. Make sure to include the "Externals.h" header file where you include "ofxPd.h". Add a setup function declaration ofr any other externals that need it here.
+The `extern "C"` keywords tell the compiler to look for a pure C function, not a C++ function. Make sure to include the "Externals.h" header file where you include "ofxPd.h". Add a setup function declaration for any other externals that need it here.
 
 ### External library licensing on iOS
 
