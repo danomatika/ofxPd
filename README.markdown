@@ -51,6 +51,8 @@ cd ofxPd
 git checkout 0062
 </pre>
 
+The current master branch of ofxPd is tested against the current stable version of OpenFrameworks.
+
 #### Using the latest ofxPd
 
 The master branch of ofxPd will work with the current master of OpenFrameworks and can be considered *relatively* stable. The develop branch is used for testing new features and bugfixes before they are applied to master.
