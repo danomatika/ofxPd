@@ -57,6 +57,9 @@ class AppCore : public PdReceiver, public PdMidiReceiver {
 		
 		void receiveMidiByte(const int port, const int byte);
 		
+		// demonstrates how to manually poll for messages
+		void processEvents();
+		
 		ofxPd pd;
 		vector<float> scopeArray;
         

@@ -38,8 +38,6 @@ ofxPd::ofxPd() : PdBase() {
     ticksPerBuffer = 32;
 	inputBuffer = NULL;
     clear();
-    PdBase::setReceiver(this);
-    PdBase::setMidiReceiver(this);
 }
 
 //--------------------------------------------------------------------
@@ -227,6 +225,11 @@ void ofxPd::addReceiver(PdReceiver& receiver) {
 		ofLog(OF_LOG_WARNING, "Pd: addReceiver: ignoring duplicate receiver");
 		return;
 	}
+	
+	// set PdBase receiver on adding first reciever
+	if(receivers.size() == 1) {
+		PdBase::setReceiver(this);
+	}
     
     // receive from all sources by default
     receive(receiver);
@@ -242,6 +245,11 @@ void ofxPd::removeReceiver(PdReceiver& receiver) {
 		return;
 	}
 	receivers.erase(r_iter);
+	
+	// clear PdBase receiver on removing last reciever
+	if(receivers.size() == 0) {
+		PdBase::setReceiver(NULL);
+	}
 
 	// remove from all sources
 	ignore(receiver);		
@@ -261,6 +269,8 @@ void ofxPd::clearReceivers() {
 	for(iter = sources.begin(); iter != sources.end(); ++iter) {
 		iter->second.receivers.clear();
 	}
+	
+	PdBase::setReceiver(NULL);
 }
 
 //----------------------------------------------------------
@@ -366,6 +376,11 @@ void ofxPd::addMidiReceiver(PdMidiReceiver& receiver) {
 		return;
 	}
     
+	// set PdBase receiver on adding first reciever
+	if(midiReceivers.size() == 1) {
+		PdBase::setMidiReceiver(this);
+	}
+	
     // receive from all channels by default
     receiveMidi(receiver);
 }
@@ -380,6 +395,11 @@ void ofxPd::removeMidiReceiver(PdMidiReceiver& receiver) {
 		return;
 	}
 	midiReceivers.erase(r_iter);
+	
+	// clear PdBase receiver on removing last reciever
+	if(receivers.size() == 0) {
+		PdBase::setMidiReceiver(NULL);
+	}
 
 	// remove from all sources
 	ignoreMidi(receiver);	
@@ -399,6 +419,8 @@ void ofxPd::clearMidiReceivers() {
 	for(iter = channels.begin(); iter != channels.end(); ++iter) {
 		iter->second.receivers.clear();
 	}
+	
+	PdBase::setMidiReceiver(NULL);
 }
 
 //----------------------------------------------------------

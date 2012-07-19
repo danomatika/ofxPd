@@ -32,7 +32,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.subscribe("toOF");
 	pd.subscribe("env");
 
-	// add message receiver
+	// add message receiver, disables polling (see processEvents)
 	pd.addReceiver(*this);   // automatically receives from all subscribed sources
 	pd.ignore(*this, "env"); // don't receive from "env"
     //pd.ignore(*this);             // ignore all sources
@@ -173,6 +173,22 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.sendSymbol("fromOF", "test");
 	cout << "FINISH PD Test" << endl << endl;
 	
+	
+	cout << endl << "BEGIN Event Polling Test" << endl;
+	
+	// clear receivers, enable polling
+	pd.clearReceivers();
+    pd.clearMidiReceivers();
+	
+	pd.sendSymbol("fromOF", "test");
+	processEvents(); // <-- manually poll for events
+	
+	// re-add receivers, disable polling
+	pd.addReceiver(*this);
+    pd.addMidiReceiver(*this);
+	pd.ignore(*this, "env");
+	
+	cout << "FINISH Event Polling Test" << endl << endl;
 	
 	
 	// play a tone by sending a list
@@ -357,4 +373,73 @@ void AppCore::receivePolyAftertouch(const int channel, const int pitch, const in
 //       shows up at port 1 in ofxPd
 void AppCore::receiveMidiByte(const int port, const int byte) {
 	cout << "OF MIDI: midi byte: " << port << " " << byte << endl;
+}
+
+//--------------------------------------------------------------
+void AppCore::processEvents() {
+	
+	cout << "Number of waiting messages: " << pd.numMessages() << endl;
+	
+	while(pd.numMessages() > 0) {
+		Message& msg = pd.nextMessage();
+
+		switch(msg.type) {
+			
+			case PRINT:
+				cout << "OF: " << msg.symbol << endl;
+				break;
+			
+			// events
+			case BANG:
+				cout << "OF: bang " << msg.dest << endl;
+				break;
+			case FLOAT:
+				cout << "OF: float " << msg.dest << ": " << msg.num << endl;
+				break;
+			case SYMBOL:
+				cout << "OF: symbol " << msg.dest << ": " << msg.symbol << endl;
+				break;
+			case LIST:
+				cout << "OF: list " << msg.list << msg.list.types() << endl;
+				break;
+			case MESSAGE:
+				cout << "OF: message " << msg.dest << ": " << msg.symbol << " " 
+					 << msg.list << msg.list.types() << endl;
+				break;
+			
+			// midi
+			case NOTE_ON:
+				cout << "OF MIDI: note on: " << msg.channel << " "
+					 << msg.pitch << " " << msg.velocity << endl;
+				break;
+			case CONTROL_CHANGE:
+				cout << "OF MIDI: control change: " << msg.channel
+					 << " " << msg.controller << " " << msg.value << endl;
+				break;
+			case PROGRAM_CHANGE:
+				cout << "OF MIDI: program change: " << msg.channel << " "
+					 << msg.value << endl;
+				break;
+			case PITCH_BEND:
+				cout << "OF MIDI: pitch bend: " << msg.channel << " "
+					 << msg.value << endl;
+				break;
+			case AFTERTOUCH:
+				cout << "OF MIDI: aftertouch: " << msg.channel << " "
+					 << msg.value << endl;
+				break;
+			case POLY_AFTERTOUCH:
+				cout << "OF MIDI: poly aftertouch: " << msg.channel << " "
+					 << msg.pitch << " " << msg.value << endl;
+				break;
+			case BYTE:
+				cout << "OF MIDI: midi byte: " << msg.port << " 0x"
+					 << hex << (int) msg.byte << dec << endl;
+				break;
+		
+			case NONE:
+				cout << "OF: NONE ... empty message" << endl;
+				break;
+		}
+	}
 }

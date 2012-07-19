@@ -117,6 +117,37 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		bool exists(const std::string& source);
 		void unsubscribeAll(); ///< receivers will be unsubscribed from *all* sources
 		
+		/// poll for messages
+        ///
+        /// by default, ofxPd receieves print, event, and midi messages into a FIFO
+        /// queue which can be polled
+        ///
+        /// while(pd.numMessages() > 0) {
+        ///        pd::Message& msg = pd.nextMessage(&msg);
+        ///
+        ///        switch(msg.type) {
+        ///            case PRINT:
+        ///                cout << got print: " << msg.symbol << endl;
+        ///                break;
+        ///            case BANG:
+        ///                cout << "go a bang to " << msg.dest << endl;
+        ///                break;
+        ///            case NOTE_ON:
+        ///                cout << "got a note on " << msg.channel
+        ///                     << msg.pitch << " " << msg.velocity << endl;
+        ///                break;
+        ///            ...
+        ///        }
+        ///    }
+        ///
+        /// if you set a PdReceiver callback receiver, then event messages will
+        /// not be added to the queue
+        ///
+        /// the same goes for setting a PdMidiReceiver regarding midi messages
+        ///
+        /// if the message queue is full, the oldest message will be dropped
+        /// see setMaxQueueLen()
+		
         /// add/remove incoming event receiver
 		///
 		/// receivers automatically receive from *all* subscribed sources
