@@ -156,6 +156,7 @@ You will also need to include some additional C Flags for building the libpd sou
 	MSW
 	PD
 	PD_INTERNAL
+	WINVER=0x502
 	</pre>
 	* select the "Search directories" tab, click add the search paths:
 	<pre>
@@ -198,6 +199,10 @@ RtAudio will hang on app exit in OF 0062. The only way to fix this is to make a 
 Currently, there is a static function in the videoinput lib on Win that conflicts with a #define in the Pure Data sources. The easy fix, until the OF core is updated, is to comment out line 115 in `libs\videoInput\include\videoInput.h`.
 
 Note: This change hasn't been tested while using the ofVideoGrabber yet ... there is a slight chance it may cause a crash, be warned.
+
+### "undefined reference to SetDllDirectory" in Win Codeblocks
+
+Newer versions of libpd check the windows version, so this needs to be set via a define in your codeblocks project. If you have an old ofxPd project, this is not set, hence the error. See "Adding ofxPd to an Existing Project" above, and add the `WINVER=0x502` define to your project.
 	
 Adding Pure Data external libraries to ofxPd
 --------------------------------------------
