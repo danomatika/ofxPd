@@ -64,15 +64,13 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
     // allocate buffers
 	inputBuffer = new float[numInChannels*ticksPerBuffer*blockSize()];
 
-	ostringstream status;
-	status 	<< "Inited"
-			<< " samplerate: " << sampleRate
-			<< " channels in: " << numInChannels
-			<< " out: " << numOutChannels
-			<< " ticks: " << ticksPerBuffer
-			<< " block size: " << blockSize()
-            << " calc buffer size: " << ticksPerBuffer*blockSize();
-	ofLog(OF_LOG_VERBOSE, "Pd: "+status.str());
+	ofLogVerbose("Pd") <<"inited";
+	ofLogVerbose("Pd") <<" samplerate: " << sampleRate;
+	ofLogVerbose("Pd") <<" channels in: " << numInChannels;
+	ofLogVerbose("Pd") <<" out: " << numOutChannels;
+	ofLogVerbose("Pd") <<" ticks: " << ticksPerBuffer;
+	ofLogVerbose("Pd") <<" block size: " << blockSize();
+    ofLogVerbose("Pd") <<" calc buffer size: " << ticksPerBuffer*blockSize();
     
     return true;
 }
@@ -96,14 +94,14 @@ void ofxPd::clear() {
 //--------------------------------------------------------------------
 void ofxPd::addToSearchPath(const std::string& path) {
 	string fullpath = ofFilePath::getAbsolutePath(ofToDataPath(path));
-	ofLog(OF_LOG_VERBOSE, "Pd: Adding search path: "+fullpath);
+	ofLogVerbose("Pd") << "adding search path: "+fullpath;
 	_LOCK();
 	PdBase::addToSearchPath(fullpath.c_str());
 	_UNLOCK();
 }
 		
 void ofxPd::clearSearchPath() {
-	ofLog(OF_LOG_VERBOSE, "Pd: Clearing search paths");
+	ofLogVerbose("Pd") << "clearing search paths";
 	_LOCK();
 	PdBase::clearSearchPath();
 	_UNLOCK();
@@ -121,14 +119,14 @@ Patch ofxPd::openPatch(const std::string& patch) {
 		folder.erase(folder.end()-1);
 	}
 	
-	ofLog(OF_LOG_VERBOSE, "Pd: Opening patch: "+file+" path: "+folder);
+	ofLogVerbose("Pd") << "opening patch: "+file+" path: "+folder;
 
 	// [; pd open file folder(
 	_LOCK();
     Patch p = PdBase::openPatch(file.c_str(), folder.c_str());
     _UNLOCK();
     if(!p.isValid()) {
-		ofLog(OF_LOG_ERROR, "Pd: Opening patch \"%s\" failed", file.c_str());
+		ofLogError("Pd") << "opening patch \""+file+"\" failed";
 	}
 	
 	return p;
@@ -136,7 +134,7 @@ Patch ofxPd::openPatch(const std::string& patch) {
 
 void ofxPd::closePatch(const std::string& patch) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: Closing path: "+patch);
+	ofLogVerbose("Pd") << "closing path: "+patch;
 
 	_LOCK();
 	PdBase::closePatch(patch);
@@ -145,7 +143,7 @@ void ofxPd::closePatch(const std::string& patch) {
 
 void ofxPd::closePatch(Patch& patch) {
 	
-	ofLog(OF_LOG_VERBOSE, "Pd: Closing patch: "+patch.filename());
+	ofLogVerbose("Pd") << "closing patch: "+patch.filename();
 	
 	_LOCK();
 	PdBase::closePatch(patch);
@@ -155,9 +153,9 @@ void ofxPd::closePatch(Patch& patch) {
 //--------------------------------------------------------------------
 void ofxPd::computeAudio(bool state) {
     if(state)
-        ofLog(OF_LOG_VERBOSE, "Pd: Audio processing on");
+        ofLogVerbose("Pd") << "audio processing on";
     else
-        ofLog(OF_LOG_VERBOSE, "Pd: Audio processing off");
+        ofLogVerbose("Pd") << "audio processing off";
     
     // [; pd dsp $1(
 	_LOCK();
@@ -178,7 +176,7 @@ void ofxPd::stop() {
 void ofxPd::subscribe(const std::string& source) {
 
 	if(exists(source)) {
-		ofLog(OF_LOG_WARNING, "Pd: subscribe: ignoring duplicate source");
+		ofLogWarning("Pd") << "subscribe: ignoring duplicate source";
 		return;
 	}
 	
@@ -192,7 +190,7 @@ void ofxPd::unsubscribe(const std::string& source) {
 	map<string,Source>::iterator iter;
 	iter = sources.find(source);
 	if(iter == sources.end()) {
-		ofLog(OF_LOG_WARNING, "Pd: unsubscribe: ignoring unknown source");
+		ofLogWarning("Pd") << "unsubscribe: ignoring unknown source";
 		return;
 	}
 	
@@ -222,7 +220,7 @@ void ofxPd::addReceiver(PdReceiver& receiver) {
 	pair<set<PdReceiver*>::iterator, bool> ret;
 	ret = receivers.insert(&receiver);
 	if(!ret.second) {
-		ofLog(OF_LOG_WARNING, "Pd: addReceiver: ignoring duplicate receiver");
+		ofLogWarning("Pd") << "addReceiver: ignoring duplicate receiver";
 		return;
 	}
 	
@@ -241,7 +239,7 @@ void ofxPd::removeReceiver(PdReceiver& receiver) {
 	set<PdReceiver*>::iterator r_iter;
 	r_iter = receivers.find(&receiver);
 	if(r_iter == receivers.end()) {
-		ofLog(OF_LOG_WARNING, "Pd: removeReceiver: ignoring unknown receiver");
+		ofLogWarning("Pd") << "removeReceiver: ignoring unknown receiver";
 		return;
 	}
 	receivers.erase(r_iter);
@@ -277,12 +275,12 @@ void ofxPd::clearReceivers() {
 void ofxPd::receive(PdReceiver& receiver, const std::string& source) {
 
 	if(!receiverExists(receiver)) {
-		ofLog(OF_LOG_WARNING, "Pd: receive: unknown receiver, call addReceiver first");
+		ofLogWarning("Pd") << "receive: unknown receiver, call addReceiver first";
 		return;
 	}
 	
 	if(!exists(source)) {
-		ofLog(OF_LOG_WARNING, "Pd: receive: unknown source, call subscribe first");
+		ofLogWarning("Pd") << "receive: unknown source, call subscribe first";
 		return;
 	}
 	
@@ -315,12 +313,12 @@ void ofxPd::receive(PdReceiver& receiver, const std::string& source) {
 void ofxPd::ignore(PdReceiver& receiver, const std::string& source) {
 
 	if(!receiverExists(receiver)) {
-		ofLog(OF_LOG_WARNING, "Pd: ignore: ignoring unknown receiver");
+		ofLogWarning("Pd") << "ignore: ignoring unknown receiver";
 		return;
 	}
 
 	if(!exists(source)) {
-		ofLog(OF_LOG_WARNING, "Pd: ignore: ignoring unknown source");
+		ofLogWarning("Pd") << "ignore: ignoring unknown source";
 		return;
 	}
 	
@@ -372,7 +370,7 @@ void ofxPd::addMidiReceiver(PdMidiReceiver& receiver) {
     pair<set<PdMidiReceiver*>::iterator, bool> ret;
 	ret = midiReceivers.insert(&receiver);
 	if(!ret.second) {
-		ofLog(OF_LOG_WARNING, "Pd: addMidiReceiver: ignoring duplicate receiver");
+		ofLogWarning("Pd") << "addMidiReceiver: ignoring duplicate receiver";
 		return;
 	}
     
@@ -391,7 +389,7 @@ void ofxPd::removeMidiReceiver(PdMidiReceiver& receiver) {
 	set<PdMidiReceiver*>::iterator r_iter;
 	r_iter = midiReceivers.find(&receiver);
 	if(r_iter == midiReceivers.end()) {
-		ofLog(OF_LOG_WARNING, "Pd: removeMidiReceiver: ignoring unknown receiver");
+		ofLogWarning("Pd") << "removeMidiReceiver: ignoring unknown receiver";
 		return;
 	}
 	midiReceivers.erase(r_iter);
@@ -427,7 +425,7 @@ void ofxPd::clearMidiReceivers() {
 void ofxPd::receiveMidi(PdMidiReceiver& receiver, int channel) {
 
 	if(!midiReceiverExists(receiver)) {
-		ofLog(OF_LOG_WARNING, "Pd: receiveMidi: unknown receiver, call addMidiReceiver first");
+		ofLogWarning("Pd") << "receiveMidi: unknown receiver, call addMidiReceiver first";
 		return;
 	}
 	
@@ -470,7 +468,7 @@ void ofxPd::receiveMidi(PdMidiReceiver& receiver, int channel) {
 void ofxPd::ignoreMidi(PdMidiReceiver& receiver, int channel) {
 
 	if(!midiReceiverExists(receiver)) {
-		ofLog(OF_LOG_WARNING, "Pd: ignoreMidi: ignoring unknown receiver");
+		ofLogWarning("Pd") << "ignoreMidi: ignoring unknown receiver";
 		return;
 	} 
 	
@@ -688,8 +686,8 @@ void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
         }
 	}
 	catch (...) {
-		ofLog(OF_LOG_ERROR, (string) "Pd: could not copy input buffer, " +
-			"check your buffer size and num channels");
+		ofLogError("Pd") << "could not copy input buffer, " <<
+			"check your buffer size and num channels";
 	}
 }
 
@@ -697,8 +695,8 @@ void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
     if(inputBuffer != NULL) {
         _LOCK();
         if(!PdBase::processFloat(ticksPerBuffer, inputBuffer, output)) {
-            ofLog(OF_LOG_ERROR, (string) "Pd: could not process output buffer, " +
-                "check your buffer size and num channels");
+            ofLogError("Pd") << "could not process output buffer, " <<
+                "check your buffer size and num channels";
         }
         _UNLOCK();
     }
@@ -709,7 +707,7 @@ void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
 //----------------------------------------------------------
 void ofxPd::print(const std::string& message) {
 
-    ofLog(OF_LOG_VERBOSE, "Pd: print: %s", message.c_str());
+    ofLogVerbose("Pd") << "print: " << message;
     
     // broadcast
     set<PdReceiver*>::iterator iter;
@@ -720,7 +718,7 @@ void ofxPd::print(const std::string& message) {
 
 void ofxPd::receiveBang(const std::string& dest) {
     
-    ofLog(OF_LOG_VERBOSE, "Pd: bang: %s", dest.c_str());
+    ofLogVerbose("Pd") << "bang: " << dest;
 	
 	set<PdReceiver*>::iterator r_iter;
 	set<PdReceiver*>* r_set;
@@ -743,7 +741,8 @@ void ofxPd::receiveBang(const std::string& dest) {
 }
 
 void ofxPd::receiveFloat(const std::string& dest, float value) {
-	ofLog(OF_LOG_VERBOSE, "Pd: float: %s %f", dest.c_str(), value);
+	
+	ofLogVerbose("Pd") << "float: " << dest << " " << value;
 	
 	set<PdReceiver*>::iterator r_iter;
     set<PdReceiver*>* r_set;
@@ -767,7 +766,7 @@ void ofxPd::receiveFloat(const std::string& dest, float value) {
 
 void ofxPd::receiveSymbol(const std::string& dest, const std::string& symbol) {
 	
-    ofLog(OF_LOG_VERBOSE, "Pd: symbol: %s %s", dest.c_str(), symbol.c_str());
+    ofLogVerbose("Pd") << "symbol: " << dest << " " << symbol;
 	
 	set<PdReceiver*>::iterator r_iter;
 	set<PdReceiver*>* r_set;
@@ -791,8 +790,7 @@ void ofxPd::receiveSymbol(const std::string& dest, const std::string& symbol) {
 
 void ofxPd::receiveList(const std::string& dest, const List& list) {
 	
-    ofLog(OF_LOG_VERBOSE, "Pd: list: %s %s",
-        dest.c_str(), list.toString().c_str());
+    ofLogVerbose("Pd") << "list: " << dest << " " << list.toString();
 	
 	set<PdReceiver*>::iterator r_iter;
 	set<PdReceiver*>* r_set;
@@ -816,8 +814,7 @@ void ofxPd::receiveList(const std::string& dest, const List& list) {
 
 void ofxPd::receiveMessage(const std::string& dest, const std::string& msg, const List& list) {
 
-    ofLog(OF_LOG_VERBOSE, "Pd: message: %s %s %s",
-        dest.c_str(), msg.c_str(), list.toString().c_str());
+    ofLogVerbose("Pd") << "message: " << dest << " " << msg << " " << list.toString();
 
 	set<PdReceiver*>::iterator r_iter;
 	set<PdReceiver*>* r_set;
@@ -842,8 +839,7 @@ void ofxPd::receiveMessage(const std::string& dest, const std::string& msg, cons
 //----------------------------------------------------------
 void ofxPd::receiveNoteOn(const int channel, const int pitch, const int velocity) {
 
-    //int c = channel++;
-	ofLog(OF_LOG_VERBOSE, "Pd: note on: %d %d %d", channel+1, pitch, velocity);
+	ofLogVerbose("Pd") << "note on: " << channel+1 << " " << pitch << " " << velocity;
 	
     set<PdMidiReceiver*>::iterator r_iter;
 	set<PdMidiReceiver*>* r_set;
@@ -869,7 +865,7 @@ void ofxPd::receiveNoteOn(const int channel, const int pitch, const int velocity
 
 void ofxPd::receiveControlChange(const int channel, const int controller, const int value) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: control change: %d %d %d", channel+1, controller, value);
+	ofLogVerbose("Pd") << "control change: " << channel+1 << " " << controller << " " << value;
 
     set<PdMidiReceiver*>::iterator r_iter;
 	set<PdMidiReceiver*>* r_set;
@@ -895,7 +891,7 @@ void ofxPd::receiveControlChange(const int channel, const int controller, const 
 
 void ofxPd::receiveProgramChange(const int channel, const int value) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: program change: %d %d", channel+1, value+1);
+	ofLogVerbose("Pd") << "program change: " << channel+1 << " " << value+1;
 
     set<PdMidiReceiver*>::iterator r_iter;
 	set<PdMidiReceiver*>* r_set;
@@ -921,7 +917,7 @@ void ofxPd::receiveProgramChange(const int channel, const int value) {
 
 void ofxPd::receivePitchBend(const int channel, const int value) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: pitch bend: %d %d", channel+1, value);
+	ofLogVerbose("Pd") << "pitch bend: " << channel+1 << value;
 
     set<PdMidiReceiver*>::iterator r_iter;
 	set<PdMidiReceiver*>* r_set;
@@ -947,7 +943,7 @@ void ofxPd::receivePitchBend(const int channel, const int value) {
 
 void ofxPd::receiveAftertouch(const int channel, const int value) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: aftertouch: %d %d", channel+1, value);
+	ofLogVerbose("Pd") << "aftertouch: " << channel+1 << value;
 
     set<PdMidiReceiver*>::iterator r_iter;
 	set<PdMidiReceiver*>* r_set;
@@ -973,7 +969,7 @@ void ofxPd::receiveAftertouch(const int channel, const int value) {
 
 void ofxPd::receivePolyAftertouch(const int channel, const int pitch, const int value) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: poly aftertouch: %d %d %d", channel+1, pitch, value);
+	ofLogVerbose("Pd") << "poly aftertouch: " << channel+1 << " " << pitch << " " << value;
 
     set<PdMidiReceiver*>::iterator r_iter;
 	set<PdMidiReceiver*>* r_set;
@@ -999,7 +995,7 @@ void ofxPd::receivePolyAftertouch(const int channel, const int pitch, const int 
 
 void ofxPd::receiveMidiByte(const int port, const int byte) {
 
-	ofLog(OF_LOG_VERBOSE, "Pd: midi byte: %d %d", port, byte);
+	ofLogVerbose("Pd") << "midi byte: " << port << " " << byte;
 
 	set<PdMidiReceiver*>& r_set = midiReceivers;
 	set<PdMidiReceiver*>::iterator iter;

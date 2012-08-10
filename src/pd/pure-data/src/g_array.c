@@ -332,7 +332,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         style, 1);
     template_setfloat(template, gensym("linewidth"), x->x_scalar->sc_vec, 
         ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
-    if (x2 = pd_findbyclass(gensym("#A"), garray_class))
+    if ((x2 = pd_findbyclass(gensym("#A"), garray_class)))
         pd_unbind(x2, gensym("#A"));
 
     pd_bind(&x->x_gobj.g_pd, gensym("#A"));
@@ -560,7 +560,7 @@ static void garray_free(t_garray *x)
     gfxstub_deleteforkey(x);
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
         /* LATER find a way to get #A unbound earlier (at end of load?) */
-    while (x2 = pd_findbyclass(gensym("#A"), garray_class))
+    while ((x2 = pd_findbyclass(gensym("#A"), garray_class)))
         pd_unbind(x2, gensym("#A"));
     pd_free(&x->x_scalar->sc_gobj.g_pd);
 }
@@ -743,11 +743,11 @@ static int array_doclick_element(t_array *array, t_glist *glist,
         useyloc = yloc + (yonset >= 0 ? fielddesc_cvttocoord(yfield,
             *(t_float *)(((char *)(array->a_vec) + elemsize * i) + yonset)) : 0);
         
-        if (hit = scalar_doclick(
+        if ((hit = scalar_doclick(
             (t_word *)((char *)(array->a_vec) + i * elemsize),
             elemtemplate, 0, array,
             glist, usexloc, useyloc,
-            xpix, ypix, shift, alt, dbl, doit))
+            xpix, ypix, shift, alt, dbl, doit)))
                 return (hit);
     }
     return (0);
