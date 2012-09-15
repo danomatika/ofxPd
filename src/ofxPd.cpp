@@ -132,6 +132,20 @@ Patch ofxPd::openPatch(const std::string& patch) {
 	return p;
 }
 
+pd::Patch ofxPd::openPatch(pd::Patch& patch) {
+	
+	ofLogVerbose("Pd") << "opening patch: "+patch.filename()+" path: "+patch.path();
+	
+	_LOCK();
+	Patch p = PdBase::openPatch(patch);
+	_UNLOCK();
+	if(!p.isValid()) {
+		ofLogError("Pd") << "opening patch \""+patch.filename()+"\" failed";
+	}
+	
+	return p;
+}
+
 void ofxPd::closePatch(const std::string& patch) {
 
 	ofLogVerbose("Pd") << "closing path: "+patch;
