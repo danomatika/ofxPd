@@ -385,59 +385,59 @@ void AppCore::processEvents() {
 
 		switch(msg.type) {
 			
-			case PRINT:
+			case pd::PRINT:
 				cout << "OF: " << msg.symbol << endl;
 				break;
 			
 			// events
-			case BANG:
+			case pd::BANG:
 				cout << "OF: bang " << msg.dest << endl;
 				break;
-			case FLOAT:
+			case pd::FLOAT:
 				cout << "OF: float " << msg.dest << ": " << msg.num << endl;
 				break;
-			case SYMBOL:
+			case pd::SYMBOL:
 				cout << "OF: symbol " << msg.dest << ": " << msg.symbol << endl;
 				break;
-			case LIST:
+			case pd::LIST:
 				cout << "OF: list " << msg.list << msg.list.types() << endl;
 				break;
-			case MESSAGE:
+			case pd::MESSAGE:
 				cout << "OF: message " << msg.dest << ": " << msg.symbol << " " 
 					 << msg.list << msg.list.types() << endl;
 				break;
 			
 			// midi
-			case NOTE_ON:
+			case pd::NOTE_ON:
 				cout << "OF MIDI: note on: " << msg.channel << " "
 					 << msg.pitch << " " << msg.velocity << endl;
 				break;
-			case CONTROL_CHANGE:
+			case pd::CONTROL_CHANGE:
 				cout << "OF MIDI: control change: " << msg.channel
 					 << " " << msg.controller << " " << msg.value << endl;
 				break;
-			case PROGRAM_CHANGE:
+			case pd::PROGRAM_CHANGE:
 				cout << "OF MIDI: program change: " << msg.channel << " "
 					 << msg.value << endl;
 				break;
-			case PITCH_BEND:
+			case pd::PITCH_BEND:
 				cout << "OF MIDI: pitch bend: " << msg.channel << " "
 					 << msg.value << endl;
 				break;
-			case AFTERTOUCH:
+			case pd::AFTERTOUCH:
 				cout << "OF MIDI: aftertouch: " << msg.channel << " "
 					 << msg.value << endl;
 				break;
-			case POLY_AFTERTOUCH:
+			case pd::POLY_AFTERTOUCH:
 				cout << "OF MIDI: poly aftertouch: " << msg.channel << " "
 					 << msg.pitch << " " << msg.value << endl;
 				break;
-			case BYTE:
+			case pd::BYTE:
 				cout << "OF MIDI: midi byte: " << msg.port << " 0x"
 					 << hex << (int) msg.byte << dec << endl;
 				break;
 		
-			case NONE:
+			case pd::NONE:
 				cout << "OF: NONE ... empty message" << endl;
 				break;
 		}
