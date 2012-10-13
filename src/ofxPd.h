@@ -17,7 +17,6 @@
 
 #include <map>
 #include <set>
-#include <Poco/Mutex.h>
 
 #include "PdBase.hpp"
 

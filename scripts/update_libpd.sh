@@ -21,6 +21,10 @@ rm libpd/libpd_wrapper/z_jni.h
 rm libpd/libpd_wrapper/z_csharp_helper.c
 rm libpd/libpd_wrapper/z_csharp_helper.h
 
+# remove expr~ since it's GPL, leave that up to devs
+rm -rf libpd/pure-data/extra/expr~
+rm libpd/pure-data/extra/expr-help.pd
+
 # copy license
 cp -v libpd/LICENSE.txt ../src/pd
 
