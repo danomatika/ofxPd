@@ -18,6 +18,8 @@
 #include "s_stuff.h"
 #include "m_imp.h"
 #include "g_all_guis.h"
+#include "m_fixed.h"
+
 
 void pd_init(void);
 
@@ -111,6 +113,28 @@ int libpd_process_raw(float *inBuffer, float *outBuffer) {
 static const t_sample sample_to_short = SHRT_MAX,
                    short_to_sample = 1.0 / (t_sample) SHRT_MAX;
 
+
+#ifdef PD_FIXEDPOINT
+#define PROCESS(_x, _y) \
+  int i, j, k; \
+  t_sample *p0, *p1; \
+  for (i = 0; i < ticks; i++) { \
+    for (j = 0, p0 = sys_soundin; j < DEFDACBLKSIZE; j++, p0++) { \
+      for (k = 0, p1 = p0; k < sys_inchannels; k++, p1 += DEFDACBLKSIZE) { \
+        *p1 = ftofix(*inBuffer++ _x); \
+      } \
+    } \
+    memset(sys_soundout, 0, sys_outchannels*DEFDACBLKSIZE*sizeof(t_sample)); \
+    sched_tick(sys_time + sys_time_per_dsp_tick); \
+    for (j = 0, p0 = sys_soundout; j < DEFDACBLKSIZE; j++, p0++) { \
+      for (k = 0, p1 = p0; k < sys_outchannels; k++, p1 += DEFDACBLKSIZE) { \
+        *outBuffer++ = fixtof(*p1) _y; \
+      } \
+    } \
+  } \
+  return 0;
+
+#else
 #define PROCESS(_x, _y) \
   int i, j, k; \
   t_sample *p0, *p1; \
@@ -129,6 +153,7 @@ static const t_sample sample_to_short = SHRT_MAX,
     } \
   } \
   return 0;
+#endif
 
 int libpd_process_short(int ticks, short *inBuffer, short *outBuffer) {
   PROCESS(* short_to_sample, * sample_to_short)
@@ -141,7 +166,29 @@ int libpd_process_float(int ticks, float *inBuffer, float *outBuffer) {
 int libpd_process_double(int ticks, double *inBuffer, double *outBuffer) {
   PROCESS(,)
 }
- 
+/*
+int libpd_process_fixed_float( int ticks, float *inBuffer, float *outBuffer ) {
+	int i, j, k;
+	t_sample *p0, *p1;
+	for (i = 0; i < ticks; i++) {
+		for (j = 0, p0 = sys_soundin; j < DEFDACBLKSIZE; j++, p0++) {
+			for (k = 0, p1 = p0; k < sys_inchannels; k++, p1 += DEFDACBLKSIZE) {
+				*p1 = ftofix(*inBuffer++);
+			}
+		}
+		memset(sys_soundout, 0, sys_outchannels*DEFDACBLKSIZE*sizeof(t_sample));
+		sched_tick(sys_time + sys_time_per_dsp_tick);
+		for (j = 0, p0 = sys_soundout; j < DEFDACBLKSIZE; j++, p0++) {
+			for (k = 0, p1 = p0; k < sys_outchannels; k++, p1 += DEFDACBLKSIZE) {
+				*outBuffer++ = fixtof(*p1);
+			}
+		}
+	}
+	return 0;
+}
+*/
+
+
 #define GETARRAY \
   t_garray *garray = (t_garray *) pd_findbyclass(gensym(name), garray_class); \
   if (!garray) return -1; \

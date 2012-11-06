@@ -53,8 +53,9 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	cout << endl << "BEGIN Patch Test" << endl;
 	
+	Patch patch;
 	// open patch
-	Patch patch = pd.openPatch("test.pd");
+	patch = pd.openPatch("test.pd");
 	cout << patch << endl;
 	
 	// close patch
@@ -104,7 +105,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
     
 	cout << "FINISH Message Test" << endl;
 	
-	
+		
 	cout << endl << "BEGIN MIDI Test" << endl;
 	
 	// send functions
@@ -187,7 +188,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.addReceiver(*this);
     pd.addMidiReceiver(*this);
 	pd.ignore(*this, "env");
-	
+		
 	cout << "FINISH Event Polling Test" << endl << endl;
 	
 	
@@ -216,7 +217,7 @@ void AppCore::draw() {
 	ofSetColor(0, 255, 0);
 	ofSetRectMode(OF_RECTMODE_CENTER);
 	float x = 0, y = ofGetHeight()/2;
-	float w = ofGetWidth() / (float) scopeArray.size(), h = ofGetHeight()/2;
+	float w = ofGetWidth() / (float) scopeArray.size(), h = 1000*ofGetHeight()/2;
 	for(int i = 0; i < scopeArray.size()-1; ++i) {
 		ofLine(x, y+scopeArray[i]*h, x+w, y+scopeArray[i+1]*h);
 		x += w;
