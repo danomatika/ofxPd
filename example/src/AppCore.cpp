@@ -54,14 +54,14 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << endl << "BEGIN Patch Test" << endl;
 	
 	Patch patch;
-	/*// open patch
+	// open patch
 	patch = pd.openPatch("test.pd");
 	cout << patch << endl;
 	
 	// close patch
 	pd.closePatch(patch);
 	cout << patch << endl;
-	*/
+	
 	// open patch
 	patch = pd.openPatch("test.pd");
 	cout << patch << endl;
@@ -214,15 +214,14 @@ void AppCore::update() {
 void AppCore::draw() {
 
 	// draw scope
-	/*
 	ofSetColor(0, 255, 0);
 	ofSetRectMode(OF_RECTMODE_CENTER);
 	float x = 0, y = ofGetHeight()/2;
-	float w = ofGetWidth() / (float) scopeArray.size(), h = ofGetHeight()/2;
+	float w = ofGetWidth() / (float) scopeArray.size(), h = 1000*ofGetHeight()/2;
 	for(int i = 0; i < scopeArray.size()-1; ++i) {
 		ofLine(x, y+scopeArray[i]*h, x+w, y+scopeArray[i+1]*h);
 		x += w;
-	}*/
+	}
 }
 
 //--------------------------------------------------------------
