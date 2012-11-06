@@ -20,7 +20,7 @@ typedef struct _sig
 
 static t_int *sig_tilde_perform(t_int *w)
 {
-    t_float f = *(t_float *)(w[1]);
+    t_sample f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     while (n--)
@@ -30,10 +30,19 @@ static t_int *sig_tilde_perform(t_int *w)
 
 static t_int *sig_tilde_perf8(t_int *w)
 {
-    t_float f = *(t_float *)(w[1]);
+    t_sample f = *(t_sample *)(w[1]);
+
+#ifdef PD_FIXEDPOINT
+	float bufVal = fixtof(f);
+#else
+	float bufVal = f;
+#endif
+//	printf("sig_tilde_perf8: filling buffer with %f\n", bufVal );
+	
     t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    
+
+
     for (; n; n -= 8, out += 8)
     {
         out[0] = f;
@@ -48,11 +57,18 @@ static t_int *sig_tilde_perf8(t_int *w)
     return (w+4);
 }
 
-void dsp_add_scalarcopy(t_float *in, t_sample *out, int n)
+void dsp_add_scalarcopy(t_sample *in, t_sample *out, int n)
 {
+#ifdef PD_FIXEDPOINT
+	float firstVal = fixtof(*in);
+#else
+	float firstVal = *in;
+#endif
+	//printf("dsp_add_scalarcopy: copying %i values from %x (first %f) to %x\n", n, in, firstVal, out );
+
     if (n&7)
-        dsp_add(sig_tilde_perform, 3, in, out, n);
-    else        
+		dsp_add(sig_tilde_perform, 3, in, out, n);
+    else
         dsp_add(sig_tilde_perf8, 3, in, out, n);
 }
 
@@ -81,6 +97,8 @@ static void sig_tilde_setup(void)
     class_addfloat(sig_tilde_class, (t_method)sig_tilde_float);
     class_addmethod(sig_tilde_class, (t_method)sig_tilde_dsp, gensym("dsp"), 0);
 }
+
+#ifndef PD_FIXEDPOINT // rest are implemented elsewhere
 
 /* -------------------------- line~ ------------------------------ */
 static t_class *line_tilde_class;
@@ -821,6 +839,9 @@ static void threshold_tilde_setup( void)
         gensym("dsp"), 0);
 }
 
+
+#endif
+
 /* ------------------------ global setup routine ------------------------- */
 
 void d_ctl_setup(void)
@@ -833,4 +854,3 @@ void d_ctl_setup(void)
     env_tilde_setup();
     threshold_tilde_setup();
 }
-

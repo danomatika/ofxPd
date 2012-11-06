@@ -415,8 +415,17 @@ int class_isdrawcommand(t_class *c)
 static void pd_floatforsignal(t_pd *x, t_float f)
 {
     int offset = (*x)->c_floatsignalin;
+#ifdef PD_FIXEDPOINT
+//	printf("pd_floatforsignal: %f -> %x for address %x\n", f, ftofix(f), ((char*)x)+offset );
+#endif
     if (offset > 0)
-        *(t_float *)(((char *)x) + offset) = f;
+	{
+#ifdef PD_FIXEDPOINT
+        *(t_sample *)(((char *)x) + offset) = ftofix(f);
+#else
+		*(t_sample *)(((char *)x) + offset) = f;
+#endif
+	}
     else
         pd_error(x, "%s: float unexpected for signal input",
             (*x)->c_name->s_name);
@@ -424,6 +433,7 @@ static void pd_floatforsignal(t_pd *x, t_float f)
 
 void class_domainsignalin(t_class *c, int onset)
 {
+	//printf("class_domainsignalinlet: class %x, onset %i, floatmethod %x\n", c, onset, c->c_floatmethod );
     if (onset <= 0) onset = -1;
     else
     {
@@ -432,6 +442,7 @@ void class_domainsignalin(t_class *c, int onset)
         c->c_floatmethod = (t_floatmethod)pd_floatforsignal;
     }
     c->c_floatsignalin = onset;
+	//printf("class_domainsignalinlet:           onset %i, floatmethod %x\n", onset, c->c_floatmethod );
 }
 
 void class_set_extern_dir(t_symbol *s)

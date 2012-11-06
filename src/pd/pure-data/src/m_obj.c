@@ -65,7 +65,12 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
 t_inlet *signalinlet_new(t_object *owner, t_float f)
 {
     t_inlet *x = inlet_new(owner, &owner->ob_pd, &s_signal, &s_signal);
+#ifdef PD_FIXEDPOINT
+	//printf("signalinlet_new: [%x] got value %f", owner, f );
+    x->i_un.iu_floatsignalvalue = ftofix(f);
+#else
     x->i_un.iu_floatsignalvalue = f;
+#endif
     return (x);
 }
 
@@ -105,13 +110,32 @@ static void inlet_pointer(t_inlet *x, t_gpointer *gp)
 static void inlet_float(t_inlet *x, t_float f)
 {
     if (x->i_symfrom == &s_float)
+	{
+#ifdef PD_FIXEDPOINT
+		//printf("inlet_float (float): [%x] got value %f", x, f );
+#endif
         pd_vmess(x->i_dest, x->i_symto, "f", (t_floatarg)f);
+	}
     else if (x->i_symfrom == &s_signal)
+	{
+#ifdef PD_FIXEDPOINT
+		//printf("inlet_float (signal): [%x] got value %f", x, f );
+        x->i_un.iu_floatsignalvalue = ftofix(f);
+#else
         x->i_un.iu_floatsignalvalue = f;
-    else if (!x->i_symfrom)
+#endif
+	}
+    else if (!x->i_symfrom) {
+#ifdef PD_FIXEDPOINT
+		//printf("inlet_float (none): [%x] got value %f", x, f );
+#endif
         pd_float(x->i_dest, f);
+	}
     else if (x->i_symfrom == &s_list)
     {
+#ifdef PD_FIXEDPOINT
+		//printf("inlet_float (atom): [%x] got value %f", x, f );
+#endif
         t_atom a;
         SETFLOAT(&a, f);
         inlet_list(x, &s_float, 1, &a);
@@ -688,22 +712,27 @@ int obj_issignaloutlet(t_object *x, int m)
     return (o2 && (o2->o_sym == &s_signal));
 }
 
-t_float *obj_findsignalscalar(t_object *x, int m)
+t_sample *obj_findsignalscalar(t_object *x, int m)
 {
     int n = 0;
     t_inlet *i;
     if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
     {
-        if (!m--)
-            return (x->ob_pd->c_floatsignalin > 0 ?
-                (t_float *)(((char *)x) + x->ob_pd->c_floatsignalin) : 0);
+        if (!m--) {
+			if (x->ob_pd->c_floatsignalin > 0 ) {
+				
+				return (t_sample *)(((char *)x) + x->ob_pd->c_floatsignalin);
+			}
+			else
+				return 0;
+		}
         n++;
     }
     for (i = x->ob_inlet; i; i = i->i_next, m--)
         if (i->i_symfrom == &s_signal)
     {
         if (m == 0)
-            return (&i->i_un.iu_floatsignalvalue);
+            return (t_sample*)(&i->i_un.iu_floatsignalvalue);
         n++;
     }
     return (0);
