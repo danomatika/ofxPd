@@ -271,6 +271,9 @@ static t_int *osc_perform(t_int *w)
     int normhipart;
     union tabfudge tf;
     float conv = x->x_conv;
+	
+	//printf("osc [%x] perform: stored %f, curr %f [%x], phase %i\n", x, x->x_f, *in, in, x->x_phase );
+
     
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];

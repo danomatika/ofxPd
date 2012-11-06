@@ -1,11 +1,10 @@
 #ifndef __M_FIXED_H__
 #define __M_FIXED_H__
 
-#ifdef FIXEDPOINT
-typedef int t_sample;
-#endif
+typedef long long t_time;
 
 #define t_fixed int
+#define PD_FIXEDTYPE t_fixed
 #define fix1 18  /* (18) number of bits after comma */
 
 
@@ -34,14 +33,14 @@ typedef int t_sample;
 
 /* mapping of fft functions */
 
-#ifdef FIXEDPOINT
+#ifdef PD_FIXEDPOINT
 #define mayer_realifft imayer_realifft
 #define mayer_realfft imayer_realfft
 #define mayer_fft imayer_fft
 #define mayer_ifft imayer_ifft
 #endif
 
-#ifdef FIXEDPOINT
+#ifdef PD_FIXEDPOINT
 #define SCALE16(x) (x>>(fix1-15))
 #define SCALE32(x) (x<<(32-fix1))
 #define INVSCALE16(x) (x<<(fix1-15))

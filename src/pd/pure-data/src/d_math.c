@@ -7,6 +7,9 @@
 */
 
 #include "m_pd.h"
+
+#ifndef PD_FIXEDPOINT
+
 #include <math.h>
 #define LOGTEN 2.302585092994
 
@@ -317,6 +320,11 @@ void mtof_tilde_setup(void)
         sizeof(t_mtof_tilde), 0, 0);
     CLASS_MAINSIGNALIN(mtof_tilde_class, t_mtof_tilde, x_f);
     class_addmethod(mtof_tilde_class, (t_method)mtof_tilde_dsp, gensym("dsp"), 0);
+
+	t_symbol *s = gensym("acoustics~.pd");
+    class_sethelpsymbol(mtof_tilde_class, s);
+	
+
 }
 
 /* ------------------------------ ftom_tilde~ -------------------------- */
@@ -360,6 +368,10 @@ void ftom_tilde_setup(void)
         sizeof(t_ftom_tilde), 0, 0);
     CLASS_MAINSIGNALIN(ftom_tilde_class, t_ftom_tilde, x_f);
     class_addmethod(ftom_tilde_class, (t_method)ftom_tilde_dsp, gensym("dsp"), 0);
+	
+	t_symbol *s = gensym("acoustics~.pd");
+	class_sethelpsymbol(ftom_tilde_class, s);
+
 }
 
 /* ------------------------------ dbtorms~ -------------------------- */
@@ -409,6 +421,10 @@ void dbtorms_tilde_setup(void)
         sizeof(t_dbtorms_tilde), 0, 0);
     CLASS_MAINSIGNALIN(dbtorms_tilde_class, t_dbtorms_tilde, x_f);
     class_addmethod(dbtorms_tilde_class, (t_method)dbtorms_tilde_dsp, gensym("dsp"), 0);
+
+	t_symbol *s = gensym("acoustics~.pd");
+    class_sethelpsymbol(dbtorms_tilde_class, s);
+
 }
 
 /* ------------------------------ rmstodb~ -------------------------- */
@@ -457,6 +473,10 @@ void rmstodb_tilde_setup(void)
         sizeof(t_rmstodb_tilde), 0, 0);
     CLASS_MAINSIGNALIN(rmstodb_tilde_class, t_rmstodb_tilde, x_f);
     class_addmethod(rmstodb_tilde_class, (t_method)rmstodb_tilde_dsp, gensym("dsp"), 0);
+	
+	t_symbol *s = gensym("acoustics~.pd");
+    class_sethelpsymbol(rmstodb_tilde_class, s);
+
 }
 
 /* ------------------------------ dbtopow~ -------------------------- */
@@ -506,6 +526,10 @@ void dbtopow_tilde_setup(void)
         sizeof(t_dbtopow_tilde), 0, 0);
     CLASS_MAINSIGNALIN(dbtopow_tilde_class, t_dbtopow_tilde, x_f);
     class_addmethod(dbtopow_tilde_class, (t_method)dbtopow_tilde_dsp, gensym("dsp"), 0);
+	
+	t_symbol *s = gensym("acoustics~.pd");
+    class_sethelpsymbol(dbtopow_tilde_class, s);
+
 }
 
 /* ------------------------------ powtodb~ -------------------------- */
@@ -554,6 +578,10 @@ void powtodb_tilde_setup(void)
         sizeof(t_powtodb_tilde), 0, 0);
     CLASS_MAINSIGNALIN(powtodb_tilde_class, t_powtodb_tilde, x_f);
     class_addmethod(powtodb_tilde_class, (t_method)powtodb_tilde_dsp, gensym("dsp"), 0);
+	
+	t_symbol *s = gensym("acoustics~.pd");
+    class_sethelpsymbol(powtodb_tilde_class, s);
+
 }
 
 /* ----------------------------- pow ----------------------------- */
@@ -738,33 +766,37 @@ static void abs_tilde_setup(void)
         sizeof(t_abs_tilde), 0, 0);
     CLASS_MAINSIGNALIN(abs_tilde_class, t_abs_tilde, x_f);
     class_addmethod(abs_tilde_class, (t_method)abs_tilde_dsp, gensym("dsp"), 0);
+
 }
+
+
+
+#endif
+
 
 /* ------------------------ global setup routine ------------------------- */
 
 void d_math_setup(void)
 {
-    t_symbol *s = gensym("acoustics~.pd");
+#ifndef PD_FIXEDPOINT
     clip_setup();
     sigrsqrt_setup();
-    sigsqrt_setup();
+    exp_tilde_setup();
+    log_tilde_setup();
     sigwrap_setup();
+    sigsqrt_setup();
+    pow_tilde_setup();
+    abs_tilde_setup();
+#endif
+	
     mtof_tilde_setup();
     ftom_tilde_setup();
     dbtorms_tilde_setup();
     rmstodb_tilde_setup();
     dbtopow_tilde_setup();
     powtodb_tilde_setup();
-    pow_tilde_setup();
-    exp_tilde_setup();
-    log_tilde_setup();
-    abs_tilde_setup();
 
-    class_sethelpsymbol(mtof_tilde_class, s);
-    class_sethelpsymbol(ftom_tilde_class, s);
-    class_sethelpsymbol(dbtorms_tilde_class, s);
-    class_sethelpsymbol(rmstodb_tilde_class, s);
-    class_sethelpsymbol(dbtopow_tilde_class, s);
-    class_sethelpsymbol(powtodb_tilde_class, s);
 }
+
+
 
