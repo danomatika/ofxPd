@@ -99,7 +99,7 @@ bool PdBase::processShort(int ticks, short* inBuffer, short* outBuffer) {
 bool PdBase::processFloat(int ticks, float* inBuffer, float* outBuffer) {
     return libpd_process_float(ticks, inBuffer, outBuffer) == 0;
 }
-
+	
 bool PdBase::processDouble(int ticks, double* inBuffer, double* outBuffer) {
     return libpd_process_double(ticks, inBuffer, outBuffer) == 0;
 }

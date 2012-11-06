@@ -20,7 +20,7 @@ void testApp::setup() {
 	int ticksPerBuffer = 8;	// 8 * 64 = buffer len of 512
 
 	// setup OF sound stream
-	ofSoundStreamSetup(2, 1, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
+	ofSoundStreamSetup(2, 0, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
 
 	// setup the app core
 	core.setup(2, 1, 44100, ticksPerBuffer);

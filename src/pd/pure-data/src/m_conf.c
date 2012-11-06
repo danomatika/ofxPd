@@ -98,5 +98,8 @@ void conf_init(void)
     d_osc_setup();
     d_soundfile_setup();
     d_ugen_setup();
+#ifdef PD_FIXEDPOINT
+	d_fixedpoint_setup();
+#endif
 }
 

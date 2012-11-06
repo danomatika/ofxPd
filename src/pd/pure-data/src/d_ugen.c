@@ -18,7 +18,7 @@
 #include <stdarg.h>
 
 extern t_class *vinlet_class, *voutlet_class, *canvas_class;
-t_float *obj_findsignalscalar(t_object *x, int m);
+t_sample *obj_findsignalscalar(t_object *x, int m);
 static int ugen_loud;
 static t_int *dsp_chain;
 static int dsp_chainsize;
@@ -738,12 +738,21 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     {
         if (!uin->i_nconnect)
         {
-            t_float *scalar;
+            t_sample *scalar;
             s3 = signal_new(dc->dc_vecsize, dc->dc_srate);
             /* post("%s: unconnected signal inlet set to zero",
                 class_getname(u->u_obj->ob_pd)); */
-            if (scalar = obj_findsignalscalar(u->u_obj, i))
+            if (scalar = (obj_findsignalscalar(u->u_obj, i))) {
+				float val = *scalar;
+#ifdef PD_FIXEDPOINT
+				float valFix = fixtof(*scalar);
+#else
+				float valFix = val;
+#endif
+			//	printf("ugen_doit: found a scalar for %x (%f/%f) at %x, adding scalarcopy\n", u->u_obj, val, valFix, scalar );
+				
                 dsp_add_scalarcopy(scalar, s3->s_vec, s3->s_n);
+			}
             else
                 dsp_add_zero(s3->s_vec, s3->s_n);
             uin->i_signal = s3;

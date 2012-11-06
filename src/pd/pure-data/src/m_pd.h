@@ -57,6 +57,12 @@ extern "C" {
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
+	
+	
+#ifdef PD_FIXEDPOINT
+#include "m_fixed.h"
+#endif
+	
 #define MAXPDSTRING 1000        /* use this for anything you want */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
 
@@ -71,6 +77,7 @@ typedef PD_LONGINTTYPE t_int;       /* pointer-size integer */
 typedef PD_FLOATTYPE t_float;       /* a float type at most the same size */
 typedef PD_FLOATTYPE t_floatarg;    /* float type for function calls */
 
+	
 typedef struct _symbol
 {
     char *s_name;
@@ -487,8 +494,13 @@ EXTERN int sys_trylock(void);
 
 
 /* --------------- signals ----------------------------------- */
-
+#ifdef PD_FIXEDPOINT
+#warning Compiling PD to use fixed-point stuff
+typedef PD_FIXEDTYPE t_sample; 
+#else
 typedef PD_FLOATTYPE t_sample;
+#endif
+
 #define MAXLOGSIG 32
 #define MAXSIGSIZE (1 << MAXLOGSIG)
 
@@ -513,7 +525,7 @@ EXTERN t_int *copy_perform(t_int *args);
 
 EXTERN void dsp_add_plus(t_sample *in1, t_sample *in2, t_sample *out, int n);
 EXTERN void dsp_add_copy(t_sample *in, t_sample *out, int n);
-EXTERN void dsp_add_scalarcopy(t_float *in, t_sample *out, int n);
+EXTERN void dsp_add_scalarcopy(t_sample *in, t_sample *out, int n);
 EXTERN void dsp_add_zero(t_sample *out, int n);
 
 EXTERN int sys_getblksize(void);
