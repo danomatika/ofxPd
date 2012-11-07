@@ -77,13 +77,22 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 }
 
 void ofxPd::clear() {
-	_LOCK();
+	
+	// this seems hacky, but (so far) gets rid of a deadlock on Windows
+	// which causes a hang on exit
+	//
+	// hopefully to be fixed for real at a future point ...
+	#ifndef TARGET_WIN32
+		_LOCK();
+	#endif
 	if(inputBuffer != NULL) {
         delete[] inputBuffer;
         inputBuffer = NULL;
     }
     PdBase::clear();
-	_UNLOCK();
+	#ifndef TARGET_WIN32
+		_UNLOCK();
+	#endif
     
     channels.clear();
     
