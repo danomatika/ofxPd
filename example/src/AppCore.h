@@ -62,6 +62,7 @@ class AppCore : public PdReceiver, public PdMidiReceiver {
 		
 		ofxPd pd;
 		vector<float> scopeArray;
-        
+		vector<Patch> instances;
+		
         int midiChan;
 };

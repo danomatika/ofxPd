@@ -50,7 +50,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	// audio processing on
 	pd.start();
 
-	
+	// -----------------------------------------------------
 	cout << endl << "BEGIN Patch Test" << endl;
 	
 	// open patch
@@ -67,7 +67,31 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	cout << "FINISH Patch Test" << endl;
 	
+	// -----------------------------------------------------
+	cout << endl << "BEGIN Instance Test" << endl;
 	
+	// open 10 instances
+	for(int i = 0; i < 10; ++i) {
+		Patch p = pd.openPatch("pd/instance.pd");
+		instances.push_back(p);
+	}
+	
+	// send a hello bang to each instance individually using the dollarZero
+	// to [r $0-instance] which should print the instance dollarZero unique id
+	// and a unique random number
+	for(int i = 0; i < instances.size(); ++i) {
+		pd.sendBang(instances[i].dollarZeroStr()+"-instance");
+	}
+	
+	// close all instances
+	for(int i = 0; i < instances.size(); ++i) {
+		pd.closePatch(instances[i]);
+	}
+	instances.clear();
+	
+	cout << "FINISH Instance Test" << endl;
+	
+	// -----------------------------------------------------
 	cout << endl << "BEGIN Message Test" << endl;
 	
 	// test basic atoms
@@ -104,7 +128,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
     
 	cout << "FINISH Message Test" << endl;
 	
-	
+	// -----------------------------------------------------
 	cout << endl << "BEGIN MIDI Test" << endl;
 	
 	// send functions
@@ -129,7 +153,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
     
 	cout << "FINISH MIDI Test" << endl;
 	
-	
+	// -----------------------------------------------------
 	cout << endl << "BEGIN Array Test" << endl;
 	
 	// array check length
@@ -167,13 +191,14 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 
 	cout << "FINISH Array Test" << endl;
 
-
-	
+	// -----------------------------------------------------
 	cout << endl << "BEGIN PD Test" << endl;
+	
 	pd.sendSymbol("fromOF", "test");
+	
 	cout << "FINISH PD Test" << endl << endl;
 	
-	
+	// -----------------------------------------------------
 	cout << endl << "BEGIN Event Polling Test" << endl;
 	
 	// clear receivers, enable polling
@@ -190,7 +215,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	cout << "FINISH Event Polling Test" << endl << endl;
 	
-	
+	// -----------------------------------------------------
 	// play a tone by sending a list
 	// [list tone pitch 72 (
 	pd.startMessage();

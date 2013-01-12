@@ -1,0 +1,15 @@
+#N canvas 0 22 432 300 10;
+#X obj 39 45 r \$0-instance;
+#X obj 39 210 print PD;
+#X obj 39 111 \$0;
+#X obj 39 142 pack f f;
+#X obj 84 111 random 100;
+#X obj 39 83 t b b;
+#X msg 39 177 instance \$1 hello world w/ rand num of \$2;
+#X connect 0 0 5 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 4 0 3 1;
+#X connect 5 0 2 0;
+#X connect 5 1 4 0;
+#X connect 6 0 1 0;
