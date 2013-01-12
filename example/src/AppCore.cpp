@@ -83,6 +83,16 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 		pd.sendBang(instances[i].dollarZeroStr()+"-instance");
 	}
 	
+	// send a random float between 0 and 100
+	for(int i = 0; i < instances.size(); ++i) {
+		pd.sendFloat(instances[i].dollarZeroStr()+"-instance", int(ofRandom(0, 100)));
+	}
+	
+	// send a symbol
+	for(int i = 0; i < instances.size(); ++i) {
+		pd.sendSymbol(instances[i].dollarZeroStr()+"-instance", "howdy dude");
+	}
+	
 	// close all instances
 	for(int i = 0; i < instances.size(); ++i) {
 		pd.closePatch(instances[i]);
