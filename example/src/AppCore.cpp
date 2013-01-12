@@ -68,40 +68,6 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << "FINISH Patch Test" << endl;
 	
 	// -----------------------------------------------------
-	cout << endl << "BEGIN Instance Test" << endl;
-	
-	// open 10 instances
-	for(int i = 0; i < 10; ++i) {
-		Patch p = pd.openPatch("pd/instance.pd");
-		instances.push_back(p);
-	}
-	
-	// send a hello bang to each instance individually using the dollarZero
-	// to [r $0-instance] which should print the instance dollarZero unique id
-	// and a unique random number
-	for(int i = 0; i < instances.size(); ++i) {
-		pd.sendBang(instances[i].dollarZeroStr()+"-instance");
-	}
-	
-	// send a random float between 0 and 100
-	for(int i = 0; i < instances.size(); ++i) {
-		pd.sendFloat(instances[i].dollarZeroStr()+"-instance", int(ofRandom(0, 100)));
-	}
-	
-	// send a symbol
-	for(int i = 0; i < instances.size(); ++i) {
-		pd.sendSymbol(instances[i].dollarZeroStr()+"-instance", "howdy dude");
-	}
-	
-	// close all instances
-	for(int i = 0; i < instances.size(); ++i) {
-		pd.closePatch(instances[i]);
-	}
-	instances.clear();
-	
-	cout << "FINISH Instance Test" << endl;
-	
-	// -----------------------------------------------------
 	cout << endl << "BEGIN Message Test" << endl;
 	
 	// test basic atoms
@@ -224,6 +190,40 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.ignore(*this, "env");
 	
 	cout << "FINISH Event Polling Test" << endl << endl;
+	
+	// -----------------------------------------------------
+	cout << endl << "BEGIN Instance Test" << endl;
+	
+	// open 10 instances
+	for(int i = 0; i < 10; ++i) {
+		Patch p = pd.openPatch("pd/instance.pd");
+		instances.push_back(p);
+	}
+	
+	// send a hello bang to each instance individually using the dollarZero
+	// to [r $0-instance] which should print the instance dollarZero unique id
+	// and a unique random number
+	for(int i = 0; i < instances.size(); ++i) {
+		pd.sendBang(instances[i].dollarZeroStr()+"-instance");
+	}
+	
+	// send a random float between 0 and 100
+	for(int i = 0; i < instances.size(); ++i) {
+		pd.sendFloat(instances[i].dollarZeroStr()+"-instance", int(ofRandom(0, 100)));
+	}
+	
+	// send a symbol
+	for(int i = 0; i < instances.size(); ++i) {
+		pd.sendSymbol(instances[i].dollarZeroStr()+"-instance", "howdy dude");
+	}
+	
+	// close all instances
+	for(int i = 0; i < instances.size(); ++i) {
+		pd.closePatch(instances[i]);
+	}
+	instances.clear();
+	
+	cout << "FINISH Instance Test" << endl;
 	
 	// -----------------------------------------------------
 	// play a tone by sending a list
