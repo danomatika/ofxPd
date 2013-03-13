@@ -26,7 +26,7 @@ class AppCore : public PdReceiver, public PdMidiReceiver {
 				   const int sampleRate, const int ticksPerBuffer);
 		void update();
 		void draw();
-        void exit();
+		void exit();
 
 		// do something
 		void playTone(int pitch);
@@ -47,7 +47,7 @@ class AppCore : public PdReceiver, public PdMidiReceiver {
 		void receiveList(const std::string& dest, const List& list);
 		void receiveMessage(const std::string& dest, const std::string& msg, const List& list);
 		
-        // pd midi receiver callbacks
+		// pd midi receiver callbacks
 		void receiveNoteOn(const int channel, const int pitch, const int velocity);
 		void receiveControlChange(const int channel, const int controller, const int value);
 		void receiveProgramChange(const int channel, const int value);
