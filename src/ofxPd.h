@@ -44,7 +44,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		ofxPd();
 		virtual ~ofxPd();
 
-		/// \section Initializing Pd
+	/// \section Initializing Pd
 
 		/// initialize resources
 		///
@@ -63,7 +63,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// clear resources, here for future proofing, currently does nothing
 		void clear();
 
-		/// \section Adding Search Paths
+	/// \section Adding Search Paths
 
 		/// add to the pd search path
 		/// takes an absolute or relative path (in data folder)
@@ -75,7 +75,15 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// clear the current pd search path
 		void clearSearchPath();
 
-		/// \section Opening Patches
+	/// \section Opening Patches
+
+		/// the pd::Patch class is a wrapper around a unique pointer to an open
+		/// instance, giving you access to the $0 value for that instance
+		///
+		/// if you are going to use multiple instances of a patch, you will need
+		/// need to keep a Patch object in order to differentiate between them
+		///
+		/// see src/pd/cpp/PdTypes.hpp for more info
 
 		/// open a patch file, takes an absolute or relative path (in data folder)
 		/// returns a Patch object
@@ -83,28 +91,33 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 		/// open a patch file using the filename and path of an existing patch
 		///
-		/// set the filename within the patch object or use a previously opened
-		/// object
+		/// // open a patch, don't need pd::Patch instance object
+		/// pd.openPatch("apatch.pd", "/some/path");
 		///
-		/// // open an instance of "somefile.pd"
+		/// set the filename within the patch object or use a previously opened
+		/// object and create a new instance
+		///
+		/// // open an instance of "somefile.pd", save the instance in a pd::Patch
 		/// Patch p2("somefile.pd", "/some/path");    // set file and path
 		/// pd.openPatch(p2);
 		///
 		/// // open a new instance of "somefile.pd"
 		/// Patch p3 = pd.openPatch(p2);
 		///
-		/// // p2 and p3 refer to 2 different instances of "somefile.pd"
+		/// p2 and p3 now refer to 2 different instances of "somefile.pd" and 
+		/// p2.dollarZero() & p3.dollarZero() should now return different ids
 		///
 		pd::Patch openPatch(pd::Patch& patch);
 
-		/// close a patch file, takes the patch's basename (filename without extension)
+		/// close a patch file, takes the patch's basename (filename without extension),
+		/// use this function if you've only opened 1 instance of the given patch
 		void closePatch(const std::string& patch);
 
-		/// close a patch file, takes a patch object
-		/// clears the given Patch object
+		/// close a patch file using a Patch object, clears the given Patch object
+		/// does not affect other open instances of the same patch
 		void closePatch(pd::Patch& patch);
 
-		/// \section Audio Processing Control
+	/// \section Audio Processing Control
 
 		/// start/stop audio processing
 		///
@@ -116,7 +129,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void start();
 		void stop();
 
-		//// \section Message Receiving
+	//// \section Message Receiving
 
 		/// subscribe/unsubscribe to source names from libpd
 		///
@@ -194,7 +207,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void ignore(pd::PdReceiver& receiver, const std::string& source="");
 		bool isReceiving(pd::PdReceiver& receiver, const std::string& source="");
 
-		/// \section Midi Receiving
+	/// \section Midi Receiving
 
 		/// add/remove incoming midi event receiver
 		///
@@ -227,7 +240,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void ignoreMidi(pd::PdMidiReceiver& receiver, int channel=0);
 		bool isReceivingMidi(pd::PdMidiReceiver& receiver, int channel=0);
 
-		/// \section Sending Functions
+	/// \section Sending Functions
 
 		/// messages
 		void sendBang(const std::string& dest);
@@ -319,7 +332,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void sendSysex(const int port, const int value);
 		void sendSysRealTime(const int port, const int value);
 
-		/// \section Sending Stream Interface
+	/// \section Sending Stream Interface
 
 		/// single messages
 		///
@@ -344,7 +357,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		///
 		/// see PdBase.h for function declarations
 
-		/// \section Array Access
+	/// \section Array Access
 
 		/// get the size of a pd array
 		/// returns 0 if array not found
@@ -376,7 +389,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// clear array and set to a specific value
 		void clearArray(const std::string& arrayName, int value=0);
 
-		/// \section Utils
+	/// \section Utils
 
 		/// has this pd instance been initialized?
 		/// bool isInited();
@@ -390,7 +403,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		///
 		/// see PdBase.h for function declarations
 
-		/// \section Audio Processing Callbacks
+	/// \section Audio Processing Callbacks
 
 		/// the libpd processing is done in the audioOut callback
 		virtual void audioIn(float * input, int bufferSize, int nChannels);
@@ -418,7 +431,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 	private:
 
 		int ticksPerBuffer;	///< number of ticks per buffer
-		float* inputBuffer;		///< interleaved input audio buffer
+		float* inputBuffer;	///< interleaved input audio buffer
 
 		/// a receiving source's pointer and receivers
 		struct Source {
@@ -446,7 +459,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 		std::set<pd::PdReceiver*> receivers;	///< the receivers
 		std::map<std::string,Source> sources;	///< subscribed sources
-		///< first object always global
+												///< first object always global
 
 		/// a receiving midi channel's receivers
 		struct Channel {
@@ -474,5 +487,5 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 		std::set<pd::PdMidiReceiver*> midiReceivers;	///< the midi receivers
 		std::map<int,Channel> channels;                 ///< subscribed channels
-		///< first object always global
+														///< first object always global
 };
