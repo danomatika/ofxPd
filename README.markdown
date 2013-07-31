@@ -1,7 +1,7 @@
 ofxPd
-===================================
+=====
 
-Copyright (c) [Dan Wilcox](danomatika.com) 2011
+Copyright (c) [Dan Wilcox](danomatika.com) 2011-present
 
 BSD Simplified License.
 
@@ -172,6 +172,10 @@ You will also need to include some additional C Flags for building the libpd sou
 	
 Notes
 -----
+
+### Audio Interfacing
+
+libpd as utilized in ofxPd does not handle any of the audio interfacing itself, but is called via the ofSoundStream system within OpenFrameworks. If you have any issues with the sound interface / audio apis themselves, please log an issue to the [OpenFrameworks Github repo](https://github.com/openframeworks/openFrameworks).
 
 ### Sample Rate
 
