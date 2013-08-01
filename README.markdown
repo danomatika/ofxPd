@@ -86,7 +86,7 @@ cd bin
 
 ### Windows
 
-An example Visual Studio 2010 solution as well as a Codeblocks workspace are included.
+An example Codeblocks workspace is included. Visual Studio is not currently supported by the libpd source.
 
 How to Create a New ofxPd Project
 ---------------------------------
