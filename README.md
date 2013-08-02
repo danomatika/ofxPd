@@ -65,13 +65,11 @@ Warning: The develop branch will be in flux, so don't be surprised if things do 
 Running the Example Project
 ---------------------------
 
-The example projects are in the `example` folder.
+The example project is in the `example` folder.
 
 ### OSX
 
-Xcode3: Open the Xcode project and hit "Build and Run". You might want to choose "Release" instead of "Debug" for faster performance.
-
-Xcode4: Open the Xcode project, select the "ofxPdExample" scheme, and hit "Run".
+Open the Xcode project, select the "example-Debug" scheme, and hit "Run".
 
 ### Linux
 
@@ -87,6 +85,11 @@ cd bin
 ### Windows
 
 An example Codeblocks workspace is included. Visual Studio is not currently supported by the libpd source.
+
+PitchShifter
+------------
+
+PitchShifter is a simple example application which uses an OF gui to control a pitch shifter within a PD patch. It's in `examplePitchShifter`. 
 
 How to Create a New ofxPd Project
 ---------------------------------
@@ -124,7 +127,7 @@ You will also need to include some additional C Flags for building the libpd sou
 ### For XCode:
 
 * create a new group "ofxPd" * drag these directories from ofxpd into this new group: ofxPd/src
-* add a search path to: `../../../addons/ofxPd/src/pd/pure-data/src` under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
+* add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
 * under Targets->YourApp->Build->Other C Flags (make sure All Configurations and All Settings are selected), add
 	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -dynamiclib -ldl -lm</pre>
 
@@ -161,8 +164,8 @@ You will also need to include some additional C Flags for building the libpd sou
 	* select the "Search directories" tab, click add the search paths:
 	<pre>
 	..\\..\\..\addons\ofxPd\src
-	..\\..\\..\addons\ofxPd\src\pd\pure-data\src
-	..\\..\\..\addons\ofxPd\src\pd\libpd_wrapper
+	..\\..\\..\addons\ofxPd\libs\libpd\pure-data\src
+	..\\..\\..\addons\ofxPd\libs\libpd\libpd_wrapper
 	</pre>
 	* select the Linker settings" tab, add the following libraries:
 	<pre>
@@ -173,7 +176,7 @@ You will also need to include some additional C Flags for building the libpd sou
 Notes
 -----
 
-### Audio Interfacing
+### Audio Interfacing & Debugging Audio Issues
 
 libpd as utilized in ofxPd does not handle any of the audio interfacing itself, but is called via the ofSoundStream system within OpenFrameworks. If you have any issues with the sound interface / audio apis themselves, please log an issue to the [OpenFrameworks Github repo](https://github.com/openframeworks/openFrameworks).
 
