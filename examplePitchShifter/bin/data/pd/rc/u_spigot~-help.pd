@@ -1,0 +1,19 @@
+#N canvas 696 405 404 250 10;
+#X obj 112 114 tgl 15 0 empty empty empty 0 -6 0 10 -262144 -1 -1 0
+1;
+#X obj 61 54 osc~ 440;
+#X obj 61 177 dac~;
+#X obj 61 88 *~ 0.1;
+#X text 139 112 signal through on/off;
+#X text 141 134 any nonzero float treated as 1;
+#X text 137 191 danomatika.com | robotcowboy.com;
+#X text 138 206 https://github.com/danomatika/rc-patches;
+#X text 138 176 2012 Dan Wilcox GPL v3;
+#X text 21 19 u_spigot~: a convenience patch to toggle a signal;
+#X text 170 45 includes 5 ms declick;
+#X obj 61 140 u_spigot~;
+#X connect 0 0 11 1;
+#X connect 1 0 3 0;
+#X connect 3 0 11 0;
+#X connect 11 0 2 0;
+#X connect 11 0 2 1;

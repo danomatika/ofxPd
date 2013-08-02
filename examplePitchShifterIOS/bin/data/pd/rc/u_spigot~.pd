@@ -1,0 +1,25 @@
+#N canvas 0 22 489 282 10;
+#X text 214 224 danomatika.com | robotcowboy.com;
+#X text 215 239 https://github.com/danomatika/rc-patches;
+#X text 215 209 2012 Dan Wilcox GPL v3;
+#X obj 30 235 outlet~;
+#X obj 31 65 inlet~;
+#X obj 45 97 inlet;
+#X text 80 60 audio signal in;
+#X text 87 237 audio signal out;
+#X obj 45 120 sel 0;
+#X text 87 94 left inlet: onoff toggle \, any nonzero is treated as
+1;
+#X obj 45 181 vline~;
+#X obj 30 208 *~;
+#X msg 45 143 0 5;
+#X msg 78 143 1 5;
+#X text 23 20 spigot with declick for signals;
+#X connect 4 0 11 0;
+#X connect 5 0 8 0;
+#X connect 8 0 12 0;
+#X connect 8 1 13 0;
+#X connect 10 0 11 1;
+#X connect 11 0 3 0;
+#X connect 12 0 10 0;
+#X connect 13 0 10 0;

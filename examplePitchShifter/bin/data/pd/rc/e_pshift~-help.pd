@@ -1,0 +1,56 @@
+#N canvas 1295 97 584 398 10;
+#X text 305 337 danomatika.com | robotcowboy.com;
+#X text 306 352 https://github.com/danomatika/rc-patches;
+#X text 306 322 2008 \, 2012 Dan Wilcox GPL v3;
+#X obj 44 364 dac~;
+#X obj 43 152 osc~ 440;
+#X obj 44 180 *~ 0.5;
+#X obj 95 293 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 193 295 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 165 271 pitch shifted audio;
+#X text 62 271 normal audio;
+#X msg 260 81 transpose \$1;
+#X floatatom 260 52 5 0 0 0 - - -;
+#X msg 353 101 window \$1;
+#X floatatom 353 75 5 0 0 0 - - -;
+#X msg 422 135 delay \$1;
+#X floatatom 422 111 5 0 0 0 - - -;
+#X text 302 51 semitones;
+#X text 393 75 msec;
+#X text 461 113 msec;
+#X text 287 141 control messages;
+#X msg 203 111 onoff \$1;
+#X obj 203 84 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 39 65 Creation args: name;
+#X text 26 22 rc-pshift~: pitch shifter \, make your voice sound weird!
+;
+#X msg 180 154 reset;
+#X msg 450 194 dry 0.5;
+#X msg 408 168 wet 0.34;
+#X text 501 173 wet/dry mix;
+#X text 135 192 audio in;
+#X obj 141 212 e_pshift~;
+#X obj 142 319 u_spigot~;
+#X obj 44 318 u_spigot~;
+#X connect 4 0 5 0;
+#X connect 5 0 29 0;
+#X connect 5 0 31 0;
+#X connect 6 0 31 1;
+#X connect 7 0 30 1;
+#X connect 10 0 29 1;
+#X connect 11 0 10 0;
+#X connect 12 0 29 1;
+#X connect 13 0 12 0;
+#X connect 14 0 29 1;
+#X connect 15 0 14 0;
+#X connect 20 0 29 1;
+#X connect 21 0 20 0;
+#X connect 24 0 29 1;
+#X connect 25 0 29 1;
+#X connect 26 0 29 1;
+#X connect 29 0 30 0;
+#X connect 30 0 3 1;
+#X connect 31 0 3 0;

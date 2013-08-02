@@ -1,15 +1,24 @@
-v1.2.0: 2012 Aug, Sep, Oct
+v1.4.0: 2013 Aug
+
+	- general udpates for OF 0.8.0:
+		- moved libpd source into libs/libpd to match ofxAddonsTemplate
+		- split example into seperate desktop & ios projects (easier to generate)
+		- regenerated project files
+	- added PitchShifter example
+	- updated to latest libpd
+
+v1.3.0: 2012 Aug, Sep, Oct
 
 	- updated to latest libpd
 	- removed [expr~] due to licensing, should be left up to individual developers
 	- added ability to open a new patch instance with an existing patch object
 	- changed logging to use "Pd" logging module
 
-v1.1.0: 2012 Jul
+v1.2.0: 2012 Jul
 
 	- added support for PdBase event polling in ofxPd
 
-v1.0.1: 2012 Mar
+v1.1.0: 2012 Mar
 
 	- updated to latest libpd
 	- List::asFloat() & List::asSymbol() are now List::getFloat() & List::getSymbol()
