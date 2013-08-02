@@ -22,7 +22,6 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	cout << ofFilePath::getCurrentWorkingDirectory() << endl;
 
 	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
-		ofLog(OF_LOG_ERROR, "Could not init pd");
 		OF_EXIT_APP(1);
 	}
 

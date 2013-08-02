@@ -29,7 +29,6 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	
 	// setup pd
 	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
-		ofLog(OF_LOG_ERROR, "Could not init pd");
 		OF_EXIT_APP(1);
 	}
 	pd.subscribe("mix");

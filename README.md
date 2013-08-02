@@ -234,7 +234,6 @@ Note: Some special objects included with Pd-Vanilla are not part of the libpd di
 In order for libpd to use an external library, the library has to register itself on startup. This accomplished by calling the library's setup function which is named after the library followed by a "_setup" suffix: "library_setup()". The zexy setup function is simply "zexy_setup()". Call this setup function after initializing ofxPd in your app's setup() function:
 <pre>
 	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
-		ofLog(OF_LOG_ERROR, "Could not init pd");
 		OF_EXIT_APP(1);
 	}
 	

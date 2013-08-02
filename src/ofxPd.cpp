@@ -56,7 +56,7 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 	_LOCK();
 	if(!PdBase::init(numInChannels, numOutChannels, sampleRate)) {
 		_UNLOCK();
-		ofLog(OF_LOG_ERROR, "Pd: Could not init");
+		ofLogError("Pd") << "could not init";
         clear();
 		return false;
 	}
