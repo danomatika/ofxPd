@@ -1,4 +1,15 @@
-v1..0.1: 2012 Mar
+v1.2.0: 2012 Aug, Sep, Oct
+
+	- updated to latest libpd
+	- removed [expr~] due to licensing, should be left up to individual developers
+	- added ability to open a new patch instance with an existing patch object
+	- changed logging to use "Pd" logging module
+
+v1.1.0: 2012 Jul
+
+	- added support for PdBase event polling in ofxPd
+
+v1.0.1: 2012 Mar
 
 	- updated to latest libpd
 	- List::asFloat() & List::asSymbol() are now List::getFloat() & List::getSymbol()
