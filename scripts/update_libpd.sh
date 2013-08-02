@@ -2,6 +2,9 @@
 
 WD=$(dirname $0)
 
+SRC=libpd
+DEST=../libs/libpd
+
 ###
 
 cd $WD
@@ -10,29 +13,29 @@ cd $WD
 git clone git://github.com/libpd/libpd.git
 
 # remove uneeded makefiles
-find libpd -name "GNUmakefile.am" -delete
-find libpd -name "Makefile.am" -delete
-find libpd -name "makefile" -delete
-rm libpd/pure-data/extra/makefile.subdir
+find $SRC -name "GNUmakefile.am" -delete
+find $SRC -name "Makefile.am" -delete
+find $SRC -name "makefile" -delete
+rm $SRC/pure-data/extra/makefile.subdir
 
 # we dont need the java or csharp wrappers
-rm libpd/libpd_wrapper/z_jni.c
-rm libpd/libpd_wrapper/z_jni.h
-rm libpd/libpd_wrapper/z_csharp_helper.c
-rm libpd/libpd_wrapper/z_csharp_helper.h
+rm $SRC/libpd_wrapper/z_jni.c
+rm $SRC/libpd_wrapper/z_jni.h
+rm $SRC/libpd_wrapper/z_csharp_helper.c
+rm $SRC/libpd_wrapper/z_csharp_helper.h
 
 # remove expr~ since it's GPL, leave that up to devs
-rm -rf libpd/pure-data/extra/expr~
-rm libpd/pure-data/extra/expr-help.pd
+rm -rf $SRC/pure-data/extra/expr~
+rm $SRC/pure-data/extra/expr-help.pd
 
 # copy license
-cp -v libpd/LICENSE.txt ../src/pd
+cp -v $SRC/LICENSE.txt $DEST
 
 # copy sources
-cp -Rv libpd/cpp ../src/pd
-cp -Rv libpd/pure-data ../src/pd
-cp -Rv libpd/libpd_wrapper ../src/pd
+cp -Rv $SRC/cpp $DEST
+cp -Rv $SRC/pure-data $DEST
+cp -Rv $SRC/libpd_wrapper $DEST
 
 # cleanup
-rm -rf libpd
+rm -rf $SRC
 
