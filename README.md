@@ -112,7 +112,7 @@ Rename the project in XCode (do not rename the .xcodeproj file in Finder!): XCod
 
 ### For Codeblocks (Win & Linux):
 
-Rename the *.cbp and *workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
+Rename the *.cbp and *.workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
 
 Adding ofxPd to an Existing Project
 -----------------------------------
@@ -129,7 +129,7 @@ You will also need to include some additional C Flags for building the libpd sou
 * create a new group "ofxPd" * drag these directories from ofxpd into this new group: ofxPd/src
 * add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
 * under Targets->YourApp->Build->Other C Flags (make sure All Configurations and All Settings are selected), add
-	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -dynamiclib -ldl -lm</pre>
+	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD</pre>
 
 ### For Linux (Makefiles & Codeblocks):
 
@@ -147,7 +147,8 @@ You will also need to include some additional C Flags for building the libpd sou
 * add the ofxPd sources to the project:
 	* right-click on your project in the project tree
 	* select "Add Files Recursively ..."
-	* navigate and choose the ofxPd/src folder
+	* navigate and choose the `ofxPd/src` & `ofx/libs` folder
+	* remove `ofxPd/libs/libpd/pure-data/extra/pd~` as it dosen't currently build in Win CB
 * add defines, search paths, and libraries to link:
 	* right-click on your project in the project tree
 	* select "Build options..."
@@ -169,7 +170,6 @@ You will also need to include some additional C Flags for building the libpd sou
 	</pre>
 	* select the Linker settings" tab, add the following libraries:
 	<pre>
-	m
 	pthread
 	</pre>
 	

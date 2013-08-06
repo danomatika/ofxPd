@@ -67,3 +67,12 @@ common:
 	# when parsing the file system looking for include paths exclude this for all or
 	# a specific platform
     # ADDON_INCLUDES_EXCLUDE =
+
+win_cb:
+	# when parsing the file system looking for sources exclude this for all or
+	# a specific platform
+	ADDON_SOURCES_EXCLUDE = libs/libpd/pure-data/extra/pd~
+	
+	# when parsing the file system looking for include paths exclude this for all or
+	# a specific platform
+    ADDON_INCLUDES_EXCLUDE = libs/libpd/pure-data/extra/pd~

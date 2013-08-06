@@ -28,6 +28,11 @@ rm $SRC/libpd_wrapper/z_csharp_helper.h
 rm -rf $SRC/pure-data/extra/expr~
 rm $SRC/pure-data/extra/expr-help.pd
 
+# don't need the ringbuffer layer
+rm $SRC/libpd_wrapper/util/ringbuffer.*
+rm $SRC/libpd_wrapper/util/z_hook_util.*
+rm $SRC/libpd_wrapper/util/z_queued.*
+
 # copy license
 cp -v $SRC/LICENSE.txt $DEST
 

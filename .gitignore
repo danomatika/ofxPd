@@ -16,6 +16,7 @@ build
 *.depend
 *.cbTemp
 example/obj
+examplePitchShifter/obj
 
 # Win
 *.exe
