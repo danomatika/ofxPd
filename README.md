@@ -1,7 +1,7 @@
 ofxPd
 =====
 
-Copyright (c) [Dan Wilcox](danomatika.com) 2011-present
+Copyright (c) [Dan Wilcox](danomatika.com) 2011-2013
 
 BSD Simplified License.
 
@@ -15,9 +15,9 @@ Description
 
 ofxPd is an Open Frameworks addon for running an instance of the Pure Data audio environment within an OpenFrameworks application. Audio, messages, and [MIDI](http://en.wikipedia.org/wiki/Musical_Instrument_Digital_Interface) events can be passed to and from pure data patches and the library is thread safe.
 
-[Pure Data](http://pure-data.info/) is a graphical patching environment for audio and multimedia (note: the gui and graphics features are not within the scope of this addon) 
+[Pure Data](http://pure-data.info) is a graphical patching environment for audio and multimedia (note: the gui and graphics features are not within the scope of this addon) 
 
-[OpenFrameworks](http://www.openframeworks.cc/) is a cross platform open source toolkit for creative coding in C++
+[OpenFrameworks](http://www.openframeworks.cc) is a cross platform open source toolkit for creative coding in C++
 
 Build Requirements
 ------------------
@@ -75,11 +75,10 @@ Open the Xcode project, select the "example-Debug" scheme, and hit "Run".
 
 Open the Code::Blocks .cbp and hit F9 to build. Optionally, you can build the example with the Makefile.
 
-To run it, use the terminal:
+To build and run it on the terminal:
 <pre>
 make
-cd bin
-./example_debug
+make run
 </pre>
 
 ### Windows
