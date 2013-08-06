@@ -1,23 +1,35 @@
-*.mode1v3
+
+# built
+*.app
+*.a
+example/obj
+example/bin/libs
+example/bin/example
+example/bin/example_debug
+examplePitchShifter/obj
+examplePitchShifter/bin/libs
+examplePitchShifter/bin/examplePitchShifter
+examplePitchShifter/bin/examplePitchShifter_debug
+
+# osx
+.DS_Store
+
+# win
+*.exe
+*.dll
+
+# linux
+*~
 
 # xcode
 *.pbxuser
 *.perspectivev3
+*.mode1v3
 xcuserdata
 build
-*.app
-*.a
-
-# OSX
-.DS_Store
 
 # codeblocks
 *.layout
 *.depend
 *.cbTemp
-example/obj
-examplePitchShifter/obj
 
-# Win
-*.exe
-*.dll

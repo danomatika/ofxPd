@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="example" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="addons/;src/;build config/;addons/ofxPd/libs/libpd/cpp/;addons/ofxPd/libs/libpd/libpd_wrapper/;addons/ofxPd/libs/libpd/libpd_wrapper/util/;addons/ofxPd/libs/libpd/pure-data/extra/bonk~/;addons/ofxPd/libs/libpd/pure-data/extra/choice/;addons/ofxPd/libs/libpd/pure-data/extra/fiddle~/;addons/ofxPd/libs/libpd/pure-data/extra/loop~/;addons/ofxPd/libs/libpd/pure-data/extra/lrshift~/;addons/ofxPd/libs/libpd/pure-data/extra/pd~/;addons/ofxPd/libs/libpd/pure-data/extra/pique/;addons/ofxPd/libs/libpd/pure-data/extra/sigmund~/;addons/ofxPd/libs/libpd/pure-data/extra/stdout/;addons/ofxPd/libs/libpd/pure-data/src/;addons/ofxPd/src/;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/$(PROJECT_NAME)_debug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj/Debug/" />
+				<Option external_deps="../../../libs/openFrameworksCompiled/lib/linux/libopenFrameworksDebug.a;" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+			</Target>
+			<Target title="Release">
+				<Option output="bin/$(PROJECT_NAME)" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj/Release/" />
+				<Option external_deps="../../../libs/openFrameworksCompiled/lib/linux/libopenFrameworks.a;" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+			</Target>
+		</Build>
+		<Unit filename="config.make">
+			<Option virtualFolder="build config" />
+		</Unit>
+		<Unit filename="src/AppCore.cpp">
+			<Option virtualFolder="src" />
+		</Unit>
+		<Unit filename="src/AppCore.h">
+			<Option virtualFolder="src" />
+		</Unit>
+		<Unit filename="src/main.cpp">
+			<Option virtualFolder="src/" />
+		</Unit>
+		<Unit filename="src/testApp.cpp">
+			<Option virtualFolder="src/" />
+		</Unit>
+		<Unit filename="src/testApp.h">
+			<Option virtualFolder="src/" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/cpp/PdBase.cpp">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/cpp" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/cpp/PdBase.hpp">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/cpp" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/cpp/PdMidiReceiver.hpp">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/cpp" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/cpp/PdReceiver.hpp">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/cpp" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/cpp/PdTypes.cpp">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/cpp" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/cpp/PdTypes.hpp">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/cpp" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/s_libpdmidi.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/ringbuffer.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper/util" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/ringbuffer.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper/util" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_hook_util.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper/util" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_hook_util.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper/util" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_print_util.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper/util" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_print_util.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper/util" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_queued.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper/util" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_queued.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper/util" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/x_libpdreceive.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/x_libpdreceive.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/z_libpd.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/libpd_wrapper/z_libpd.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/libpd_wrapper" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/bonk~/bonk~.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/bonk~" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/choice/choice.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/choice" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/fiddle~/fiddle~.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/fiddle~" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/loop~/loop~.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/loop~" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/lrshift~/lrshift~.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/lrshift~" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/pd~/pdsched.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/pd~" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/pd~/pd~.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/pd~" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/pique/pique.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/pique" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/sigmund~/sigmund~.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/sigmund~" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/extra/stdout/stdout.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/extra/stdout" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_arithmetic.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_array.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_ctl.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_dac.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_delay.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_fft.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_fft_mayer.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_fftroutine.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_filter.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_global.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_math.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_misc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_osc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_resample.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_soundfile.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/d_ugen.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_all_guis.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_all_guis.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_array.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_bang.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_canvas.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_canvas.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_editor.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_graph.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_guiconnect.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_hdial.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_hslider.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_io.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_mycanvas.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_numbox.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_readwrite.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_rtext.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_scalar.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_template.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_text.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_toggle.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_traversal.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_vdial.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_vslider.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/g_vumeter.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_atom.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_binbuf.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_class.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_conf.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_fixed.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_glob.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_imp.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_memory.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_obj.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_pd.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_pd.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/m_sched.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_audio.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_audio_dummy.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_file.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_inter.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_loader.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_main.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_path.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_print.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_stuff.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_utf8.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/s_utf8.h">
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_acoustics.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_arithmetic.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_connective.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_gui.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_interface.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_list.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_midi.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_misc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_net.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_qlist.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/libs/libpd/pure-data/src/x_time.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="addons/ofxPd/libs/libpd/pure-data/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/src/ofxPd.cpp">
+			<Option virtualFolder="addons/ofxPd/src" />
+		</Unit>
+		<Unit filename="../../../addons/ofxPd/src/ofxPd.h">
+			<Option virtualFolder="addons/ofxPd/src" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

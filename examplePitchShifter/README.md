@@ -1,7 +1,7 @@
 PitchShifter
 ============
 
-![image](https://github.com/danomatika/ofxPd/examplePitchShifter/raw/master/screenshot.png)
+![image](https://raw.github.com/danomatika/ofxPd/master/examplePitchShifter/screenshot.png)
 
 Copyright (c) [Dan Wilcox](danomatika.com) 2011, 2013
 
