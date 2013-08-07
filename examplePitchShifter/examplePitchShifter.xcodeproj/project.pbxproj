@@ -38,9 +38,7 @@
 		6b08955674af4b0cb1268787 /* ofxPd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33a49b2b874c7650f3e7099e /* ofxPd.cpp */; };
 		6d29db73afad6eb136b9867b /* s_file.c in Sources */ = {isa = PBXBuildFile; fileRef = 6ed475267fd004251bf10586 /* s_file.c */; };
 		717bb86366f08623f5524bdf /* loop~.c in Sources */ = {isa = PBXBuildFile; fileRef = f56cc0679eeeb21c160fda16 /* loop~.c */; };
-		71d0703ac4273cd4836afeb8 /* z_queued.c in Sources */ = {isa = PBXBuildFile; fileRef = cd76ed997b6bec8886c6b28e /* z_queued.c */; };
 		733250f70357305ceeefc4b0 /* x_arithmetic.c in Sources */ = {isa = PBXBuildFile; fileRef = f52cabd66be8375361d3fb38 /* x_arithmetic.c */; };
-		73b8961d0a05d0032367b2fb /* z_hook_util.c in Sources */ = {isa = PBXBuildFile; fileRef = 8d84b4e1da62ab390bb48f1d /* z_hook_util.c */; };
 		7588d0aa7678266fbc4f1613 /* g_numbox.c in Sources */ = {isa = PBXBuildFile; fileRef = 3cb2561d8af9eafbd16740fd /* g_numbox.c */; };
 		75b90cf8644fe0fb9344c7d2 /* m_pd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2fe1ce2510d6011389d5961f /* m_pd.c */; };
 		77065a8a401d0997a27ae75c /* AppCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ed69ea839980feac69fb72f1 /* AppCore.cpp */; };
@@ -60,7 +58,6 @@
 		8fd00a16efff9a2098f2e5e8 /* PdTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = d1e976b635ac494df0c59727 /* PdTypes.cpp */; };
 		90f3886c34910f6655634fdb /* bonk~.c in Sources */ = {isa = PBXBuildFile; fileRef = 97ec28001bc755001ca9e351 /* bonk~.c */; };
 		9b6405ae8f948a9f1d414004 /* g_guiconnect.c in Sources */ = {isa = PBXBuildFile; fileRef = 1432c49539cc5a34a4fb81ff /* g_guiconnect.c */; };
-		9c908654f2ec96c390ac467c /* ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 388cec9fa2e2e77f5ec26bf9 /* ringbuffer.c */; };
 		9ebaf5b1949b2afc1a34e934 /* m_glob.c in Sources */ = {isa = PBXBuildFile; fileRef = 8e06d6055662272d6a767a06 /* m_glob.c */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
@@ -161,12 +158,10 @@
 		1aab5987705b5e38e576a004 /* s_utf8.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = s_utf8.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/s_utf8.c"; sourceTree = SOURCE_ROOT; };
 		1e574845405f25dfd38f497b /* PdReceiver.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = PdReceiver.hpp; path = ../../../addons/ofxPd/libs/libpd/cpp/PdReceiver.hpp; sourceTree = SOURCE_ROOT; };
 		1fe113a1032ecb638e24af1c /* m_class.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = m_class.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/m_class.c"; sourceTree = SOURCE_ROOT; };
-		23e5aa4e0cdee4b319965e35 /* z_hook_util.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = z_hook_util.h; path = ../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_hook_util.h; sourceTree = SOURCE_ROOT; };
 		28774f114d90a84348384cba /* m_sched.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = m_sched.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/m_sched.c"; sourceTree = SOURCE_ROOT; };
 		288f7169cfeb722bb4eeaf07 /* m_conf.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = m_conf.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/m_conf.c"; sourceTree = SOURCE_ROOT; };
 		2bce517343637b7d81b1deb4 /* s_utf8.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = s_utf8.h; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/s_utf8.h"; sourceTree = SOURCE_ROOT; };
 		2bfcc35a339f99da2dd9a047 /* s_path.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = s_path.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/s_path.c"; sourceTree = SOURCE_ROOT; };
-		2c9954f28ea0aa54dddebf9d /* ringbuffer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ringbuffer.h; path = ../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/ringbuffer.h; sourceTree = SOURCE_ROOT; };
 		2d1b8cc8f777532e991b7952 /* g_editor.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = g_editor.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/g_editor.c"; sourceTree = SOURCE_ROOT; };
 		2de0f5adbe3bc1c764445e92 /* d_soundfile.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = d_soundfile.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/d_soundfile.c"; sourceTree = SOURCE_ROOT; };
 		2ee5752fe9f3922f36d2c46b /* x_acoustics.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = x_acoustics.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/x_acoustics.c"; sourceTree = SOURCE_ROOT; };
@@ -174,7 +169,6 @@
 		2fe1ce2510d6011389d5961f /* m_pd.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = m_pd.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/m_pd.c"; sourceTree = SOURCE_ROOT; };
 		30a100ba1d5afa3ca62c1c8a /* g_template.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = g_template.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/g_template.c"; sourceTree = SOURCE_ROOT; };
 		33a49b2b874c7650f3e7099e /* ofxPd.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxPd.cpp; path = ../../../addons/ofxPd/src/ofxPd.cpp; sourceTree = SOURCE_ROOT; };
-		388cec9fa2e2e77f5ec26bf9 /* ringbuffer.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = ringbuffer.c; path = ../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/ringbuffer.c; sourceTree = SOURCE_ROOT; };
 		39956e78ee1af0888b94358b /* z_libpd.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = z_libpd.h; path = ../../../addons/ofxPd/libs/libpd/libpd_wrapper/z_libpd.h; sourceTree = SOURCE_ROOT; };
 		3c236ae01daafa068c3e0295 /* g_rtext.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = g_rtext.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/g_rtext.c"; sourceTree = SOURCE_ROOT; };
 		3c2e6361e3947f0ed5300a1a /* g_bang.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = g_bang.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/g_bang.c"; sourceTree = SOURCE_ROOT; };
@@ -204,7 +198,6 @@
 		89f84add268fa369026a2843 /* pdsched.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = pdsched.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/extra/pd~/pdsched.c"; sourceTree = SOURCE_ROOT; };
 		8b905a5eabf3b68295d011fe /* s_loader.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = s_loader.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/s_loader.c"; sourceTree = SOURCE_ROOT; };
 		8d23b0a8000f4b8b579e9ba5 /* PdTypes.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = PdTypes.hpp; path = ../../../addons/ofxPd/libs/libpd/cpp/PdTypes.hpp; sourceTree = SOURCE_ROOT; };
-		8d84b4e1da62ab390bb48f1d /* z_hook_util.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = z_hook_util.c; path = ../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_hook_util.c; sourceTree = SOURCE_ROOT; };
 		8dc382f17e829ec900bdc6d9 /* z_print_util.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = z_print_util.h; path = ../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_print_util.h; sourceTree = SOURCE_ROOT; };
 		8e06d6055662272d6a767a06 /* m_glob.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = m_glob.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/m_glob.c"; sourceTree = SOURCE_ROOT; };
 		91ad602f84e295d4a339dabb /* lrshift~.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = "lrshift~.c"; path = "../../../addons/ofxPd/libs/libpd/pure-data/extra/lrshift~/lrshift~.c"; sourceTree = SOURCE_ROOT; };
@@ -252,10 +245,8 @@
 		c13bbd58c569986babef4c2f /* g_canvas.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = g_canvas.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/g_canvas.c"; sourceTree = SOURCE_ROOT; };
 		c3c2542a9ab683e274fba196 /* pd~.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = "pd~.c"; path = "../../../addons/ofxPd/libs/libpd/pure-data/extra/pd~/pd~.c"; sourceTree = SOURCE_ROOT; };
 		c60ee1cd8e0a09f6f3d01e8b /* g_hdial.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = g_hdial.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/g_hdial.c"; sourceTree = SOURCE_ROOT; };
-		c85b02f3d9048b879888a6a1 /* z_queued.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = z_queued.h; path = ../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_queued.h; sourceTree = SOURCE_ROOT; };
 		c9112034bbd3b2ba72926d52 /* s_stuff.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = s_stuff.h; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/s_stuff.h"; sourceTree = SOURCE_ROOT; };
 		c9e0672172ade339ea1b2b5c /* g_readwrite.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = g_readwrite.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/g_readwrite.c"; sourceTree = SOURCE_ROOT; };
-		cd76ed997b6bec8886c6b28e /* z_queued.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = z_queued.c; path = ../../../addons/ofxPd/libs/libpd/libpd_wrapper/util/z_queued.c; sourceTree = SOURCE_ROOT; };
 		ce2b6baf505c3182cce624e9 /* d_misc.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = d_misc.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/d_misc.c"; sourceTree = SOURCE_ROOT; };
 		d1e976b635ac494df0c59727 /* PdTypes.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = PdTypes.cpp; path = ../../../addons/ofxPd/libs/libpd/cpp/PdTypes.cpp; sourceTree = SOURCE_ROOT; };
 		d5e45b4d6fa033025c7c6b63 /* d_filter.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = d_filter.c; path = "../../../addons/ofxPd/libs/libpd/pure-data/src/d_filter.c"; sourceTree = SOURCE_ROOT; };
@@ -349,14 +340,8 @@
 		33cbe85818ad7949e9bcb676 /* util */ = {
 			isa = PBXGroup;
 			children = (
-				388cec9fa2e2e77f5ec26bf9 /* ringbuffer.c */,
-				2c9954f28ea0aa54dddebf9d /* ringbuffer.h */,
-				8d84b4e1da62ab390bb48f1d /* z_hook_util.c */,
-				23e5aa4e0cdee4b319965e35 /* z_hook_util.h */,
 				68444a0dc8a969728cc4e656 /* z_print_util.c */,
 				8dc382f17e829ec900bdc6d9 /* z_print_util.h */,
-				cd76ed997b6bec8886c6b28e /* z_queued.c */,
-				c85b02f3d9048b879888a6a1 /* z_queued.h */,
 			);
 			name = util;
 			sourceTree = "<group>";
@@ -754,10 +739,7 @@
 				4c7bc3489171413574cc398b /* PdBase.cpp in Sources */,
 				8fd00a16efff9a2098f2e5e8 /* PdTypes.cpp in Sources */,
 				6911e01feb7a4e736cab7e6c /* s_libpdmidi.c in Sources */,
-				9c908654f2ec96c390ac467c /* ringbuffer.c in Sources */,
-				73b8961d0a05d0032367b2fb /* z_hook_util.c in Sources */,
 				7af773c3595a333ef6c49a6b /* z_print_util.c in Sources */,
-				71d0703ac4273cd4836afeb8 /* z_queued.c in Sources */,
 				d8afced92d5514e8580a4abc /* x_libpdreceive.c in Sources */,
 				e94a9217adcdf72404752237 /* z_libpd.c in Sources */,
 				90f3886c34910f6655634fdb /* bonk~.c in Sources */,
