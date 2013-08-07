@@ -4,6 +4,8 @@ v1.4.0: 2013 Aug
 		- moved libpd source into libs/libpd to match ofxAddonsTemplate
 		- split example into seperate desktop & ios projects (easier to generate)
 		- regenerated project files
+	- built-in pd externals now work 
+	  (bonk~, choice, fiddle~, loop~, lrshift~, pique~, sigmund~, stdout)
 	- added PitchShifter example
 	- updated to latest libpd
 

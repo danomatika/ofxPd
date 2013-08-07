@@ -34,6 +34,19 @@ Poco::Mutex mutex;
 #define _LOCK() mutex.lock()
 #define _UNLOCK() mutex.unlock()
 
+// built in pd externals setup functions
+extern "C" {
+	void bonk_tilde_setup();
+	void choice_setup();
+	void fiddle_tilde_setup();
+	void loop_tilde_setup();
+	void lrshift_tilde_setup();
+	//void pd_tilde_setup(); // not sure if this builds on windows
+	void pique_setup();
+	void sigmund_tilde_setup();
+	void stdout_setup();
+}
+
 //--------------------------------------------------------------------
 ofxPd::ofxPd() : PdBase() {
     ticksPerBuffer = 32;
@@ -60,6 +73,16 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
         clear();
 		return false;
 	}
+	// setup built in pd externals
+	bonk_tilde_setup();
+	choice_setup();
+	fiddle_tilde_setup();
+	loop_tilde_setup();
+	lrshift_tilde_setup();
+	//void pd_tilde_setup();
+	pique_setup();
+	sigmund_tilde_setup();
+	stdout_setup();
 	_UNLOCK();
     
     // allocate buffers
