@@ -1,5 +1,8 @@
 ofxPd
 =====
+<p align="center">
+<img src="https://raw.github.com/danomatika/ofxPd/master/ofxaddons_thumbnail.png"/>
+</p>
 
 Copyright (c) [Dan Wilcox](danomatika.com) 2011-2013
 
