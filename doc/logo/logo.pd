@@ -1,8 +1,6 @@
 #N canvas 0 22 460 266 12;
-#X obj 277 140 libpd;
-#X obj 153 140 openFrameworks;
-#X msg 153 110 ofxPd;
+#X obj 278 125 libpd;
+#X obj 154 125 openFrameworks;
 #X connect 0 0 1 1;
 #X connect 1 1 0 0;
-#X connect 2 0 1 0;
 #X coords 0 -1 1 1 271 71 1 100 100;
