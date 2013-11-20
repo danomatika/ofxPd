@@ -96,6 +96,8 @@ PitchShifter is a simple example application which uses an OF gui to control a p
 How to Create a New ofxPd Project
 ---------------------------------
 
+_Note: These instructions are manually creating a new project. You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
+
 To develop your own project based on ofxPd, simply copy the example project and rename it. You probably want to put it in your apps folder, for example, after copying:
 <pre>
 openFrameworks/addons/ofxPd/example/ => openFrameworks/apps/myApps/example/
@@ -119,6 +121,8 @@ Rename the *.cbp and *.workspace files to the same name as the project folder. O
 Adding ofxPd to an Existing Project
 -----------------------------------
 
+_Note: These instructions are manually creating a new project. You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
+
 If you want to add ofxPd to another project, you need to make sure you include the src folder:
 <pre>
 openFrameworks/addons/ofxPd/src
@@ -126,23 +130,20 @@ openFrameworks/addons/ofxPd/src
 
 You will also need to include some additional C Flags for building the libpd source:
 
+    -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD
+
 ### For XCode:
 
-* create a new group "ofxPd" * drag these directories from ofxpd into this new group: ofxPd/src
-* add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Library Search Paths (make sure All Configurations and All Settings are selected)
-* under Targets->YourApp->Build->Other C Flags (make sure All Configurations and All Settings are selected), add
+* create a new group "ofxPd" 
+* drag these directories from ofxpd into this new group: ofxPd/src
+* add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Header Search Paths (make sure "All" is selected)
+* under Targets->YourApp->Build->Other C Flags (make sure "All" is selected), add
 	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD</pre>
 
 ### For Linux (Makefiles & Codeblocks):
 
 * edit addons.make in your project folder and add the following line to the end of the file: 
 	<pre>ofxPd</pre>
-* edit config.make in your project folder and change the lines for USER_CFLAGS, USER_LDFLAGS and USER_LIBS to:
-	<pre>
-	USER_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -shared
-	USER_LDFLAGS = --export-dynamic
-	USER_LIBS = -ldl -lm
-	</pre>
 
 ### For Codeblocks (Win):
 
@@ -190,6 +191,21 @@ For example: The default sample rate on Mac OSX is 96000. Running the app at 441
 	
 Bugs & Errors
 -------------
+
+### File "tr1/memory" not found in Xcode
+
+You just upgraded to OSX 10.9 and Xcode 5 right? The default compiler is now LLVM and you need to rebuild your Xcode project files so OF will build correctly. Ude the ProjectGenerator in the OF 0.8.0 download to regenerate the project:
+
+* choose the _parent folder_ of your project folder
+* set the name of the project
+* add ofxPd as an add-on
+* hit generate
+
+Also note, currently the PG doesn't seem to set the C Flags correctly, so you might have to add them manually. See "Adding ofxPd to an Existing Project" on how to do this.
+
+### Unknown type `t_float`, etc
+
+The compiler doesn't recognize the internal Pd types because it's missing the C Flags needed to build libpd. See the section for your IDE in "Adding ofxPd to an Existing Project" on how to do this. 
 
 ### Undefined basic_ostream in XCode
 
