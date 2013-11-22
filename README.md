@@ -96,7 +96,7 @@ PitchShifter is a simple example application which uses an OF gui to control a p
 How to Create a New ofxPd Project
 ---------------------------------
 
-_Note: These instructions are manually creating a new project. You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
+_Note: These instructions are for manually creating a new project. You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
 
 To develop your own project based on ofxPd, simply copy the example project and rename it. You probably want to put it in your apps folder, for example, after copying:
 <pre>
@@ -121,7 +121,7 @@ Rename the *.cbp and *.workspace files to the same name as the project folder. O
 Adding ofxPd to an Existing Project
 -----------------------------------
 
-_Note: These instructions are manually creating a new project. You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
+_Note: These instructions are for manually add ofxPd to an existing project. You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
 
 If you want to add ofxPd to another project, you need to make sure you include the src folder:
 <pre>
