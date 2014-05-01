@@ -33,7 +33,7 @@ On Mac OSX, you will need to install Xcode from the Mac Developer Tools.
 
 On Linux, you can use the Makefile and/or Codeblocks project files (without the "_win" suffix).
 
-On Win, you will need [Codeblocks+MiniGW](http://www.codeblocks.org/downloads/26) and the [Win Codeblocks OF package](http://www.openframeworks.cc/download). Use the Codeblocks projects files with the "_win" suffix. 
+On Win, you will need [Codeblocks+MiniGW](http://www.codeblocks.org/downloads/26) and the [Win Codeblocks OF package](http://www.openframeworks.cc/download). Use the Codeblocks projects files with the "_win" suffix. Also, some versions of CB+MinGW are missing some libraries needed by OF (pthreads, etc). Make sure you've followed the [OF Win Codeblocks setup guide](http://openframeworks.cc/setup/codeblocks).
 
 Installation
 ------------
