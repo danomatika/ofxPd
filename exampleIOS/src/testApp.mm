@@ -29,7 +29,7 @@ void testApp::setup() {
 	
 	// the number if libpd ticks per buffer,
 	// used to compute the audio buffer len: tpb * blocksize (always 64)
-	int ticksPerBuffer = 8;	// 8 * 64 = buffer len of 512
+	int ticksPerBuffer = 8; // 8 * 64 = buffer len of 512
 	
 	// setup the app core
 	core.setup(2, 1, 44100, ticksPerBuffer);

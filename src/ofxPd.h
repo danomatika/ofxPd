@@ -58,7 +58,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// ticks per buffer
 		///
 		bool init(const int numOutChannels, const int numInChannels,
-				  const int sampleRate, const int ticksPerBuffer=32);
+		          const int sampleRate, const int ticksPerBuffer=32);
 
 		/// clear resources, here for future proofing, currently does nothing
 		void clear();
@@ -298,13 +298,13 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// send midi messages, any out of range messages will be silently ignored
 		///
 		/// number ranges:
-		/// channel		1 - 16 * dev# (dev #0: 1-16, dev #1: 17-32, etc)
-		/// pitch 		0 - 127
-		/// velocity	0 - 127
-		/// control value	0 - 127
-		/// program value	1 - 128
-		/// bend value		-8192 - 8191
-		/// touch value		0 - 127
+		/// channel     1 - 16 * dev# (dev #0: 1-16, dev #1: 17-32, etc)
+		/// pitch       0 - 127
+		/// velocity    0 - 127
+		/// control value   0 - 127
+		/// program value   1 - 128
+		/// bend value     -8192 - 8191
+		/// touch value     0 - 127
 		///
 		/// note, in pd:
 		/// [bendin] takes 0 - 16383 while [bendout] returns -8192 - 8192
@@ -430,13 +430,13 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 	private:
 
-		int ticksPerBuffer;	///< number of ticks per buffer
-		float* inputBuffer;	///< interleaved input audio buffer
+		int ticksPerBuffer; ///< number of ticks per buffer
+		float* inputBuffer; ///< interleaved input audio buffer
 
 		/// a receiving source's pointer and receivers
 		struct Source {
 
-			std::set<pd::PdReceiver*> receivers;    ///< receivers
+			std::set<pd::PdReceiver*> receivers; ///< receivers
 
 			// helper functions
 			void addReceiver(pd::PdReceiver* receiver) {
@@ -457,14 +457,14 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 			}
 		};
 
-		std::set<pd::PdReceiver*> receivers;	///< the receivers
-		std::map<std::string,Source> sources;	///< subscribed sources
-												///< first object always global
+		std::set<pd::PdReceiver*> receivers;    ///< the receivers
+		std::map<std::string,Source> sources;   ///< subscribed sources
+		                                        ///< first object always global
 
 		/// a receiving midi channel's receivers
 		struct Channel {
 
-			std::set<pd::PdMidiReceiver*> receivers;    ///< receivers
+			std::set<pd::PdMidiReceiver*> receivers; ///< receivers
 
 			// helper functions
 			void addMidiReceiver(pd::PdMidiReceiver* receiver) {
@@ -485,7 +485,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 			}
 		};
 
-		std::set<pd::PdMidiReceiver*> midiReceivers;	///< the midi receivers
-		std::map<int,Channel> channels;                 ///< subscribed channels
-														///< first object always global
+		std::set<pd::PdMidiReceiver*> midiReceivers;  ///< the midi receivers
+		std::map<int,Channel> channels;               ///< subscribed channels
+		                                              ///< first object always global
 };

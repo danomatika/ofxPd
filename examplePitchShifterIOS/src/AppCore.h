@@ -34,10 +34,10 @@ class AppCore : public PdReceiver {
 
 		// main
 		void setup(const int numOutChannels, const int numInChannels,
-				   const int sampleRate, const int ticksPerBuffer);
+		           const int sampleRate, const int ticksPerBuffer);
 		void update();
 		void draw();
-        void exit();
+		void exit();
 		
 		// input callbacks
 		void keyPressed(int key);
@@ -49,9 +49,9 @@ class AppCore : public PdReceiver {
 		// pd message receiver callbacks
 		void print(const std::string& message);
 		
-		ofxPd pd;	//< pd instance
+		ofxPd pd; //< pd instance
 		vector<float> scopeArray;
-        
+
 		// gui
-        ofxSimpleSlider mixSlider, transposeSlider, inGainSlider, outGainSlider;
+		ofxSimpleSlider mixSlider, transposeSlider, inGainSlider, outGainSlider;
 };

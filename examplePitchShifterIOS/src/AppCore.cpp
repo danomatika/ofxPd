@@ -22,7 +22,7 @@
 
 //--------------------------------------------------------------
 void AppCore::setup(const int numOutChannels, const int numInChannels,
-				    const int sampleRate, const int ticksPerBuffer) {
+                    const int sampleRate, const int ticksPerBuffer) {
 
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);

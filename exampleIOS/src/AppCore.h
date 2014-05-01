@@ -23,7 +23,7 @@ class AppCore : public PdReceiver, public PdMidiReceiver {
 
 		// main
 		void setup(const int numOutChannels, const int numInChannels,
-				   const int sampleRate, const int ticksPerBuffer);
+		           const int sampleRate, const int ticksPerBuffer);
 		void update();
 		void draw();
 		void exit();
