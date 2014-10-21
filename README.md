@@ -137,8 +137,9 @@ You will also need to include some additional C Flags for building the libpd sou
 * create a new group "ofxPd" 
 * drag these directories from ofxpd into this new group: ofxPd/src
 * add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Header Search Paths (make sure "All" is selected)
-* under Targets->YourApp->Build->Other C Flags (make sure "All" is selected), add
+* under Targets->YourApp->Build->**Other C Flags** (make sure "All" is selected), add
 	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD</pre>
+  * *Note: Make sure you use Other **C** Flags! Other **C++** Flags will **not** work since libpd is written in C.*
 
 ### For Linux (Makefiles & Codeblocks):
 
