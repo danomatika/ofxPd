@@ -11,8 +11,7 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-void ofApp::setup(const int numOutChannels, const int numInChannels,
-                    const int sampleRate, const int ticksPerBuffer) {
+void ofApp::setup() {
 
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
@@ -42,7 +41,7 @@ void ofApp::setup(const int numOutChannels, const int numInChannels,
 	ofSoundStreamSetup(2, 1, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
 
 	// setup Pd
-	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
+	if(!pd.init(2, 1, 44100, ticksPerBuffer)) {
 		OF_EXIT_APP(1);
 	}
 
@@ -282,11 +281,6 @@ void ofApp::draw() {
 void ofApp::exit() {}
 
 //--------------------------------------------------------------
-void ofApp::playTone(int pitch) {
-	pd << StartMessage() << "pitch" << pitch << FinishList("tone") << Bang("tone");
-}
-
-//--------------------------------------------------------------
 void ofApp::keyPressed (int key) {
 
 	switch(key) {
@@ -346,6 +340,37 @@ void ofApp::keyPressed (int key) {
 		break;
 	}
 }
+
+//--------------------------------------------------------------
+void ofApp::touchDown(ofTouchEventArgs &touch) {
+	// y pos changes pitch
+	int pitch = (-1 * (touch.y/ofGetHeight()) + 1) * 127;
+	playTone(pitch);
+}
+
+//--------------------------------------------------------------
+void ofApp::touchMoved(ofTouchEventArgs &touch) {}
+
+//--------------------------------------------------------------
+void ofApp::touchUp(ofTouchEventArgs &touch) {}
+
+//--------------------------------------------------------------
+void ofApp::touchDoubleTap(ofTouchEventArgs &touch) {}
+
+//--------------------------------------------------------------
+void ofApp::touchCancelled(ofTouchEventArgs& args) {}
+
+//--------------------------------------------------------------
+void ofApp::lostFocus() {}
+
+//--------------------------------------------------------------
+void ofApp::gotFocus() {}
+
+//--------------------------------------------------------------
+void ofApp::gotMemoryWarning() {}
+
+//--------------------------------------------------------------
+void ofApp::deviceOrientationChanged(int newOrientation) {}
 
 //--------------------------------------------------------------
 void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
@@ -497,4 +522,9 @@ void ofApp::processEvents() {
 			break;
 		}
 	}
+}
+
+//--------------------------------------------------------------
+void ofApp::playTone(int pitch) {
+	pd << StartMessage() << "pitch" << pitch << FinishList("tone") << Bang("tone");
 }

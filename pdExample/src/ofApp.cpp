@@ -11,8 +11,7 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-void ofApp::setup(const int numOutChannels, const int numInChannels,
-                    const int sampleRate, const int ticksPerBuffer) {
+void ofApp::setup() {
 
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
@@ -36,7 +35,7 @@ void ofApp::setup(const int numOutChannels, const int numInChannels,
 	ofSoundStreamSetup(2, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
 
 	// setup Pd
-	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
+	if(!pd.init(2, numInputs, 44100, ticksPerBuffer)) {
 		OF_EXIT_APP(1);
 	}
 

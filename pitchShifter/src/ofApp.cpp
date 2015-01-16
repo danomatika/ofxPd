@@ -18,17 +18,33 @@
  * See https://github.com/danomatika/ofxPd/examplePitchShifter for documentation
  *
  */
-#include "AppCore.h"
+#include "ofApp.h"
 
 //--------------------------------------------------------------
-void AppCore::setup(const int numOutChannels, const int numInChannels,
-                    const int sampleRate, const int ticksPerBuffer) {
+void ofApp::setup() {
 
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
 	
+	// the number of libpd ticks per buffer,
+	// used to compute the audio buffer len: tpb * blocksize (always 64)
+	#ifdef TARGET_LINUX_ARM
+		// longer latency for Raspberry PI
+		int ticksPerBuffer = 32; // 32 * 64 = buffer len of 2048
+		
+		// you'll need a USB mic on the Raspberry PI and may need to set the audio device,
+		// otherwise this app won't really do anything without an incoming audio signal ...
+		int numInputs = 0; // no built in mic, change this if you have a USB mic
+	#else
+		int ticksPerBuffer = 8; // 8 * 64 = buffer len of 512
+		int numInputs = 1;
+	#endif
+
+	// setup OF sound stream
+	ofSoundStreamSetup(2, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
+	
 	// setup pd
-	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
+	if(!pd.init(2, numInputs, 44100, ticksPerBuffer)) {
 		OF_EXIT_APP(1);
 	}
 	pd.subscribe("mix");
@@ -56,7 +72,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 }
 
 //--------------------------------------------------------------
-void AppCore::update() {
+void ofApp::update() {
 	ofBackground(0, 0, 0);
 	
 	// update scope array from pd
@@ -70,7 +86,7 @@ void AppCore::update() {
 }
 
 //--------------------------------------------------------------
-void AppCore::draw() {
+void ofApp::draw() {
 
 	// draw scope
 	ofSetColor(0, 255, 0, 127);
@@ -86,22 +102,22 @@ void AppCore::draw() {
 }
 
 //--------------------------------------------------------------
-void AppCore::exit() {}
+void ofApp::exit() {}
 
 //--------------------------------------------------------------
-void AppCore::keyPressed(int key) {}
+void ofApp::keyPressed(int key) {}
 
 //--------------------------------------------------------------
-void AppCore::audioReceived(float * input, int bufferSize, int nChannels) {
+void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 	pd.audioIn(input, bufferSize, nChannels);
 }
 
 //--------------------------------------------------------------
-void AppCore::audioRequested(float * output, int bufferSize, int nChannels) {
+void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 	pd.audioOut(output, bufferSize, nChannels);
 }
 
 //--------------------------------------------------------------
-void AppCore::print(const std::string& message) {
+void ofApp::print(const std::string& message) {
 	cout << message << endl;
 }

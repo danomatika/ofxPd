@@ -21,6 +21,8 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxiOS.h"
+#include "ofxiOSExtras.h"
 
 #include "ofxPd.h"
 #include "ofxSimpleSlider.h"
@@ -28,19 +30,30 @@
 // a namespace for the Pd types
 using namespace pd;
 
-class AppCore : public PdReceiver {
+// this example app is designed for an iPad in landscape mode,
+// in the project settings Deployment Info set the following:
+//   * Devices: iPad
+//   * Device Orientation: disable Portrait and Upside Down
+class ofApp : public ofxiOSApp, public PdReceiver {
 
 	public:
 
 		// main
-		void setup(const int numOutChannels, const int numInChannels,
-		           const int sampleRate, const int ticksPerBuffer);
+		void setup();
 		void update();
 		void draw();
 		void exit();
-		
-		// input callbacks
-		void keyPressed(int key);
+	
+		void touchDown(ofTouchEventArgs &touch);
+		void touchMoved(ofTouchEventArgs &touch);
+		void touchUp(ofTouchEventArgs &touch);
+		void touchDoubleTap(ofTouchEventArgs &touch);
+		void touchCancelled(ofTouchEventArgs &touch);
+
+		void lostFocus();
+		void gotFocus();
+		void gotMemoryWarning();
+		void deviceOrientationChanged(int newOrientation);
 		
 		// audio callbacks
 		void audioReceived(float * input, int bufferSize, int nChannels);
@@ -48,8 +61,14 @@ class AppCore : public PdReceiver {
 		
 		// pd message receiver callbacks
 		void print(const std::string& message);
+	
+		void receiveBang(const std::string& dest);
+		void receiveFloat(const std::string& dest, float value);
+		void receiveSymbol(const std::string& dest, const std::string& symbol);
+		void receiveList(const std::string& dest, const List& list);
+		void receiveMessage(const std::string& dest, const std::string& msg, const List& list);
 		
-		ofxPd pd;	//< pd instance
+		ofxPd pd; //< pd instance
 		vector<float> scopeArray;
 
 		// gui

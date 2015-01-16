@@ -33,3 +33,34 @@ build
 *.depend
 *.cbTemp
 
+# example project files
+
+pdExample/Makefile
+pdExample/*.xcodeproj
+pdExample/*.make
+pdExample/*xcconfig
+pdExample/*.plist
+
+pdExampleIOS/Makefile
+pdExampleIOS/*.xcodeproj
+pdExampleIOS/*.make
+pdExampleIOS/*xcconfig
+pdExampleIOS/*.plist
+pdExampleIOS/*.pch
+pdExampleIOS/bin/data/Default*.png
+pdExampleIOS/bin/data/Icon*.png
+
+pitchShifter/Makefile
+pitchShifter/*.xcodeproj
+pitchShifter/*.make
+pitchShifter/*xcconfig
+pitchShifter/*.plist
+
+pitchShifterIOS/Makefile
+pitchShifterIOS/*.xcodeproj
+pitchShifterIOS/*.make
+pitchShifterIOS/*xcconfig
+pitchShifterIOS/*.plist
+pitchShifterIOS/*.pch
+pitchShifterIOS/bin/data/Default*.png
+pitchShifterIOS/bin/data/Icon*.png

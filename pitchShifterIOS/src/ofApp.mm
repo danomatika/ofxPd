@@ -18,17 +18,35 @@
  * See https://github.com/danomatika/ofxPd/examplePitchShifter for documentation
  *
  */
-#include "AppCore.h"
+#include "ofApp.h"
 
 //--------------------------------------------------------------
-void AppCore::setup(const int numOutChannels, const int numInChannels,
-                    const int sampleRate, const int ticksPerBuffer) {
-
-	ofSetFrameRate(60);
+void ofApp::setup() {
+	
 	ofSetVerticalSync(true);
+	ofBackground(127, 127, 127);
+	
+	// register touch events
+	ofRegisterTouchEvents(this);
+	
+	// initialize the accelerometer
+	ofxAccelerometer.setup();
+	
+	// iOSAlerts will be sent to this
+	ofxiOSAlerts.addListener(this);
+	
+	// if you want a landscape orientation 
+	ofSetOrientation(OF_ORIENTATION_90_RIGHT);
+	
+	// the number if libpd ticks per buffer,
+	// used to compute the audio buffer len: tpb * blocksize (always 64)
+	int ticksPerBuffer = 4; // 4 * 64 = buffer len of 256
+
+	// setup OF sound stream
+	ofSoundStreamSetup(2, 1, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
 	
 	// setup pd
-	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
+	if(!pd.init(2, 1, 44100, ticksPerBuffer)) {
 		OF_EXIT_APP(1);
 	}
 	pd.subscribe("mix");
@@ -36,7 +54,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 	pd.subscribe("inputGain");
 	pd.subscribe("outputGain");
 	pd.addToSearchPath("pd");
-	pd.start();
+//	pd.start();
 
 	// open patch
 	Patch patch = pd.openPatch("pd/_main.pd");
@@ -56,7 +74,7 @@ void AppCore::setup(const int numOutChannels, const int numInChannels,
 }
 
 //--------------------------------------------------------------
-void AppCore::update() {
+void ofApp::update() {
 	ofBackground(0, 0, 0);
 	
 	// update scope array from pd
@@ -70,7 +88,7 @@ void AppCore::update() {
 }
 
 //--------------------------------------------------------------
-void AppCore::draw() {
+void ofApp::draw() {
 
 	// draw scope
 	ofSetColor(0, 255, 0, 127);
@@ -86,22 +104,61 @@ void AppCore::draw() {
 }
 
 //--------------------------------------------------------------
-void AppCore::exit() {}
+void ofApp::exit() {}
 
 //--------------------------------------------------------------
-void AppCore::keyPressed(int key) {}
+void ofApp::touchDown(ofTouchEventArgs &touch) {}
 
 //--------------------------------------------------------------
-void AppCore::audioReceived(float * input, int bufferSize, int nChannels) {
+void ofApp::touchMoved(ofTouchEventArgs &touch) {}
+
+//--------------------------------------------------------------
+void ofApp::touchUp(ofTouchEventArgs &touch) {}
+
+//--------------------------------------------------------------
+void ofApp::touchDoubleTap(ofTouchEventArgs &touch) {}
+
+//--------------------------------------------------------------
+void ofApp::touchCancelled(ofTouchEventArgs& args) {}
+
+//--------------------------------------------------------------
+void ofApp::lostFocus() {}
+
+//--------------------------------------------------------------
+void ofApp::gotFocus() {}
+
+//--------------------------------------------------------------
+void ofApp::gotMemoryWarning() {}
+
+//--------------------------------------------------------------
+void ofApp::deviceOrientationChanged(int newOrientation) {}
+
+//--------------------------------------------------------------
+void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 	pd.audioIn(input, bufferSize, nChannels);
 }
 
 //--------------------------------------------------------------
-void AppCore::audioRequested(float * output, int bufferSize, int nChannels) {
+void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 	pd.audioOut(output, bufferSize, nChannels);
 }
 
 //--------------------------------------------------------------
-void AppCore::print(const std::string& message) {
+void ofApp::print(const std::string& message) {
 	cout << message << endl;
 }
+
+//--------------------------------------------------------------
+void ofApp::receiveBang(const std::string& dest) {}
+
+//--------------------------------------------------------------
+void ofApp::receiveFloat(const std::string& dest, float value) {}
+
+//--------------------------------------------------------------
+void ofApp::receiveSymbol(const std::string& dest, const std::string& symbol) {}
+
+//--------------------------------------------------------------
+void ofApp::receiveList(const std::string& dest, const List& list) {}
+
+//--------------------------------------------------------------
+void ofApp::receiveMessage(const std::string& dest, const std::string& msg, const List& list) {}

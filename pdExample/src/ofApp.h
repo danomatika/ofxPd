@@ -11,16 +11,14 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxiOS.h"
-#include "ofxiOSExtras.h"
 
 #include "ofxPd.h"
 
 // a namespace for the Pd types
 using namespace pd;
 
-// derive from Pd receiver classes to receieve message and midi events
-class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
+// inherit pd receivers to receive message and midi events
+class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
 
 	public:
 
@@ -30,19 +28,11 @@ class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 		void draw();
 		void exit();
 
+		// do something
+		void playTone(int pitch);
+		
 		// input callbacks
 		void keyPressed(int key);
-	
-		void touchDown(ofTouchEventArgs &touch);
-		void touchMoved(ofTouchEventArgs &touch);
-		void touchUp(ofTouchEventArgs &touch);
-		void touchDoubleTap(ofTouchEventArgs &touch);
-		void touchCancelled(ofTouchEventArgs &touch);
-
-		void lostFocus();
-		void gotFocus();
-		void gotMemoryWarning();
-		void deviceOrientationChanged(int newOrientation);
 		
 		// audio callbacks
 		void audioReceived(float * input, int bufferSize, int nChannels);
@@ -69,13 +59,10 @@ class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 		
 		// demonstrates how to manually poll for messages
 		void processEvents();
-	
-		// do something
-		void playTone(int pitch);
 		
 		ofxPd pd;
 		vector<float> scopeArray;
 		vector<Patch> instances;
 		
-        int midiChan;
+		int midiChan;
 };

@@ -19,10 +19,10 @@
  *
  */
 #include "ofMain.h"
-#include "testApp.h"
+#include "ofApp.h"
 
 //========================================================================
 int main(){
 	ofSetupOpenGL(1024, 768, OF_WINDOW);
-	ofRunApp(new testApp());
+	ofRunApp(new ofApp());
 }

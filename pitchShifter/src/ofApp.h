@@ -28,13 +28,12 @@
 // a namespace for the Pd types
 using namespace pd;
 
-class AppCore : public PdReceiver {
+class ofApp : public ofBaseApp, public PdReceiver {
 
 	public:
 
 		// main
-		void setup(const int numOutChannels, const int numInChannels,
-		           const int sampleRate, const int ticksPerBuffer);
+		void setup();
 		void update();
 		void draw();
 		void exit();
@@ -49,7 +48,7 @@ class AppCore : public PdReceiver {
 		// pd message receiver callbacks
 		void print(const std::string& message);
 		
-		ofxPd pd; //< pd instance
+		ofxPd pd;	//< pd instance
 		vector<float> scopeArray;
 
 		// gui
