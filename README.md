@@ -134,7 +134,7 @@ openFrameworks/addons/ofxPd/src
 
 You will also need to include some additional C Flags for building the libpd source:
 
-    -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD
+    -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
 
 ### For XCode:
 
@@ -142,7 +142,7 @@ You will also need to include some additional C Flags for building the libpd sou
 * drag these directories from ofxpd into this new group: ofxPd/src
 * add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Header Search Paths (make sure "All" is selected)
 * under Targets->YourApp->Build->**Other C Flags** (make sure "All" is selected), add
-	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD</pre>
+	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA</pre>
   * *Note: Make sure you use Other **C** Flags! Other **C++** Flags will **not** work since libpd is written in C.*
 
 ### For Linux (Makefiles & Codeblocks):
@@ -165,6 +165,7 @@ You will also need to include some additional C Flags for building the libpd sou
 	<pre>
 	HAVE_UNISTD_H
 	USEAPI_DUMMY
+	LIBPD_EXTRA
 	MSW
 	PD
 	PD_INTERNAL
