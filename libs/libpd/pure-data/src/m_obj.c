@@ -252,7 +252,11 @@ void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv)
     t_atom *ap;
     int count;
     t_inlet *ip = ((t_object *)x)->ob_inlet;
-    if (!argc) return;
+    if (!argc) 
+    {
+        pd_emptylist(&x->ob_pd);
+        return;
+    }
     for (count = argc-1, ap = argv+1; ip && count--; ap++, ip = ip->i_next)
     {
         if (ap->a_type == A_POINTER) pd_pointer(&ip->i_pd, ap->a_w.w_gpointer);
@@ -729,5 +733,11 @@ int outlet_getsignalindex(t_outlet *x)
     for (o = x->o_owner->ob_outlet, n = 0; o && o != x; o = o->o_next) 
         if (o->o_sym == &s_signal) n++;
     return (n);
+}
+
+void obj_saveformat(t_object *x, t_binbuf *bb)
+{
+    if (x->te_width)
+        binbuf_addv(bb, "ssf;", &s__X, gensym("f"), (float)x->te_width);
 }
 

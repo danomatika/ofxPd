@@ -14,6 +14,10 @@ to be different but are now unified except for some fossilized names.) */
 #include <string.h>
 #include "g_all_guis.h"
 
+#ifdef _MSC_VER
+#define snprintf sprintf_s
+#endif
+
     /* LATER consider adding font size to this struct (see glist_getfont()) */
 struct _canvasenvironment
 {
@@ -27,20 +31,21 @@ struct _canvasenvironment
 #define GLIST_DEFCANVASWIDTH 450
 #define GLIST_DEFCANVASHEIGHT 300
 
+/* since the window decorations aren't included, open new windows a few
+pixels down so you can posibly move the window later.  Apple needs less
+because its menus are at top of screen; we're more generous for other
+desktops because the borders have both window title area and menus. */
 #ifdef __APPLE__
 #define GLIST_DEFCANVASYLOC 22
 #else
-#define GLIST_DEFCANVASYLOC 0
+#define GLIST_DEFCANVASYLOC 50
 #endif
 
 /* ---------------------- variables --------------------------- */
 
 extern t_pd *newest;
 t_class *canvas_class;
-int canvas_dspstate;                /* whether DSP is on or off */  
-t_canvas *canvas_editing;           /* last canvas to start text edting */ 
 t_canvas *canvas_whichfind;         /* last canvas we did a find in */ 
-t_canvas *canvas_list;              /* list of all root canvases */
 
 /* ------------------ forward function declarations --------------- */
 static void canvas_start_dsp(void);
@@ -51,6 +56,8 @@ void canvas_reflecttitle(t_canvas *x);
 static void canvas_addtolist(t_canvas *x);
 static void canvas_takeofflist(t_canvas *x);
 static void canvas_pop(t_canvas *x, t_floatarg fvis);
+static void canvas_bind(t_canvas *x);
+static void canvas_unbind(t_canvas *x);
 
 /* --------- functions to handle the canvas environment ----------- */
 
@@ -69,18 +76,18 @@ void canvas_updatewindowlist( void)
     /* add a glist the list of "root" canvases (toplevels without parents.) */
 static void canvas_addtolist(t_canvas *x)
 {
-    x->gl_next = canvas_list;
-    canvas_list = x;
+    x->gl_next = pd_this->pd_canvaslist;
+    pd_this->pd_canvaslist = x;
 }
 
 static void canvas_takeofflist(t_canvas *x)
 {
         /* take it off the window list */
-    if (x == canvas_list) canvas_list = x->gl_next;
+    if (x == pd_this->pd_canvaslist) pd_this->pd_canvaslist = x->gl_next;
     else
     {
         t_canvas *z;
-        for (z = canvas_list; z->gl_next != x; z = z->gl_next)
+        for (z = pd_this->pd_canvaslist; z->gl_next != x; z = z->gl_next)
             ;
         z->gl_next = x->gl_next;
     }
@@ -102,6 +109,13 @@ void glob_setfilename(void *dummy, t_symbol *filesym, t_symbol *dirsym)
 {
     canvas_newfilename = filesym;
     canvas_newdirectory = dirsym;
+}
+
+void glob_menunew(void *dummy, t_symbol *filesym, t_symbol *dirsym)
+{
+    glob_setfilename(dummy, filesym, dirsym);
+    canvas_new(0, 0, 0, 0);
+    canvas_pop((t_canvas *)s__X.s_thing, 1);
 }
 
 t_canvas *canvas_getcurrent(void)
@@ -194,11 +208,9 @@ void canvas_makefilename(t_canvas *x, char *file, char *result, int resultsize)
 
 void canvas_rename(t_canvas *x, t_symbol *s, t_symbol *dir)
 {
-    if (strcmp(x->gl_name->s_name, "Pd"))
-        pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+    canvas_unbind(x);
     x->gl_name = s;
-    if (strcmp(x->gl_name->s_name, "Pd"))
-        pd_bind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+    canvas_bind(x);
     if (x->gl_havewindow)
         canvas_reflecttitle(x);
     if (dir && dir != &s_)
@@ -368,8 +380,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_owner = owner;
     x->gl_name = (*s->s_name ? s : 
         (canvas_newfilename ? canvas_newfilename : gensym("Pd")));
-    if (strcmp(x->gl_name->s_name, "Pd"))
-        pd_bind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+    canvas_bind(x);
     x->gl_loading = 1;
     x->gl_goprect = 0;      /* no GOP rectangle unless it's turned on later */
         /* cancel "vis" flag if we're a subpatch of an
@@ -468,9 +479,8 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_screeny1 = GLIST_DEFCANVASYLOC;
     x->gl_screenx2 = 450;
     x->gl_screeny2 = 300;
-    if (strcmp(x->gl_name->s_name, "Pd"))
-        pd_bind(&x->gl_pd, canvas_makebindsym(x->gl_name));
     x->gl_owner = g;
+    canvas_bind(x);
     x->gl_isgraph = 1;
     x->gl_goprect = 0;
     x->gl_obj.te_binbuf = binbuf_new();
@@ -548,6 +558,21 @@ t_symbol *canvas_makebindsym(t_symbol *s)
     strcpy(buf, "pd-");
     strcat(buf, s->s_name);
     return (gensym(buf));
+}
+
+    /* functions to bind and unbind canvases to symbol "pd-blah".  As
+    discussed on Pd dev list there should be a way to defeat this for
+    abstractions.  (Claude Heiland et al. Aug 9 2013) */
+static void canvas_bind(t_canvas *x)
+{
+    if (strcmp(x->gl_name->s_name, "Pd"))
+        pd_bind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+}
+
+static void canvas_unbind(t_canvas *x)
+{
+    if (strcmp(x->gl_name->s_name, "Pd"))
+        pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
 }
 
 void canvas_reflecttitle(t_canvas *x)
@@ -701,8 +726,6 @@ void canvas_free(t_canvas *x)
     t_gobj *y;
     int dspstate = canvas_suspend_dsp();
     canvas_noundo(x);
-    if (canvas_editing == x)
-        canvas_editing = 0;
     if (canvas_whichfind == x)
         canvas_whichfind = 0;
     glist_noselect(x);
@@ -712,8 +735,7 @@ void canvas_free(t_canvas *x)
         canvas_vis(x, 0);
     if (x->gl_editor)
         canvas_destroy_editor(x);   /* bug workaround; should already be gone*/
-    if (strcmp(x->gl_name->s_name, "Pd"))
-        pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+    canvas_unbind(x);
 
     if (x->gl_env)
     {
@@ -966,60 +988,12 @@ static void canvas_rename_method(t_canvas *x, t_symbol *s, int ac, t_atom *av)
     else canvas_rename(x, gensym("Pd"), 0);
 }
 
-/* ------------------ table ---------------------------*/
-
-static int tabcount = 0;
-
-static void *table_new(t_symbol *s, t_floatarg f)
-{
-    t_atom a[9];
-    t_glist *gl;
-    t_canvas *x, *z = canvas_getcurrent();
-    if (s == &s_)
-    {
-         char  tabname[255];
-         t_symbol *t = gensym("table"); 
-         sprintf(tabname, "%s%d", t->s_name, tabcount++);
-         s = gensym(tabname); 
-    }
-    if (f <= 1)
-        f = 100;
-    SETFLOAT(a, 0);
-    SETFLOAT(a+1, GLIST_DEFCANVASYLOC);
-    SETFLOAT(a+2, 600);
-    SETFLOAT(a+3, 400);
-    SETSYMBOL(a+4, s);
-    SETFLOAT(a+5, 0);
-    x = canvas_new(0, 0, 6, a);
-
-    x->gl_owner = z;
-
-        /* create a graph for the table */
-    gl = glist_addglist((t_glist*)x, &s_, 0, -1, (f > 1 ? f-1 : 1), 1,
-        50, 350, 550, 50);
-
-    graph_array(gl, s, &s_float, f, 0);
-
-    canvas_pop(x, 0); 
-
-    return (x);
-}
 
     /* return true if the "canvas" object is an abstraction (so we don't
-    save its contents, fogr example.)  */
+    save its contents, for example.)  */
 int canvas_isabstraction(t_canvas *x)
 {
     return (x->gl_env != 0);
-}
-
-    /* return true if the "canvas" object is a "table". */
-int canvas_istable(t_canvas *x)
-{
-    t_atom *argv = (x->gl_obj.te_binbuf? binbuf_getvec(x->gl_obj.te_binbuf):0);
-    int argc = (x->gl_obj.te_binbuf? binbuf_getnatom(x->gl_obj.te_binbuf) : 0);
-    int istable = (argc && argv[0].a_type == A_SYMBOL &&
-        argv[0].a_w.w_symbol == gensym("table"));
-    return (istable);
 }
 
     /* return true if the "canvas" object should be treated as a text
@@ -1105,23 +1079,23 @@ static void canvas_dsp(t_canvas *x, t_signal **sp)
 static void canvas_start_dsp(void)
 {
     t_canvas *x;
-    if (canvas_dspstate) ugen_stop();
+    if (pd_this->pd_dspstate) ugen_stop();
     else sys_gui("pdtk_pd_dsp ON\n");
     ugen_start();
     
-    for (x = canvas_list; x; x = x->gl_next)
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_dodsp(x, 1, 0);
     
-    canvas_dspstate = 1;
+    pd_this->pd_dspstate = 1;
 }
 
 static void canvas_stop_dsp(void)
 {
-    if (canvas_dspstate)
+    if (pd_this->pd_dspstate)
     {
         ugen_stop();
         sys_gui("pdtk_pd_dsp OFF\n");
-        canvas_dspstate = 0;
+        pd_this->pd_dspstate = 0;
     }
 }
 
@@ -1132,7 +1106,7 @@ static void canvas_stop_dsp(void)
 
 int canvas_suspend_dsp(void)
 {
-    int rval = canvas_dspstate;
+    int rval = pd_this->pd_dspstate;
     if (rval) canvas_stop_dsp();
     return (rval);
 }
@@ -1145,8 +1119,17 @@ void canvas_resume_dsp(int oldstate)
     /* this is equivalent to suspending and resuming in one step. */
 void canvas_update_dsp(void)
 {
-    if (canvas_dspstate) canvas_start_dsp();
+    if (pd_this->pd_dspstate) canvas_start_dsp();
 }
+
+/* the "dsp" message to pd starts and stops DSP somputation, and, if
+appropriate, also opens and closes the audio device.  On exclusive-access
+APIs such as ALSA, MMIO, and ASIO (I think) it\s appropriate to close the
+audio devices when not using them; but jack behaves better if audio I/O
+simply keeps running.  This is wasteful of CPU cycles but we do it anyway
+and can perhaps regard this is a design flaw in jack that we're working around
+here.  The function audio_shouldkeepopen() is provided by s_audio.c to tell
+us that we should elide the step of closing audio when DSP is turned off.*/
 
 void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
@@ -1154,18 +1137,19 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
     if (argc)
     {
         newstate = atom_getintarg(0, argc, argv);
-        if (newstate && !canvas_dspstate)
+        if (newstate && !pd_this->pd_dspstate)
         {
             sys_set_audio_state(1);
             canvas_start_dsp();
         }
-        else if (!newstate && canvas_dspstate)
+        else if (!newstate && pd_this->pd_dspstate)
         {
             canvas_stop_dsp();
-            sys_set_audio_state(0);
+            if (!audio_shouldkeepopen())
+                sys_set_audio_state(0);
         }
     }
-    else post("dsp state %d", canvas_dspstate);
+    else post("dsp state %d", pd_this->pd_dspstate);
 }
 
 void *canvas_getblock(t_class *blockclass, t_canvas **canvasp)
@@ -1218,7 +1202,7 @@ void canvas_redrawallfortemplate(t_template *template, int action)
 {
     t_canvas *x;
         /* find all root canvases */
-    for (x = canvas_list; x; x = x->gl_next)
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
         glist_redrawall(x, action);
 }
 
@@ -1313,6 +1297,80 @@ static void canvas_completepath(char *from, char *to, int bufsize)
     to[bufsize-1] = '\0';
 }
 
+#include <fcntl.h>
+static int check_exists(const char*path)
+{
+    int fd=sys_open(path, O_RDONLY);
+    if (fd>=0)
+    {
+        sys_close(fd);
+        return 1;
+    }
+    return 0;
+}
+
+extern t_namelist *sys_staticpath;
+
+static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
+{
+    t_namelist*nl;
+    char strbuf[MAXPDSTRING];
+    if (sys_isabsolutepath(stdpath))
+    {
+        e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+        return;
+    }
+
+    canvas_completepath(stdpath, strbuf, MAXPDSTRING);
+    if (check_exists(strbuf))
+    {
+        e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+        return;
+    }
+    /* strip    "extra/"-prefix */
+    if (!strncmp("extra/", stdpath, 6))
+        stdpath+=6;
+    /* check whether the given subdir is in one of the standard-paths */
+    for (nl=sys_staticpath; nl; nl=nl->nl_next)
+    {
+        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
+        strbuf[MAXPDSTRING-1]=0;
+        if (check_exists(strbuf))
+        {
+            e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+            return;
+        }
+    }
+}
+static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
+{
+    t_namelist*nl;
+    char strbuf[MAXPDSTRING];
+    if (sys_isabsolutepath(stdlib))
+    {
+        sys_load_lib(0, stdlib);
+        return;
+    }
+
+    canvas_completepath(stdlib, strbuf, MAXPDSTRING);
+    if (sys_load_lib(0, strbuf))
+        return;
+
+    // strip    "extra/"-prefix
+    if (!strncmp("extra/", stdlib, 6))
+        stdlib+=6;
+
+    /* check whether the given library is located in one of the standard-paths */
+    for (nl=sys_staticpath; nl; nl=nl->nl_next)
+    {
+        snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
+        strbuf[MAXPDSTRING-1]=0;
+        if (sys_load_lib(0, strbuf))
+            return;
+    }
+}
+
+
 static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
@@ -1324,7 +1382,6 @@ static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 #endif
     for (i = 0; i < argc; i++)
     {
-        char strbuf[MAXPDSTRING];
         char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
         if ((argc > i+1) && !strcmp(flag, "-path"))
         {
@@ -1334,9 +1391,7 @@ static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdpath"))
         {
-            canvas_completepath(atom_getsymbolarg(i+1, argc, argv)->s_name,
-                strbuf, MAXPDSTRING);
-            e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+            canvas_stdpath(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
             i++;
         }
         else if ((argc > i+1) && !strcmp(flag, "-lib"))
@@ -1346,9 +1401,7 @@ static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdlib"))
         {
-            canvas_completepath(atom_getsymbolarg(i+1, argc, argv)->s_name,
-                strbuf, MAXPDSTRING);
-            sys_load_lib(0, strbuf);
+            canvas_stdlib(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
             i++;
         }
         else post("declare: %s: unknown declaration", flag);
@@ -1418,11 +1471,37 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
 static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     static int warned;
-    if (!warned)
+    t_gobj *g, *g2;
+    t_object *ob;
+    if (argc > 1 && !warned)
     {
         post("** ignoring width or font settings from future Pd version **");
         warned = 1;
     }
+    if (!x->gl_list)
+        return;
+    for (g = x->gl_list; g2 = g->g_next; g = g2)
+        ;
+    if (ob = pd_checkobject(&g->g_pd))
+    {
+        ob->te_width = atom_getfloatarg(0, argc, argv);
+        if (glist_isvisible(x))
+        {
+            gobj_vis(g, x, 0);
+            gobj_vis(g, x, 1);
+        }
+    }
+}
+
+extern t_class *array_define_class;     /* LATER datum class too */
+
+    /* check if a pd can be treated as a glist - true if we're of any of
+    the glist classes, which all have 'glist' as the first item in struct */
+t_glist *pd_checkglist(t_pd *x)
+{
+    if (*x == canvas_class || *x == array_define_class)
+        return ((t_canvas *)x);
+    else return (0);
 }
 
 /* ------------------------------- setup routine ------------------------ */
@@ -1452,7 +1531,7 @@ extern void glist_scalar(t_glist *canvas, t_symbol *s, int argc, t_atom *argv);
 void g_graph_setup(void);
 void g_editor_setup(void);
 void g_readwrite_setup(void);
-extern void canvas_properties(t_gobj *z);
+extern void canvas_properties(t_gobj *z, t_glist *canvas);
 
 void g_canvas_setup(void)
 {
@@ -1527,7 +1606,7 @@ void g_canvas_setup(void)
         gensym("map"), A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_dirty,
         gensym("dirty"), A_FLOAT, A_NULL);
-    class_setpropertiesfn(canvas_class, (t_propertiesfn)canvas_properties);
+    class_setpropertiesfn(canvas_class, canvas_properties);
 
 /* ---------------------- list handling ------------------------ */
     class_addmethod(canvas_class, (t_method)glist_clear, gensym("clear"),
@@ -1539,14 +1618,10 @@ void g_canvas_setup(void)
 
     class_addmethod(canvas_class, (t_method)canvas_click,
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
-    class_addmethod(canvas_class, (t_method)canvas_dsp, gensym("dsp"), 0);
+    class_addmethod(canvas_class, (t_method)canvas_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(canvas_class, (t_method)canvas_rename_method,
         gensym("rename"), A_GIMME, 0);
-
-/*---------------------------- tables -- GG ------------------- */
-
-    class_addcreator((t_newmethod)table_new, gensym("table"),
-        A_DEFSYM, A_DEFFLOAT, 0);
 
 /*---------------------------- declare ------------------- */
     declare_class = class_new(gensym("declare"), (t_newmethod)declare_new,
@@ -1561,4 +1636,27 @@ void g_canvas_setup(void)
     g_graph_setup();
     g_editor_setup();
     g_readwrite_setup();
+}
+
+    /* functions to add basic gui (e.g., clicking but not editing) to things
+    based on canvases that aren't editable, like "array define" object */
+void canvas_editor_for_class(t_class *c);
+void g_graph_setup_class(t_class *c);
+void canvas_readwrite_for_class(t_class *c);
+
+void canvas_add_for_class(t_class *c)
+{
+    class_addmethod(c, (t_method)canvas_restore,
+        gensym("restore"), A_GIMME, 0);
+    class_addmethod(c, (t_method)canvas_click,
+        gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
+    class_addmethod(c, (t_method)canvas_dsp,
+        gensym("dsp"), A_CANT, 0);
+    class_addmethod(c, (t_method)canvas_map,
+        gensym("map"), A_FLOAT, A_NULL);
+    class_addmethod(c, (t_method)canvas_setbounds,
+        gensym("setbounds"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    canvas_editor_for_class(c);
+    canvas_readwrite_for_class(c);
+    /* g_graph_setup_class(c); */
 }

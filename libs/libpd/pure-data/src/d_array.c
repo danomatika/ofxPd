@@ -125,7 +125,7 @@ static void tabwrite_tilde_setup(void)
         sizeof(t_tabwrite_tilde), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabwrite_tilde_class, t_tabwrite_tilde, x_f);
     class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_set,
         gensym("set"), A_SYMBOL, 0);
     class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_stop,
@@ -258,7 +258,7 @@ static void tabplay_tilde_setup(void)
         (t_newmethod)tabplay_tilde_new, (t_method)tabplay_tilde_free,
         sizeof(t_tabplay_tilde), 0, A_DEFSYM, 0);
     class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_stop,
         gensym("stop"), 0);
     class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_set,
@@ -358,7 +358,7 @@ static void tabread_tilde_setup(void)
         sizeof(t_tabread_tilde), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabread_tilde_class, t_tabread_tilde, x_f);
     class_addmethod(tabread_tilde_class, (t_method)tabread_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(tabread_tilde_class, (t_method)tabread_tilde_set,
         gensym("set"), A_SYMBOL, 0);
 }
@@ -490,7 +490,7 @@ static void tabread4_tilde_setup(void)
         sizeof(t_tabread4_tilde), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabread4_tilde_class, t_tabread4_tilde, x_f);
     class_addmethod(tabread4_tilde_class, (t_method)tabread4_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(tabread4_tilde_class, (t_method)tabread4_tilde_set,
         gensym("set"), A_SYMBOL, 0);
 }
@@ -500,15 +500,13 @@ static void tabread4_tilde_setup(void)
 /* this is all copied from d_osc.c... what include file could this go in? */
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
-#ifdef IRIX
-#include <sys/endian.h>
-#endif
-
-#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__)
+#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__) \
+    || defined(__OpenBSD__)
 #include <machine/endian.h>
 #endif
 
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__GNU__) || defined(ANDROID)
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__GNU__) || \
+    defined(ANDROID)
 #include <endian.h>
 #endif
 
@@ -532,14 +530,6 @@ static void tabread4_tilde_setup(void)
 #else                                                                           
 # define HIOFFSET 0    /* word offset to find MSB */                             
 # define LOWOFFSET 1    /* word offset to find LSB */                            
-#endif
-
-#ifdef _MSC_VER
- typedef __int32 int32_t; /* use MSVC's internal type */
-#elif defined(IRIX)
- typedef long int32_t;  /* a data type that has 32 bits */
-#else
-# include <stdint.h>  /* this is where int32_t is defined in C99 */
 #endif
 
 union tabfudge
@@ -682,7 +672,7 @@ static void tabosc4_tilde_setup(void)
         sizeof(t_tabosc4_tilde), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabosc4_tilde_class, t_tabosc4_tilde, x_f);
     class_addmethod(tabosc4_tilde_class, (t_method)tabosc4_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(tabosc4_tilde_class, (t_method)tabosc4_tilde_set,
         gensym("set"), A_SYMBOL, 0);
     class_addmethod(tabosc4_tilde_class, (t_method)tabosc4_tilde_ft1,
@@ -781,7 +771,8 @@ static void tabsend_setup(void)
     tabsend_class = class_new(gensym("tabsend~"), (t_newmethod)tabsend_new,
         0, sizeof(t_tabsend), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabsend_class, t_tabsend, x_f);
-    class_addmethod(tabsend_class, (t_method)tabsend_dsp, gensym("dsp"), 0);
+    class_addmethod(tabsend_class, (t_method)tabsend_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(tabsend_class, (t_method)tabsend_set,
         gensym("set"), A_SYMBOL, 0);
 }
@@ -861,7 +852,7 @@ static void tabreceive_setup(void)
         (t_newmethod)tabreceive_new, 0,
         sizeof(t_tabreceive), 0, A_DEFSYM, 0);
     class_addmethod(tabreceive_class, (t_method)tabreceive_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(tabreceive_class, (t_method)tabreceive_set,
         gensym("set"), A_SYMBOL, 0);
 }

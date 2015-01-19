@@ -105,7 +105,7 @@ t_sample* get_sys_soundin() { return sys_soundin; }
 int* get_sys_main_advance() { return &sys_main_advance; }
 double* get_sys_time_per_dsp_tick() { return &sys_time_per_dsp_tick; }
 int* get_sys_schedblocksize() { return &sys_schedblocksize; }
-double* get_sys_time() { return &sys_time; }
+double* get_sys_time() { return &pd_this->pd_systime; }
 t_float* get_sys_dacsr() { return &sys_dacsr; }
 int* get_sys_sleepgrain() { return &sys_sleepgrain; }
 int* get_sys_schedadvance() { return &sys_schedadvance; }
@@ -268,6 +268,18 @@ int sys_main(int argc, char **argv)
 #ifdef PD_DEBUG
     fprintf(stderr, "Pd: COMPILED FOR DEBUGGING\n");
 #endif
+    /* use Win32 "binary" mode by default since we don't want the
+     * translation that Win32 does by default */
+#ifdef _WIN32
+# ifdef _MSC_VER /* MS Visual Studio */
+    _set_fmode( _O_BINARY );
+# else  /* MinGW */
+    {
+        extern int _fmode;
+        _fmode = _O_BINARY;
+    }
+# endif /* _MSC_VER */
+#endif  /* WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
     for (i = noprefs = 0; i < argc; i++)        /* prescan args for noprefs */
@@ -297,7 +309,8 @@ int sys_main(int argc, char **argv)
     {
             /* open audio and MIDI */
         sys_reopen_midi();
-        sys_reopen_audio();
+        if (audio_shouldkeepopen())
+            sys_reopen_audio();
             /* run scheduler until it quits */
         return (m_mainloop());
     }
@@ -310,6 +323,9 @@ static char *(usagemessage[]) = {
 "-audioindev ...  -- audio in devices; e.g., \"1,3\" for first and third\n",
 "-audiooutdev ... -- audio out devices (same)\n",
 "-audiodev ...    -- specify input and output together\n",
+"-audioaddindev   -- add an audio input device by name\n",
+"-audioaddoutdev  -- add an audio output device by name\n",
+"-audioadddev     -- add an audio input and output device by name\n",
 "-inchannels ...  -- audio input channels (by device, like \"2\" or \"16,8\")\n",
 "-outchannels ... -- number of audio out channels (same)\n",
 "-channels ...    -- specify both input and output channels\n",
@@ -319,6 +335,8 @@ static char *(usagemessage[]) = {
 "-nodac           -- suppress audio output\n",
 "-noadc           -- suppress audio input\n",
 "-noaudio         -- suppress audio input and output (-nosound is synonym) \n",
+"-callback        -- use callbacks if possible\n",
+"-nocallback      -- use polling-mode (true by default)\n",
 "-listdev         -- list audio and MIDI devices\n",
 
 #ifdef USEAPI_OSS
@@ -361,9 +379,15 @@ static char *(usagemessage[]) = {
 "-midiindev ...   -- midi in device list; e.g., \"1,3\" for first and third\n",
 "-midioutdev ...  -- midi out device list, same format\n",
 "-mididev ...     -- specify -midioutdev and -midiindev together\n",
+"-midiaddindev    -- add a MIDI input device by name\n",
+"-midiaddoutdev   -- add a MIDI output device by name\n",
+"-midiadddev      -- add a MIDI input and output device by name\n",
 "-nomidiin        -- suppress MIDI input\n",
 "-nomidiout       -- suppress MIDI output\n",
 "-nomidi          -- suppress MIDI input and output\n",
+#ifdef USEAPI_OSS
+"-ossmidi         -- use OSS midi API\n",
+#endif
 #ifdef USEAPI_ALSA
 "-alsamidi        -- use ALSA midi API\n",
 #endif
@@ -380,24 +404,33 @@ static char *(usagemessage[]) = {
 "-font-face <name>  -- specify default font\n",
 "-font-weight <name>-- specify default font weight (normal or bold)\n",
 "-verbose         -- extra printout on startup and when searching for files\n",
+"-noverbose       -- no extra printout\n",
 "-version         -- don't run Pd; just print out which version it is \n",
 "-d <n>           -- specify debug level\n",
+"-loadbang        -- do not suppress all loadbangs (true by default)\n",
 "-noloadbang      -- suppress all loadbangs\n",
 "-stderr          -- send printout to standard error instead of GUI\n",
+"-nostderr        -- send printout to GUI instead of standard error (true by default)\n",
+"-gui             -- start GUI (true by default)\n",
 "-nogui           -- suppress starting the GUI\n",
 "-guiport <n>     -- connect to pre-existing GUI over port <n>\n",
 "-guicmd \"cmd...\" -- start alternatve GUI program (e.g., remote via ssh)\n",
 "-send \"msg...\"   -- send a message at startup, after patches are loaded\n",
+"-prefs           -- load preferences on startup (true by default)\n",
 "-noprefs         -- suppress loading preferences on startup\n",
 #ifdef HAVE_UNISTD_H
 "-rt or -realtime -- use real-time priority\n",
 "-nrt             -- don't use real-time priority\n",
 #endif
+"-sleep           -- sleep when idle, don't spin (true by default)\n",
 "-nosleep         -- spin, don't sleep (may lower latency on multi-CPUs)\n",
 "-schedlib <file> -- plug in external scheduler\n",
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
+"-nobatch         -- run interactively (true by default)\n",
+"-autopatch       -- enable auto-connecting new from selected objects (true by default)\n",
 "-noautopatch     -- defeat auto-patching new from selected objects\n",
+"-compatibility <f> -- set back-compatibility to version <f>\n",
 };
 
 static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
@@ -574,6 +607,11 @@ int sys_argparse(int argc, char **argv)
             sys_main_callback = 1;
             argc--; argv++;
         }
+        else if (!strcmp(*argv, "-nocallback"))
+        {
+            sys_main_callback = 0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-blocksize"))
         {
             sys_main_blocksize = atoi(argv[1]);
@@ -606,6 +644,11 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-oss"))
         {
             sys_set_audio_api(API_OSS);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-ossmidi"))
+        {
+          sys_set_midi_api(API_OSS);
             argc--; argv++;
         }
 #endif
@@ -684,7 +727,7 @@ int sys_argparse(int argc, char **argv)
             sys_nmidiin = sys_nmidiout = 0;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-midiindev"))
+        else if (!strcmp(*argv, "-midiindev") && (argc > 1))
         {
             sys_parsedevlist(&sys_nmidiin, sys_midiindevlist, MAXMIDIINDEV,
                 argv[1]);
@@ -708,6 +751,61 @@ int sys_argparse(int argc, char **argv)
                 argv[1]);
             if (!sys_nmidiout)
                 goto usage;
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-midiaddindev") && (argc > 1))
+        {
+            if (sys_nmidiin < 0)
+                sys_nmidiin = 0;
+            if (sys_nmidiin < MAXMIDIINDEV)
+            {
+                int devn = sys_mididevnametonumber(0, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find MIDI input device: %s\n",
+                        argv[1]);
+                else sys_midiindevlist[sys_nmidiin++] = devn + 1;
+            }
+            else fprintf(stderr, "number of MIDI devices limited to %d\n",
+                MAXMIDIINDEV);
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-midiaddoutdev") && (argc > 1))
+        {
+            if (sys_nmidiout < 0)
+                sys_nmidiout = 0;
+            if (sys_nmidiout < MAXMIDIINDEV)
+            {
+                int devn = sys_mididevnametonumber(1, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find MIDI output device: %s\n",
+                        argv[1]);
+                else sys_midioutdevlist[sys_nmidiout++] = devn + 1;
+            }
+            else fprintf(stderr, "number of MIDI devices limited to %d\n",
+                MAXMIDIINDEV);
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-midiadddev") && (argc > 1))
+        {
+            if (sys_nmidiin < 0)
+                sys_nmidiin = 0;
+            if (sys_nmidiout < 0)
+                sys_nmidiout = 0;
+            if (sys_nmidiin < MAXMIDIINDEV && sys_nmidiout < MAXMIDIINDEV)
+            {
+                int devn = sys_mididevnametonumber(1, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find MIDI output device: %s\n",
+                        argv[1]);
+                else sys_midioutdevlist[sys_nmidiin++] = devn + 1;
+                devn = sys_mididevnametonumber(1, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find MIDI output device: %s\n",
+                        argv[1]);
+                else sys_midioutdevlist[sys_nmidiout++] = devn + 1;
+            }
+            else fprintf(stderr, "number of MIDI devices limited to %d",
+                MAXMIDIINDEV);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-path") && (argc > 1))
@@ -767,6 +865,11 @@ int sys_argparse(int argc, char **argv)
             sys_verbose++;
             argc--; argv++;
         }
+        else if (!strcmp(*argv, "-noverbose"))
+        {
+            sys_verbose=0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-version"))
         {
             sys_version = 1;
@@ -778,14 +881,24 @@ int sys_argparse(int argc, char **argv)
             argc -= 2;
             argv += 2;
         }
+        else if (!strcmp(*argv, "-loadbang"))
+        {
+            sys_noloadbang = 0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-noloadbang"))
         {
             sys_noloadbang = 1;
             argc--; argv++;
         }
+        else if (!strcmp(*argv, "-gui"))
+        {
+            sys_nogui = 0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-nogui"))
         {
-            sys_printtostderr = sys_nogui = 1;
+            sys_nogui = 1;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-guiport") && argc > 1 &&
@@ -793,6 +906,11 @@ int sys_argparse(int argc, char **argv)
         {
             argc -= 2;
             argv += 2;
+        }
+        else if (!strcmp(*argv, "-nostderr"))
+        {
+            sys_printtostderr = 0;
+            argc--; argv++;
         }
         else if (!strcmp(*argv, "-stderr"))
         {
@@ -833,7 +951,16 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-batch"))
         {
             sys_batch = 1;
-            sys_printtostderr = sys_nogui = 1;
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-nobatch"))
+        {
+            sys_batch = 0;
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-autopatch"))
+        {
+            sys_noautopatch = 0;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-noautopatch"))
@@ -841,18 +968,32 @@ int sys_argparse(int argc, char **argv)
             sys_noautopatch = 1;
             argc--; argv++;
         }
+        else if (!strcmp(*argv, "-compatibility") && argc > 1)
+        {
+            float f;
+            if (sscanf(argv[1], "%f", &f) < 1)
+                goto usage;
+            pd_compatibilitylevel = 0.5 + 100. * f; /* e.g., 2.44 --> 244 */
+            argv += 2;
+            argc -= 2;
+        }
 #ifdef HAVE_UNISTD_H
         else if (!strcmp(*argv, "-rt") || !strcmp(*argv, "-realtime"))
         {
             sys_hipriority = 1;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-nrt"))
+        else if (!strcmp(*argv, "-nrt") || !strcmp(*argv, "-nort") || !strcmp(*argv, "-norealtime"))
         {
             sys_hipriority = 0;
             argc--; argv++;
         }
 #endif
+        else if (!strcmp(*argv, "-sleep"))
+        {
+            sys_nosleep = 0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-nosleep"))
         {
             sys_nosleep = 1;
@@ -887,6 +1028,61 @@ int sys_argparse(int argc, char **argv)
                 goto usage;
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(*argv, "-audioaddindev") && (argc > 1))
+        {
+            if (sys_nsoundin < 0)
+                sys_nsoundin = 0;
+            if (sys_nsoundin < MAXAUDIOINDEV)
+            {
+                int devn = sys_audiodevnametonumber(0, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find audio input device: %s\n",
+                        argv[1]);
+                else sys_soundindevlist[sys_nsoundin++] = devn + 1;
+            }
+            else fprintf(stderr, "number of audio devices limited to %d\n",
+                MAXAUDIOINDEV);
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-audioaddoutdev") && (argc > 1))
+        {
+            if (sys_nsoundout < 0)
+                sys_nsoundout = 0;
+            if (sys_nsoundout < MAXAUDIOINDEV)
+            {
+                int devn = sys_audiodevnametonumber(1, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find audio output device: %s\n",
+                        argv[1]);
+                else sys_soundoutdevlist[sys_nsoundout++] = devn + 1;
+            }
+            else fprintf(stderr, "number of audio devices limited to %d\n",
+                MAXAUDIOINDEV);
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-audioadddev") && (argc > 1))
+        {
+            if (sys_nsoundin < 0)
+                sys_nsoundin = 0;
+            if (sys_nsoundout < 0)
+                sys_nsoundout = 0;
+            if (sys_nsoundin < MAXAUDIOINDEV && sys_nsoundout < MAXAUDIOINDEV)
+            {
+                int devn = sys_audiodevnametonumber(0, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find audio input device: %s\n",
+                        argv[1]);
+                else sys_soundindevlist[sys_nsoundin++] = devn + 1;
+                devn = sys_audiodevnametonumber(1, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find audio output device: %s\n",
+                        argv[1]);
+                else sys_soundoutdevlist[sys_nsoundout++] = devn + 1;
+            }
+            else fprintf(stderr, "number of audio devices limited to %d",
+                MAXAUDIOINDEV);
+            argc -= 2; argv += 2;
+        }
         else if (!strcmp(*argv, "-noprefs")) /* did this earlier */
             argc--, argv++;
         else
@@ -898,6 +1094,15 @@ int sys_argparse(int argc, char **argv)
             return (1);
         }
     }
+    if (sys_batch)
+        sys_nogui = 1;
+    if (sys_nogui)
+        sys_printtostderr = 1;
+#ifdef _WIN32
+    if (sys_printtostderr)
+        /* we need to tell Windows to output UTF-8 */
+        SetConsoleOutputCP(CP_UTF8);
+#endif
     if (!sys_defaultfont)
         sys_defaultfont = DEFAULTFONT;
     for (; argc > 0; argc--, argv++) 
@@ -989,7 +1194,6 @@ static void sys_afterargparse(void)
     sys_get_midi_params(&nmidiindev, midiindev, &nmidioutdev, midioutdev);
     if (sys_nmidiin >= 0)
     {
-        post("sys_nmidiin %d, nmidiindev %d", sys_nmidiin, nmidiindev);
         nmidiindev = sys_nmidiin;
         for (i = 0; i < nmidiindev; i++)
             midiindev[i] = sys_midiindevlist[i];

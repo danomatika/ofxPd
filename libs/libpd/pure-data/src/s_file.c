@@ -36,7 +36,11 @@ int sys_defeatrt;
 t_symbol *sys_flags = &s_;
 void sys_doflags( void);
 
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || defined(ANDROID)
+    /* Hmm... maybe better would be to #if on not-apple-or-windows  */
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD_kernel__) \
+|| defined(__GNU__) || defined(ANDROID)
+
+/*****  linux/android/BSD etc: read and write to ~/.pdsettings file ******/
 
 static char *sys_prefbuf;
 static int sys_prefbufsize;
@@ -52,8 +56,8 @@ static void sys_initloadpreferences( void)
 
     snprintf(default_prefs_file, MAXPDSTRING, "%s/default.pdsettings", 
         sys_libdir->s_name);
-    if (homedir)
-        snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings", homedir);
+    snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings", 
+        (homedir ? homedir : "."));
     if (stat(user_prefs_file, &statbuf) == 0) 
         strncpy(filenamebuf, user_prefs_file, MAXPDSTRING);
     else if (stat(default_prefs_file, &statbuf) == 0)
@@ -128,7 +132,7 @@ static FILE *sys_prefsavefp;
 
 static void sys_initsavepreferences( void)
 {
-    char filenamebuf[MAXPDSTRING], errbuf[MAXPDSTRING],
+    char filenamebuf[MAXPDSTRING],
         *homedir = getenv("HOME");
     FILE *fp;
 
@@ -138,8 +142,7 @@ static void sys_initsavepreferences( void)
     filenamebuf[MAXPDSTRING-1] = 0;
     if ((sys_prefsavefp = fopen(filenamebuf, "w")) == NULL)
     {
-        snprintf(errbuf, MAXPDSTRING, "%s: %s",filenamebuf, strerror(errno));
-        pd_error(0, errbuf);
+        pd_error(0, "%s: %s", filenamebuf, strerror(errno));
     }
 }
 
@@ -308,11 +311,21 @@ void sys_loadpreferences( void)
     {
         for (i = 0, naudioindev = 0; i < MAXAUDIOINDEV; i++)
         {
+                /* first try to find a name - if that matches an existing
+                device use it.  Otherwise fall back to device number. */
+            int devn;
+                /* read in device number and channel count */
             sprintf(keybuf, "audioindev%d", i+1);
             if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
                 break;
             if (sscanf(prefbuf, "%d %d", &audioindev[i], &chindev[i]) < 2)
                 break;
+                /* possibly override device number if the device name was
+                also saved and if it matches one we have now */        
+            sprintf(keybuf, "audioindevname%d", i+1);
+            if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
+                && (devn = sys_audiodevnametonumber(0, prefbuf)) >= 0)
+                    audioindev[i] = devn;
             naudioindev++;
         }
             /* if no preferences at all, set -1 for default behavior */
@@ -327,11 +340,16 @@ void sys_loadpreferences( void)
     {
         for (i = 0, naudiooutdev = 0; i < MAXAUDIOOUTDEV; i++)
         {
+            int devn;
             sprintf(keybuf, "audiooutdev%d", i+1);
             if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
                 break;
             if (sscanf(prefbuf, "%d %d", &audiooutdev[i], &choutdev[i]) < 2)
                 break;
+            sprintf(keybuf, "audiooutdevname%d", i+1);
+            if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
+                && (devn = sys_audiodevnametonumber(1, prefbuf)) >= 0)
+                    audiooutdev[i] = devn;
             naudiooutdev++;
         }
         if (naudiooutdev == 0)
@@ -356,11 +374,21 @@ void sys_loadpreferences( void)
             nmidiindev = 0;
     else for (i = 0, nmidiindev = 0; i < MAXMIDIINDEV; i++)
     {
-        sprintf(keybuf, "midiindev%d", i+1);
-        if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
-            break;
-        if (sscanf(prefbuf, "%d", &midiindev[i]) < 1)
-            break;
+            /* first try to find a name - if that matches an existing device
+            use it.  Otherwise fall back to device number. */
+        int devn;
+        sprintf(keybuf, "midiindevname%d", i+1);
+        if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
+            && (devn = sys_mididevnametonumber(0, prefbuf)) >= 0)
+                midiindev[i] = devn;
+        else
+        {
+            sprintf(keybuf, "midiindev%d", i+1);
+            if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
+                break;
+            if (sscanf(prefbuf, "%d", &midiindev[i]) < 1)
+                break;
+        }
         nmidiindev++;
     }
         /* JMZ/MB: brackets for initializing */
@@ -369,11 +397,19 @@ void sys_loadpreferences( void)
             nmidioutdev = 0;
     else for (i = 0, nmidioutdev = 0; i < MAXMIDIOUTDEV; i++)
     {
-        sprintf(keybuf, "midioutdev%d", i+1);
-        if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
-            break;
-        if (sscanf(prefbuf, "%d", &midioutdev[i]) < 1)
-            break;
+        int devn;
+        sprintf(keybuf, "midioutdevname%d", i+1);
+        if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
+            && (devn = sys_mididevnametonumber(1, prefbuf)) >= 0)
+                midioutdev[i] = devn;
+        else
+        {
+            sprintf(keybuf, "midioutdev%d", i+1);
+            if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
+                break;
+            if (sscanf(prefbuf, "%d", &midioutdev[i]) < 1)
+                break;
+        }
         nmidioutdev++;
     }
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
@@ -454,12 +490,22 @@ void glob_savepreferences(t_pd *dummy)
         sprintf(buf1, "audioindev%d", i+1);
         sprintf(buf2, "%d %d", audioindev[i], chindev[i]);
         sys_putpreference(buf1, buf2);
+        sprintf(buf1, "audioindevname%d", i+1);
+        sys_audiodevnumbertoname(0, audioindev[i], buf2, MAXPDSTRING);
+        if (! *buf2)
+            strcat(buf2, "?");
+        sys_putpreference(buf1, buf2);
     }
     sys_putpreference("noaudioout", (naudiooutdev <= 0 ? "True" : "False"));
     for (i = 0; i < naudiooutdev; i++)
     {
         sprintf(buf1, "audiooutdev%d", i+1);
         sprintf(buf2, "%d %d", audiooutdev[i], choutdev[i]);
+        sys_putpreference(buf1, buf2);
+        sprintf(buf1, "audiooutdevname%d", i+1);
+        sys_audiodevnumbertoname(1, audiooutdev[i], buf2, MAXPDSTRING);
+        if (! *buf2)
+            strcat(buf2, "?");
         sys_putpreference(buf1, buf2);
    }
 
@@ -483,12 +529,22 @@ void glob_savepreferences(t_pd *dummy)
         sprintf(buf1, "midiindev%d", i+1);
         sprintf(buf2, "%d", midiindev[i]);
         sys_putpreference(buf1, buf2);
+        sprintf(buf1, "midiindevname%d", i+1);
+        sys_mididevnumbertoname(0, midiindev[i], buf2, MAXPDSTRING);
+        if (! *buf2)
+            strcat(buf2, "?");
+        sys_putpreference(buf1, buf2);
     }
     sys_putpreference("nomidiout", (nmidioutdev <= 0 ? "True" : "False"));
     for (i = 0; i < nmidioutdev; i++)
     {
         sprintf(buf1, "midioutdev%d", i+1);
         sprintf(buf2, "%d", midioutdev[i]);
+        sys_putpreference(buf1, buf2);
+        sprintf(buf1, "midioutdevname%d", i+1);
+        sys_mididevnumbertoname(0, midioutdev[i], buf2, MAXPDSTRING);
+        if (! *buf2)
+            strcat(buf2, "?");
         sys_putpreference(buf1, buf2);
     }
         /* file search path */

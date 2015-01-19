@@ -11,36 +11,55 @@ cd $WD
 
 # get latest source
 git clone git://github.com/libpd/libpd.git
+cd $SRC
+git submodule init
+git submodule update
+cd -
 
-# remove uneeded makefiles
-find $SRC -name "GNUmakefile.am" -delete
-find $SRC -name "Makefile.am" -delete
-find $SRC -name "makefile" -delete
-rm $SRC/pure-data/extra/makefile.subdir
+# remove uneeded makefiles, etc in src
+find $SRC/pure-data -name "makefile*" -delete
+find $SRC/pure-data -name "Makefile.am" -delete
+find $SRC/pure-data -name "GNUmakefile.am" -delete
+find $SRC/pure-data -name "*.pd" -delete
+rm $SRC/pure-data/src/CHANGELOG.txt
+rm $SRC/pure-data/src/notes.txt
+rm $SRC/pure-data/src/pd.ico
+rm $SRC/pure-data/src/pd.rc
 
-# we dont need the java or csharp wrappers
-rm $SRC/libpd_wrapper/z_jni.c
-rm $SRC/libpd_wrapper/z_jni.h
-rm $SRC/libpd_wrapper/z_csharp_helper.c
-rm $SRC/libpd_wrapper/z_csharp_helper.h
+# remove unneeded audio apis
+rm $SRC/pure-data/src/s_audio_alsa*
+rm $SRC/pure-data/src/s_audio_audiounit.c
+rm $SRC/pure-data/src/s_audio_esd.c
+rm $SRC/pure-data/src/s_audio_jack.c
+rm $SRC/pure-data/src/s_audio_mmio.c
+rm $SRC/pure-data/src/s_audio_oss.c
+rm $SRC/pure-data/src/s_audio_pa.c
+rm $SRC/pure-data/src/s_audio_paring.*
 
-# remove expr~ since it's GPL, leave that up to devs
-rm -rf $SRC/pure-data/extra/expr~
-rm $SRC/pure-data/extra/expr-help.pd
+# remove unneeded midi apis
+rm $SRC/pure-data/src/s_midi_alsa.c
+rm $SRC/pure-data/src/s_midi_dummy.c
+rm $SRC/pure-data/src/s_midi_mmio.c
+rm $SRC/pure-data/src/s_midi_oss.c
+rm $SRC/pure-data/src/s_midi_pm.c
+rm $SRC/pure-data/src/s_midi.c
 
-# don't need the ringbuffer layer
-rm $SRC/libpd_wrapper/util/ringbuffer.*
-rm $SRC/libpd_wrapper/util/z_hook_util.*
-rm $SRC/libpd_wrapper/util/z_queued.*
+# remove uneeded fft library interfaces
+rm $SRC/pure-data/src/d_fft_fftsg.c
+rm $SRC/pure-data/src/d_fft_fftw.c
 
-# copy license
-cp -v $SRC/LICENSE.txt $DEST
+# remove some other stuff we don't need ...
+rm $SRC/pure-data/src/s_entry.c
+rm $SRC/pure-data/src/s_watchdog.c
+rm $SRC/pure-data/src/u_pdreceive.c
+rm $SRC/pure-data/src/u_pdsend.c
 
 # copy sources
-cp -Rv $SRC/cpp $DEST
-cp -Rv $SRC/pure-data $DEST
-cp -Rv $SRC/libpd_wrapper $DEST
+mkdir -p $DEST/pure-data
+cp -Rv $SRC/cpp $DEST/
+cp -Rv $SRC/pure-data/src $DEST/pure-data
+cp -Rv $SRC/pure-data/extra $DEST/pure-data
+cp -Rv $SRC/libpd_wrapper $DEST/
 
 # cleanup
 rm -rf $SRC
-

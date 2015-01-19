@@ -23,7 +23,8 @@ meta:
 
 common:
 	# required for libpd
-	ADDON_CFLAGS = -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DUSEAPI_DUMMY -DPD
+	ADDON_PURECFLAGS = -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
+	ADDON_CFLAGS = -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
 
 win_cb:
 	# not sure if pd~ is working on Windows, so leave it out

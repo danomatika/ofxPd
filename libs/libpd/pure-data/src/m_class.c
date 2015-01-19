@@ -42,6 +42,18 @@ static void pd_defaultbang(t_pd *x)
     else (*(*x)->c_anymethod)(x, &s_bang, 0, 0);
 }
 
+    /* am empty list calls the 'bang' method unless it's the default
+    bang method -- that might turn around and call our 'list' method
+    which could be an infinite recorsion.  Fall through to calling our
+    'anything' method.  That had better not turn around and call us with
+    an empty list.  */
+void pd_emptylist(t_pd *x)
+{
+    if (*(*x)->c_bangmethod != pd_defaultbang)
+        (*(*x)->c_bangmethod)(x);
+    else (*(*x)->c_anymethod)(x, &s_bang, 0, 0);
+}
+
 static void pd_defaultpointer(t_pd *x, t_gpointer *gp)
 {
     if (*(*x)->c_listmethod != pd_defaultlist)
@@ -478,17 +490,16 @@ static t_symbol *symhash[HASHSIZE];
 t_symbol *dogensym(const char *s, t_symbol *oldsym)
 {
     t_symbol **sym1, *sym2;
-    unsigned int hash1 = 0,  hash2 = 0;
+    unsigned int hash = 5381;
     int length = 0;
     const char *s2 = s;
-    while (*s2)
+    while (*s2) /* djb2 hash algo */
     {
-        hash1 += *s2;
-        hash2 += hash1;
+        hash = ((hash << 5) + hash) + *s2;
         length++;
         s2++;
     }
-    sym1 = symhash + (hash2 & (HASHSIZE-1));
+    sym1 = symhash + (hash & (HASHSIZE-1));
     while (sym2 = *sym1)
     {
         if (!strcmp(sym2->s_name, s)) return(sym2);
@@ -535,9 +546,8 @@ int pd_setloadingabstraction(t_symbol *sym);
     doesn't know.  Pd tries to load it as an extern, then as an abstraction. */
 void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    t_pd *current;
     int fd;
-    char dirbuf[MAXPDSTRING], *nameptr;
+    char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
     if (tryingalready>MAXOBJDEPTH){
       error("maximum object loading depth %d reached", MAXOBJDEPTH);
       return;
@@ -552,19 +562,24 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
         return;
     }
     class_loadsym = 0;
-    current = s__X.s_thing;
+    /* for class/class.pd support, to match class/class.pd_linux  */
+    snprintf(classslashclass, MAXPDSTRING, "%s/%s", s->s_name, s->s_name);
     if ((fd = canvas_open(canvas_getcurrent(), s->s_name, ".pd",
         dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
             (fd = canvas_open(canvas_getcurrent(), s->s_name, ".pat",
-                dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
+                dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
+               (fd = canvas_open(canvas_getcurrent(), classslashclass, ".pd",
+                    dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
     {
         close (fd);
         if (!pd_setloadingabstraction(s))
         {
+            t_pd *was = s__X.s_thing;
             canvas_setargs(argc, argv);
             binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
-            if (s__X.s_thing != current)
+            if (s__X.s_thing && was != s__X.s_thing)
                 canvas_popabstraction((t_canvas *)(s__X.s_thing));
+            else s__X.s_thing = was;
             canvas_setargs(0, 0);
         }
         else error("%s: can't load abstraction within itself\n", s->s_name);
@@ -600,7 +615,6 @@ void mess_init(void)
         CLASS_DEFAULT, A_NULL);
     pd_canvasmaker = class_new(gensym("classmaker"), 0, 0, sizeof(t_pd),
         CLASS_DEFAULT, A_NULL);
-    pd_bind(&pd_canvasmaker, &s__N);
     class_addanything(pd_objectmaker, (t_method)new_anything);
 }
 
@@ -739,6 +753,9 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
                 }
                 narg++;
                 ap++;
+                break;
+            default:
+                goto badarg;
             }
         }
         switch (narg)

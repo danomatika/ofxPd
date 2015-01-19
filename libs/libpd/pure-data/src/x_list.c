@@ -4,15 +4,22 @@
 
 #include "m_pd.h"
 /* #include <string.h> */
-#ifdef _WIN32
-#include <malloc.h>
+
+#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
+# include <alloca.h>        /* linux, mac, mingw, cygwin */
+#elif defined _MSC_VER
+# include <malloc.h>        /* MSVC */
 #else
-#include <alloca.h>
-#endif
+# include <stddef.h>        /* BSDs for example */
+#endif                      /* end alloca() ifdef nonsense */
+#include <string.h>
 
 extern t_pd *newest;
 
-#define HAVE_ALLOCA 1   /* LATER this should be set by configure script! */
+#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
+#define HAVE_ALLOCA 1
+#endif
+
 #define LIST_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
 
 /* the "list" object family.
@@ -22,6 +29,7 @@ extern t_pd *newest;
     list split - first n elements to first outlet, rest to second outlet 
     list trim - trim off "list" selector
     list length - output number of items in list
+    list fromsymbol - "explode" a symbol into a list of character codes
 
 Need to think more about:
     list foreach - spit out elements of a list one by one (also in reverse?)
@@ -53,24 +61,6 @@ typedef struct _alist
     int l_npointer;     /* number of pointers */
     t_listelem *l_vec;  /* pointer to items */
 } t_alist;
-
-#if 0 /* probably won't use this version... */
-#ifdef HAVE_ALLOCA
-#define LIST_ALLOCA(x, n) ( \
-    (x).l_n = (n), \
-    (x).l_vec = (t_listelem *)((n) < LIST_NGETBYTE ?  \
-        alloca((n) * sizeof(t_listelem)) : getbytes((n) * sizeof(t_listelem))))     \
-#define LIST_FREEA(x) ( \
-    ((x).l_n < LIST_NGETBYTE ||
-        (freebytes((x).l_vec, (x).l_n * sizeof(t_listelem)), 0)))
-
-#else
-#define LIST_ALLOCA(x, n) ( \
-    (x).l_n = (n), \
-    (x).l_vec = (t_listelem *)getbytes((n) * sizeof(t_listelem))) 
-#define LIST_FREEA(x) (freebytes((x).l_vec, (x).l_n * sizeof(t_listelem)))
-#endif
-#endif
 
 #if HAVE_ALLOCA
 #define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < LIST_NGETBYTE ?  \
@@ -503,6 +493,84 @@ static void list_length_setup(void)
     class_sethelpsymbol(list_length_class, &s_list);
 }
 
+/* ------------- list fromsymbol --------------------- */
+
+t_class *list_fromsymbol_class;
+
+typedef struct _list_fromsymbol
+{
+    t_object x_obj;
+} t_list_fromsymbol;
+
+static void *list_fromsymbol_new( void)
+{
+    t_list_fromsymbol *x = (t_list_fromsymbol *)pd_new(list_fromsymbol_class);
+    outlet_new(&x->x_obj, &s_list);
+    return (x);
+}
+
+static void list_fromsymbol_symbol(t_list_fromsymbol *x, t_symbol *s)
+{
+    t_atom *outv;
+    int n, outc = strlen(s->s_name);
+    ATOMS_ALLOCA(outv, outc);
+    for (n = 0; n < outc; n++)
+        SETFLOAT(outv + n, (unsigned char)s->s_name[n]);
+    outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
+    ATOMS_FREEA(outv, outc);
+}
+
+static void list_fromsymbol_setup(void)
+{
+    list_fromsymbol_class = class_new(gensym("list fromsymbol"),
+        (t_newmethod)list_fromsymbol_new, 0, sizeof(t_list_fromsymbol), 0, 0);
+    class_addsymbol(list_fromsymbol_class, list_fromsymbol_symbol);
+    class_sethelpsymbol(list_fromsymbol_class, &s_list);
+}
+
+/* ------------- list tosymbol --------------------- */
+
+t_class *list_tosymbol_class;
+
+typedef struct _list_tosymbol
+{
+    t_object x_obj;
+} t_list_tosymbol;
+
+static void *list_tosymbol_new( void)
+{
+    t_list_tosymbol *x = (t_list_tosymbol *)pd_new(list_tosymbol_class);
+    outlet_new(&x->x_obj, &s_symbol);
+    return (x);
+}
+
+static void list_tosymbol_list(t_list_tosymbol *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    int i;
+#if HAVE_ALLOCA
+    char *str = alloca(argc + 1);
+#else
+    char *str = getbytes(argc + 1);
+#endif
+    for (i = 0; i < argc; i++)
+        str[i] = (char)atom_getfloatarg(i, argc, argv);
+    str[argc] = 0;
+    outlet_symbol(x->x_obj.ob_outlet, gensym(str));
+#if HAVE_ALLOCA
+#else
+    freebytes(str, argc+1);
+#endif
+}
+
+static void list_tosymbol_setup(void)
+{
+    list_tosymbol_class = class_new(gensym("list tosymbol"),
+        (t_newmethod)list_tosymbol_new, 0, sizeof(t_list_tosymbol), 0, 0);
+    class_addlist(list_tosymbol_class, list_tosymbol_list);
+    class_sethelpsymbol(list_tosymbol_class, &s_list);
+}
+
 /* ------------- list ------------------- */
 
 static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
@@ -516,12 +584,16 @@ static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             newest = list_append_new(s, argc-1, argv+1);
         else if (s2 == gensym("prepend"))
             newest = list_prepend_new(s, argc-1, argv+1);
-         else if (s2 == gensym("split"))
+        else if (s2 == gensym("split"))
             newest = list_split_new(atom_getfloatarg(1, argc, argv));
-         else if (s2 == gensym("trim"))
+        else if (s2 == gensym("trim"))
             newest = list_trim_new();
-         else if (s2 == gensym("length"))
+        else if (s2 == gensym("length"))
             newest = list_length_new();
+        else if (s2 == gensym("fromsymbol"))
+            newest = list_fromsymbol_new();
+        else if (s2 == gensym("tosymbol"))
+            newest = list_tosymbol_new();
         else 
         {
             error("list %s: unknown function", s2->s_name);
@@ -539,5 +611,7 @@ void x_list_setup(void)
     list_split_setup();
     list_trim_setup();
     list_length_setup();
+    list_fromsymbol_setup();
+    list_tosymbol_setup();
     class_addcreator((t_newmethod)list_new, &s_list, A_GIMME, 0);
 }

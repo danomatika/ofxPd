@@ -79,7 +79,8 @@ static void sig_tilde_setup(void)
     sig_tilde_class = class_new(gensym("sig~"), (t_newmethod)sig_tilde_new, 0,
         sizeof(t_sig), 0, A_DEFFLOAT, 0);
     class_addfloat(sig_tilde_class, (t_method)sig_tilde_float);
-    class_addmethod(sig_tilde_class, (t_method)sig_tilde_dsp, gensym("dsp"), 0);
+    class_addmethod(sig_tilde_class, (t_method)sig_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
 }
 
 /* -------------------------- line~ ------------------------------ */
@@ -220,14 +221,14 @@ static void line_tilde_setup(void)
         sizeof(t_line), 0, 0);
     class_addfloat(line_tilde_class, (t_method)line_tilde_float);
     class_addmethod(line_tilde_class, (t_method)line_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(line_tilde_class, (t_method)line_tilde_stop,
         gensym("stop"), 0);
 }
 
 /* -------------------------- vline~ ------------------------------ */
 static t_class *vline_tilde_class;
-
+#include "s_stuff.h"    /* for DEFDACBLKSIZE; this should be in m_pd.h */
 typedef struct _vseg
 {
     double s_targettime;
@@ -242,6 +243,8 @@ typedef struct _vline
     double x_value;
     double x_inc;
     double x_referencetime;
+    double x_lastlogicaltime;
+    double x_nextblocktime;
     double x_samppermsec;
     double x_msecpersamp;
     double x_targettime;
@@ -260,8 +263,16 @@ static t_int *vline_tilde_perform(t_int *w)
     double inc = x->x_inc;
     double msecpersamp = x->x_msecpersamp;
     double samppermsec = x->x_samppermsec;
-    double timenow = clock_gettimesince(x->x_referencetime) - n * msecpersamp;
+    double timenow, logicaltimenow = clock_gettimesince(x->x_referencetime);
     t_vseg *s = x->x_list;
+    if (logicaltimenow != x->x_lastlogicaltime)
+    {
+        int sampstotime = (n > DEFDACBLKSIZE ? n : DEFDACBLKSIZE);
+        x->x_lastlogicaltime = logicaltimenow;
+        x->x_nextblocktime = logicaltimenow - sampstotime * msecpersamp;
+    }
+    timenow = x->x_nextblocktime;
+    x->x_nextblocktime = timenow + n * msecpersamp;
     for (i = 0; i < n; i++)
     {
         double timenext = timenow + msecpersamp;
@@ -391,7 +402,8 @@ static void *vline_tilde_new(void)
     floatinlet_new(&x->x_obj, &x->x_inlet2);
     x->x_inlet1 = x->x_inlet2 = 0;
     x->x_value = x->x_inc = 0;
-    x->x_referencetime = clock_getlogicaltime();
+    x->x_referencetime = x->x_lastlogicaltime = x->x_nextblocktime =
+        clock_getlogicaltime();
     x->x_list = 0;
     x->x_samppermsec = 0;
     x->x_targettime = 1e20;
@@ -404,7 +416,7 @@ static void vline_tilde_setup(void)
         (t_method)vline_tilde_stop, sizeof(t_vline), 0, 0);
     class_addfloat(vline_tilde_class, (t_method)vline_tilde_float);
     class_addmethod(vline_tilde_class, (t_method)vline_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(vline_tilde_class, (t_method)vline_tilde_stop,
         gensym("stop"), 0);
 }
@@ -458,7 +470,7 @@ static void snapshot_tilde_setup(void)
         sizeof(t_snapshot), 0, 0);
     CLASS_MAINSIGNALIN(snapshot_tilde_class, t_snapshot, x_f);
     class_addmethod(snapshot_tilde_class, (t_method)snapshot_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(snapshot_tilde_class, (t_method)snapshot_tilde_set,
         gensym("set"), A_DEFFLOAT, 0);
     class_addbang(snapshot_tilde_class, snapshot_tilde_bang);
@@ -545,7 +557,8 @@ static void vsnapshot_tilde_setup(void)
         vsnapshot_tilde_new, (t_method)vsnapshot_tilde_ff,
         sizeof(t_vsnapshot), 0, 0);
     CLASS_MAINSIGNALIN(vsnapshot_tilde_class, t_vsnapshot, x_f);
-    class_addmethod(vsnapshot_tilde_class, (t_method)vsnapshot_tilde_dsp, gensym("dsp"), 0);
+    class_addmethod(vsnapshot_tilde_class, (t_method)vsnapshot_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_addbang(vsnapshot_tilde_class, vsnapshot_tilde_bang);
 }
 
@@ -683,7 +696,8 @@ void env_tilde_setup(void )
     env_tilde_class = class_new(gensym("env~"), (t_newmethod)env_tilde_new,
         (t_method)env_tilde_ff, sizeof(t_sigenv), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(env_tilde_class, t_sigenv, x_f);
-    class_addmethod(env_tilde_class, (t_method)env_tilde_dsp, gensym("dsp"), 0);
+    class_addmethod(env_tilde_class, (t_method)env_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
 }
 
 /* --------------------- threshold~ ----------------------------- */
@@ -818,7 +832,7 @@ static void threshold_tilde_setup( void)
     class_addmethod(threshold_tilde_class, (t_method)threshold_tilde_ft1,
         gensym("ft1"), A_FLOAT, 0);
     class_addmethod(threshold_tilde_class, (t_method)threshold_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
 }
 
 /* ------------------------ global setup routine ------------------------- */

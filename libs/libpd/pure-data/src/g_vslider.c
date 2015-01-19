@@ -35,7 +35,8 @@ static void vslider_draw_update(t_gobj *client, t_glist *glist)
     t_vslider *x = (t_vslider *)client;
     if (glist_isvisible(glist))
     {
-        int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h - (x->x_val + 50)/100;
+        int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h - 
+            (x->x_val + 50)/100;
         int xpos=text_xpix(&x->x_gui.x_obj, glist);
 
         sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
@@ -260,10 +261,6 @@ void vslider_check_minmax(t_vslider *x, double min, double max)
     }
     x->x_min = min;
     x->x_max = max;
-    if(x->x_min > x->x_max)                /* bugfix */
-        x->x_gui.x_isa.x_reverse = 1;
-    else
-        x->x_gui.x_isa.x_reverse = 0;
     if(x->x_lin0_log1)
         x->x_k = log(x->x_max/x->x_min)/(double)(x->x_gui.x_h - 1);
     else
@@ -296,17 +293,25 @@ static void vslider_properties(t_gobj *z, t_glist *owner)
     gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
 }
 
+    /* compute numeric value (fval) from pixel location (val) and range */
+static t_float vslider_getfval(t_vslider *x)
+{
+    t_float fval;
+    if (x->x_lin0_log1)
+        fval = x->x_min*exp(x->x_k*(double)(x->x_val)*0.01);
+    else fval = (double)(x->x_val)*0.01*x->x_k + x->x_min;
+    if ((fval < 1.0e-10) && (fval > -1.0e-10))
+        fval = 0.0;
+    return (fval);
+}
+
 static void vslider_bang(t_vslider *x)
 {
     double out;
 
-    if(x->x_lin0_log1)
-        out = x->x_min*exp(x->x_k*(double)(x->x_val)*0.01);
-    else
-        out = (double)(x->x_val)*0.01*x->x_k + x->x_min;
-    if((out < 1.0e-10)&&(out > -1.0e-10))
-        out = 0.0;
-
+    if (pd_compatibilitylevel < 46)
+        out = vslider_getfval(x);
+    else out = x->x_fval;
     outlet_float(x->x_gui.x_obj.ob_outlet, out);
     if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
         pd_float(x->x_gui.x_snd->s_thing, out);
@@ -360,7 +365,8 @@ static void vslider_motion(t_vslider *x, t_floatarg dx, t_floatarg dy)
         x->x_pos -= 50;
         x->x_pos -= x->x_pos%100;
     }
-    if(old != x->x_val)
+    x->x_fval = vslider_getfval(x);
+    if (old != x->x_val)
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
         vslider_bang(x);
@@ -376,6 +382,7 @@ static void vslider_click(t_vslider *x, t_floatarg xpos, t_floatarg ypos,
         x->x_val = 100*x->x_gui.x_h - 100;
     if(x->x_val < 0)
         x->x_val = 0;
+    x->x_fval = vslider_getfval(x);
     x->x_pos = x->x_val;
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
     vslider_bang(x);
@@ -402,9 +409,11 @@ static int vslider_newclick(t_gobj *z, struct _glist *glist,
 
 static void vslider_set(t_vslider *x, t_floatarg f)
 {
+    int old = x->x_val;
     double g;
 
-    if(x->x_gui.x_isa.x_reverse)    /* bugfix */
+    x->x_fval = f;
+    if (x->x_min > x->x_max)
     {
         if(f > x->x_min)
             f = x->x_min;
@@ -424,7 +433,8 @@ static void vslider_set(t_vslider *x, t_floatarg f)
         g = (f - x->x_min) / x->x_k;
     x->x_val = (int)(100.0*g + 0.49999);
     x->x_pos = x->x_val;
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+    if(x->x_val != old)
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
 static void vslider_float(t_vslider *x, t_floatarg f)
@@ -509,9 +519,10 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
     int bflcol[]={-262144, -1, -1};
     int w=IEM_GUI_DEFAULTSIZE, h=IEM_SL_DEFAULTSIZE;
     int lilo=0, f=0, ldx=0, ldy=-9;
-    int fs=10, v=0, steady=1;
+    int fs=10, steady=1;
     double min=0.0, max=(double)(IEM_SL_DEFAULTSIZE-1);
     char str[144];
+    float v = 0;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
@@ -540,7 +551,7 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
         bflcol[0] = (int)atom_getintarg(13, argc, argv);
         bflcol[1] = (int)atom_getintarg(14, argc, argv);
         bflcol[2] = (int)atom_getintarg(15, argc, argv);
-        v = (int)atom_getintarg(16, argc, argv);
+        v = atom_getfloatarg(16, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 6, 0);
     if((argc == 18)&&IS_A_FLOAT(argv,17))
@@ -549,10 +560,9 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
     x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
-    if(x->x_gui.x_isa.x_loadinit)
+    if (x->x_gui.x_isa.x_loadinit)
         x->x_val = v;
-    else
-        x->x_val = 0;
+    else x->x_val = 0;
     x->x_pos = x->x_val;
     if(lilo != 0) lilo = 1;
     x->x_lin0_log1 = lilo;
@@ -576,6 +586,7 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
     iemgui_all_colfromload(&x->x_gui, bflcol);
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_float);
+    x->x_fval = vslider_getfval(x);
     return (x);
 }
 
