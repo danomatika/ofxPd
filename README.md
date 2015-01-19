@@ -95,7 +95,7 @@ An example Codeblocks workspace is included. Visual Studio is not currently supp
 PitchShifter
 ------------
 
-PitchShifter is a simple example application which uses an OF gui to control a pitch shifter within a PD patch. It's in `examplePitchShifter`. 
+PitchShifter is a simple example application which uses an OF gui to control a pitch shifter within a PD patch. It's in `pitchShifter` and `pitchShifterIOS`. Liek the basic example, you will have to generate the project files using the ProjectGenerator. 
 
 How to Create a New ofxPd Project
 ---------------------------------
