@@ -65,14 +65,18 @@ git clone git://github.com/danomatika/ofxPd.git -b develop
 
 Warning: The develop branch will be in flux, so don't be surprised if things do not always work as expected!
 
-Running the Example Project
----------------------------
+Running the Example Projects
+----------------------------
 
-The example project is in the `example` folder.
+The example projects are in the `pdExample` & `pdExampleIOS` folders.
+
+Project files for the examples are not included so you will need to generate the project files for your operating system and development environment using the OF ProjectGenerator which is included with the OpenFrameworks distribution.
+
+Point the ProjectGenerator to `addons/ofxPd`, change the project name to the **exact** name of the example you want to generate (ie `pdExample`), and make sure to choose `ofxPd` from the addons. Hitting "Generate Project" will populate that example with the project files you will need to build it.
 
 ### OSX
 
-Open the Xcode project, select the "example-Debug" scheme, and hit "Run".
+Open the Xcode project, select the "pdExample Debug" scheme, and hit "Run".
 
 ### Linux
 
