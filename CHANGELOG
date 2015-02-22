@@ -1,3 +1,10 @@
+v1.5.0: 2015 Jan
+
+	- updated to latest libpd & pd version 0.46-4 (some libpd source files changed, update your projects)
+	- included extra externals are now loaded by default (expr, bonk~, fiddle~, etc)
+	- updated addons_config.mk to work with upcoming OF 0.9.0 project generator
+	- renamed examples and removed example project files (use the project generator)
+
 v1.4.0: 2013 Aug
 
 	- general udpates for OF 0.8.0:
