@@ -19,7 +19,7 @@ examplePitchShifter/bin/examplePitchShifter_debug
 *.dll
 
 # linux
-*~
+#*~
 
 # xcode
 *.pbxuser

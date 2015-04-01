@@ -341,6 +341,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     pd_bind(&x->x_gobj.g_pd, asym); 
 
     garray_redraw(x);
+    canvas_update_dsp();
     return (x);
 }
 
@@ -395,7 +396,7 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
         size = 1;
     if (otherflag == 0 || (!(gl = glist_findgraph(parent))))
         gl = glist_addglist(parent, &s_, 0, 1,
-            (size > 1 ? size-1 : size), -1, 0, 0, 0, 0);
+            size, -1, 0, 0, 0, 0);
     a = graph_array(gl, iemgui_raute2dollar(name), &s_float, size, flags);
     canvas_dirty(parent, 1);
 }
@@ -458,6 +459,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
                 gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 0);
                 gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 1);
             }
+            canvas_update_dsp();
         }
         size = fsize;
         if (size < 1)
