@@ -100,11 +100,11 @@ PitchShifter is a simple example application which uses an OF gui to control a p
 How to Create a New ofxPd Project
 ---------------------------------
 
-_Note: These instructions are for manually creating a new project. You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
+_Note: These instructions are for manually creating a new project from an existing ofxPd project and it's project files (aka Xcode, C::B, etc). You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
 
-To develop your own project based on ofxPd, simply copy the example project and rename it. You probably want to put it in your apps folder, for example, after copying:
+To develop your own project based on ofxPd, either generate a new project with the ProjectGenerator or generate one of the examples, copy, and rename it. You probably want to put it in your apps folder, for example, after copying:
 <pre>
-openFrameworks/addons/ofxPd/example/ => openFrameworks/apps/myApps/example/
+openFrameworks/addons/ofxPd/pdExample/ => openFrameworks/apps/myApps/pdExample/
 </pre>
 
 It must be 3 levels down in the openframeworks folder structure.
@@ -116,7 +116,7 @@ openFrameworks/apps/myApps/myPdProject/
 
 ### For XCode:
 
-Rename the project in XCode (do not rename the .xcodeproj file in Finder!): XCode Menu->Project->Rename
+Rename the project in Xcode (do not rename the .xcodeproj file in Finder!): Xcode Menu->Project->Rename
 
 ### For Codeblocks (Win & Linux):
 
