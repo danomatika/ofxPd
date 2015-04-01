@@ -21,9 +21,9 @@
 #include "PdBase.hpp"
 
 ///
-///	a Pure Data instance
+/// a Pure Data instance
 ///
-///	references:	http://gitorious.org/pdlib/pages/Libpd
+/// references: https://github.com/libpd/libpd/wiki
 ///
 /// note: libpd currently does not support multiple states and it is
 ///       suggested that you use only one ofxPd object at a time
@@ -57,8 +57,17 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// if you experience audio dropouts (audible clicks), increase the
 		/// ticks per buffer
 		///
+		/// set queued = true to use the built in ringbuffers for message and
+		/// midi event passing, you will then need to call receiveMessages() and
+		/// receiveMidi() in order to pass messages from the ringbuffers to your
+		/// PdReceiver and PdMidiReceiver implementations
+		///
+		/// the queued ringbuffers are useful when you need to receieve events
+		/// on a gui thread and don't want to use locking (aka the mutex)
+		///
 		bool init(const int numOutChannels, const int numInChannels,
-		          const int sampleRate, const int ticksPerBuffer=32);
+		          const int sampleRate, const int ticksPerBuffer=32,
+				  bool queued=false);
 
 		/// clear resources, here for future proofing, currently does nothing
 		void clear();
@@ -143,38 +152,21 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void subscribe(const std::string& source);
 		void unsubscribe(const std::string& source);
 		bool exists(const std::string& source);
-		void unsubscribeAll(); ///< receivers will be unsubscribed from *all* sources
+		void unsubscribeAll(); //< receivers will be unsubscribed from *all* sources
 
-		/// poll for messages
+		/// process the interal message queue if using the ringbuffer:
 		///
-		/// by default, ofxPd receieves print, event, and midi messages into a FIFO
-		/// queue which can be polled
+		/// internally, libpd will use a ringbuffer to pass messages & midi without
+		/// needing to require locking (mutexes) if you call init() with queued = true
 		///
-		/// while(pd.numMessages() > 0) {
-		///        pd::Message& msg = pd.nextMessage(&msg);
+		/// call these in your update() loop in order to receive waiting messages
+		/// or midi data which are then sent to your PdReceiver & PdMidiReceiver
 		///
-		///        switch(msg.type) {
-		///            case PRINT:
-		///                cout << got print: " << msg.symbol << endl;
-		///                break;
-		///            case BANG:
-		///                cout << "go a bang to " << msg.dest << endl;
-		///                break;
-		///            case NOTE_ON:
-		///                cout << "got a note on " << msg.channel
-		///                     << msg.pitch << " " << msg.velocity << endl;
-		///                break;
-		///            ...
-		///        }
-		///    }
+		/// warning: if you call init() with queued = true and *do not* call these
+		///          functions, you will *not* receive any messages!
 		///
-		/// if you set a PdReceiver callback receiver, then event messages will
-		/// not be added to the queue
-		///
-		/// the same goes for setting a PdMidiReceiver regarding midi messages
-		///
-		/// if the message queue is full, the oldest message will be dropped
-		/// see setMaxQueueLen()
+		/// void receiveMessages(); -> calls PdReceiver
+		/// void receiveMidi();     -> calls PdMidiReceiver
 
 		/// add/remove incoming event receiver
 		///
@@ -186,7 +178,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void addReceiver(pd::PdReceiver& receiver);
 		void removeReceiver(pd::PdReceiver& receiver);
 		bool receiverExists(pd::PdReceiver& receiver);
-		void clearReceivers();	/// also unsubscribes all receivers
+		void clearReceivers();	//< also unsubscribes all receivers
 
 		/// set a receiver to receive/ignore a subscribed source from libpd
 		///
@@ -200,12 +192,12 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		///
 		/// also: use negation if you want to plug into all sources but one:
 		///
-		/// pd.receive(receiver);			// receive from *all*
-		/// pd.ignore(receiver, "source");  // ignore "source"
+		/// pd.receive(receiver);          // receive from *all*
+		/// pd.ignore(receiver, "source"); // ignore "source"
 		///
-		void receive(pd::PdReceiver& receiver, const std::string& source="");
-		void ignore(pd::PdReceiver& receiver, const std::string& source="");
-		bool isReceiving(pd::PdReceiver& receiver, const std::string& source="");
+		void receiveSource(pd::PdReceiver& receiver, const std::string& source="");
+		void ignoreSource(pd::PdReceiver& receiver, const std::string& source="");
+		bool isReceivingSource(pd::PdReceiver& receiver, const std::string& source="");
 
 	/// \section Midi Receiving
 
@@ -236,9 +228,9 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// pd.receiveMidi(midiReceiver);   // receive from *all* channels
 		/// pd.ignoreMidi(midiReceiver, 2); // ignore channel 2
 		///
-		void receiveMidi(pd::PdMidiReceiver& receiver, int channel=0);
-		void ignoreMidi(pd::PdMidiReceiver& receiver, int channel=0);
-		bool isReceivingMidi(pd::PdMidiReceiver& receiver, int channel=0);
+		void receiveMidiChannel(pd::PdMidiReceiver& receiver, int channel=0);
+		void ignoreMidiChannel(pd::PdMidiReceiver& receiver, int channel=0);
+		bool isReceivingMidiChannel(pd::PdMidiReceiver& receiver, int channel=0);
 
 	/// \section Sending Functions
 
@@ -430,13 +422,13 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 	private:
 
-		int ticksPerBuffer; ///< number of ticks per buffer
-		float* inputBuffer; ///< interleaved input audio buffer
+		int ticksPerBuffer; //< number of ticks per buffer
+		float* inputBuffer; //< interleaved input audio buffer
 
 		/// a receiving source's pointer and receivers
 		struct Source {
 
-			std::set<pd::PdReceiver*> receivers; ///< receivers
+			std::set<pd::PdReceiver*> receivers; //< receivers
 
 			// helper functions
 			void addReceiver(pd::PdReceiver* receiver) {
@@ -457,14 +449,14 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 			}
 		};
 
-		std::set<pd::PdReceiver*> receivers;    ///< the receivers
-		std::map<std::string,Source> sources;   ///< subscribed sources
-		                                        ///< first object always global
+		std::set<pd::PdReceiver*> receivers;    //< the receivers
+		std::map<std::string,Source> sources;   //< subscribed sources
+		                                        //< first object always global
 
 		/// a receiving midi channel's receivers
 		struct Channel {
 
-			std::set<pd::PdMidiReceiver*> receivers; ///< receivers
+			std::set<pd::PdMidiReceiver*> receivers; //< receivers
 
 			// helper functions
 			void addMidiReceiver(pd::PdMidiReceiver* receiver) {
@@ -485,7 +477,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 			}
 		};
 
-		std::set<pd::PdMidiReceiver*> midiReceivers;  ///< the midi receivers
-		std::map<int,Channel> channels;               ///< subscribed channels
-		                                              ///< first object always global
+		std::set<pd::PdMidiReceiver*> midiReceivers;  //< the midi receivers
+		std::map<int,Channel> channels;               //< subscribed channels
+		                                              //< first object always global
 };

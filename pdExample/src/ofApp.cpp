@@ -15,7 +15,7 @@ void ofApp::setup() {
 
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
-	//ofSetLogLevel(OF_LOG_VERBOSE);
+	//ofSetLogLevel("Pd", OF_LOG_VERBOSE); // see verbose info inside
 
 	// double check where we are ...
 	cout << ofFilePath::getCurrentWorkingDirectory() << endl;
@@ -35,7 +35,15 @@ void ofApp::setup() {
 	ofSoundStreamSetup(2, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
 
 	// setup Pd
-	if(!pd.init(2, numInputs, 44100, ticksPerBuffer)) {
+	//
+	// set 4th arg to true for queued message passing using an internal ringbuffer,
+	// this is useful if you need to control where and when the message callbacks
+	// happen (ie. within a GUI thread)
+	//
+	// note: you won't see any message prints until update() is called since
+	// the queued messages are processed there, this is normal
+	//
+	if(!pd.init(2, numInputs, 44100, ticksPerBuffer, false)) {
 		OF_EXIT_APP(1);
 	}
 
@@ -45,17 +53,17 @@ void ofApp::setup() {
 	pd.subscribe("toOF");
 	pd.subscribe("env");
 
-	// add message receiver, disables polling (see processEvents)
-	pd.addReceiver(*this);   // automatically receives from all subscribed sources
-	pd.ignore(*this, "env"); // don't receive from "env"
-	//pd.ignore(*this);             // ignore all sources
-	//pd.receive(*this, "toOF");	// receive only from "toOF"
+	// add message receiver, required if you want to recieve messages
+	pd.addReceiver(*this); // automatically receives from all subscribed sources
+	pd.ignoreSource(*this, "env");        // don't receive from "env"
+	//pd.ignoreSource(*this);             // ignore all sources
+	//pd.receiveSource(*this, "toOF");	  // receive only from "toOF"
 
-	// add midi receiver
-	pd.addMidiReceiver(*this);  // automatically receives from all channels
-	//pd.ignoreMidi(*this, 1);     // ignore midi channel 1
-	//pd.ignoreMidi(*this);        // ignore all channels
-	//pd.receiveMidi(*this, 1);    // receive only from channel 1
+	// add midi receiver, required if you want to recieve midi messages
+	pd.addMidiReceiver(*this); // automatically receives from all channels
+	//pd.ignoreMidiChannel(*this, 1);     // ignore midi channel 1
+	//pd.ignoreMidiChannel(*this);        // ignore all channels
+	//pd.receiveMidiChannel(*this, 1);    // receive only from channel 1
 
 	// add the data/pd folder to the search path
 	pd.addToSearchPath("pd/abs");
@@ -74,10 +82,10 @@ void ofApp::setup() {
 	pd.closePatch(patch);
 	cout << patch << endl;
 
-	// open patch
-	patch = pd.openPatch("pd/test.pd");
+	// open patch again
+	patch = pd.openPatch(patch);
 	cout << patch << endl;
-
+	
 	cout << "FINISH Patch Test" << endl;
 
 	// -----------------------------------------------------
@@ -99,7 +107,7 @@ void ofApp::setup() {
 	pd.addSymbol("a symbol");
 	pd.finishList("fromOF");
 
-	// send a message to the $0 receiver ie $0-toOF
+	// send a message to the $0 receiver ie $0-fromOF
 	pd.startMessage();
 	pd.addFloat(1.23);
 	pd.addSymbol("a symbol");
@@ -188,23 +196,6 @@ void ofApp::setup() {
 	cout << "FINISH PD Test" << endl << endl;
 
 	// -----------------------------------------------------
-	cout << endl << "BEGIN Event Polling Test" << endl;
-
-	// clear receivers, enable polling
-	pd.clearReceivers();
-	pd.clearMidiReceivers();
-
-	pd.sendSymbol("fromOF", "test");
-	processEvents(); // <-- manually poll for events
-
-	// re-add receivers, disable polling
-	pd.addReceiver(*this);
-	pd.addMidiReceiver(*this);
-	pd.ignore(*this, "env");
-
-	cout << "FINISH Event Polling Test" << endl << endl;
-
-	// -----------------------------------------------------
 	cout << endl << "BEGIN Instance Test" << endl;
 
 	// open 10 instances
@@ -246,12 +237,20 @@ void ofApp::setup() {
 	pd.addFloat(72);
 	pd.finishList("tone");
 	pd.sendBang("tone");
-
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
 	ofBackground(100, 100, 100);
+	
+	// since this is a test and we don't know if init() was called with
+	// queued = true or not, we check it here
+	if(pd.isQueued()) {
+		// process any received messages, if you're using the queue and *do not*
+		// call these, you won't receieve any messages or midi!
+		pd.receiveMessages();
+		pd.receiveMidi();
+	}
 
 	// update scope array from pd
 	pd.readArray("scope", scopeArray);
@@ -272,9 +271,6 @@ void ofApp::draw() {
 }
 
 //--------------------------------------------------------------
-void ofApp::exit() {}
-
-//--------------------------------------------------------------
 void ofApp::playTone(int pitch) {
 	pd << StartMessage() << "pitch" << pitch << FinishList("tone") << Bang("tone");
 }
@@ -283,60 +279,61 @@ void ofApp::playTone(int pitch) {
 void ofApp::keyPressed (int key) {
 
 	switch(key) {
+		
+		// musical keyboard
+		case 'a':
+			playTone(60);
+			break;
+		case 'w':
+			playTone(61);
+			break;
+		case 's':
+			playTone(62);
+			break;
+		case 'e':
+			playTone(63);
+			break;
+		case 'd':
+			playTone(64);
+			break;
+		case 'f':
+			playTone(65);
+			break;
+		case 't':
+			playTone(66);
+			break;
+		case 'g':
+			playTone(67);
+			break;
+		case 'y':
+			playTone(68);
+			break;
+		case 'h':
+			playTone(69);
+			break;
+		case 'u':
+			playTone(70);
+			break;
+		case 'j':
+			playTone(71);
+			break;
+		case 'k':
+			playTone(72);
+			break;
 
-	case 'a':
-		playTone(60);
-		break;
-	case 'w':
-		playTone(61);
-		break;
-	case 's':
-		playTone(62);
-		break;
-	case 'e':
-		playTone(63);
-		break;
-	case 'd':
-		playTone(64);
-		break;
-	case 'f':
-		playTone(65);
-		break;
-	case 't':
-		playTone(66);
-		break;
-	case 'g':
-		playTone(67);
-		break;
-	case 'y':
-		playTone(68);
-		break;
-	case 'h':
-		playTone(69);
-		break;
-	case 'u':
-		playTone(70);
-		break;
-	case 'j':
-		playTone(71);
-		break;
-	case 'k':
-		playTone(72);
-		break;
+		case ' ':
+			if(pd.isReceivingSource(*this, "env")) {
+				pd.ignoreSource(*this, "env");
+				cout << "ignoring env" << endl;
+			}
+			else {
+				pd.receiveSource(*this, "env");
+				cout << "receiving from env" << endl;
+			}
+			break;
 
-	case ' ':
-		if(pd.isReceiving(*this, "env")) {
-			pd.ignore(*this, "env");
-			cout << "ignoring env" << endl;
-		}
-		else {
-			pd.receive(*this, "env");
-			cout << "receiving from env" << endl;
-		}
-		break;
-
-	default:
-		break;
+		default:
+			break;
 	}
 }
 
@@ -421,73 +418,4 @@ void ofApp::receivePolyAftertouch(const int channel, const int pitch, const int 
 //       shows up at port 1 in ofxPd
 void ofApp::receiveMidiByte(const int port, const int byte) {
 	cout << "OF MIDI: midi byte: " << port << " " << byte << endl;
-}
-
-//--------------------------------------------------------------
-void ofApp::processEvents() {
-
-	cout << "Number of waiting messages: " << pd.numMessages() << endl;
-
-	while(pd.numMessages() > 0) {
-		Message& msg = pd.nextMessage();
-
-		switch(msg.type) {
-
-		case pd::PRINT:
-			cout << "OF: " << msg.symbol << endl;
-			break;
-
-			// events
-		case pd::BANG:
-			cout << "OF: bang " << msg.dest << endl;
-			break;
-		case pd::FLOAT:
-			cout << "OF: float " << msg.dest << ": " << msg.num << endl;
-			break;
-		case pd::SYMBOL:
-			cout << "OF: symbol " << msg.dest << ": " << msg.symbol << endl;
-			break;
-		case pd::LIST:
-			cout << "OF: list " << msg.list << msg.list.types() << endl;
-			break;
-		case pd::MESSAGE:
-			cout << "OF: message " << msg.dest << ": " << msg.symbol << " "
-			     << msg.list << msg.list.types() << endl;
-			break;
-
-			// midi
-		case pd::NOTE_ON:
-			cout << "OF MIDI: note on: " << msg.channel << " "
-			     << msg.pitch << " " << msg.velocity << endl;
-			break;
-		case pd::CONTROL_CHANGE:
-			cout << "OF MIDI: control change: " << msg.channel
-			     << " " << msg.controller << " " << msg.value << endl;
-			break;
-		case pd::PROGRAM_CHANGE:
-			cout << "OF MIDI: program change: " << msg.channel << " "
-			     << msg.value << endl;
-			break;
-		case pd::PITCH_BEND:
-			cout << "OF MIDI: pitch bend: " << msg.channel << " "
-			     << msg.value << endl;
-			break;
-		case pd::AFTERTOUCH:
-			cout << "OF MIDI: aftertouch: " << msg.channel << " "
-			     << msg.value << endl;
-			break;
-		case pd::POLY_AFTERTOUCH:
-			cout << "OF MIDI: poly aftertouch: " << msg.channel << " "
-			     << msg.pitch << " " << msg.value << endl;
-			break;
-		case pd::BYTE:
-			cout << "OF MIDI: midi byte: " << msg.port << " 0x"
-			     << hex << (int) msg.byte << dec << endl;
-			break;
-
-		case pd::NONE:
-			cout << "OF: NONE ... empty message" << endl;
-			break;
-		}
-	}
 }

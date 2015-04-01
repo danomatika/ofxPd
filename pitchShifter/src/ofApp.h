@@ -36,7 +36,6 @@ class ofApp : public ofBaseApp, public PdReceiver {
 		void setup();
 		void update();
 		void draw();
-		void exit();
 		
 		// input callbacks
 		void keyPressed(int key);

@@ -42,7 +42,6 @@ class ofApp : public ofxiOSApp, public PdReceiver {
 		void setup();
 		void update();
 		void draw();
-		void exit();
 	
 		void touchDown(ofTouchEventArgs &touch);
 		void touchMoved(ofTouchEventArgs &touch);

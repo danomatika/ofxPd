@@ -34,19 +34,6 @@ Poco::Mutex mutex;
 #define _LOCK() mutex.lock()
 #define _UNLOCK() mutex.unlock()
 
-// built in pd externals setup functions
-extern "C" {
-	void bonk_tilde_setup();
-	void choice_setup();
-	void fiddle_tilde_setup();
-	void loop_tilde_setup();
-	void lrshift_tilde_setup();
-	//void pd_tilde_setup(); // not sure if this builds on windows
-	void pique_setup();
-	void sigmund_tilde_setup();
-	void stdout_setup();
-}
-
 //--------------------------------------------------------------------
 ofxPd::ofxPd() : PdBase() {
 	ticksPerBuffer = 32;
@@ -61,28 +48,18 @@ ofxPd::~ofxPd() {
 
 //--------------------------------------------------------------------
 bool ofxPd::init(const int numOutChannels, const int numInChannels, 
-                 const int sampleRate, const int ticksPerBuffer) {
+                 const int sampleRate, const int ticksPerBuffer, bool queued) {
 	
 	this->ticksPerBuffer = ticksPerBuffer;
 	
 	// init pd
 	_LOCK();
-	if(!PdBase::init(numInChannels, numOutChannels, sampleRate)) {
+	if(!PdBase::init(numInChannels, numOutChannels, sampleRate, queued)) {
 		_UNLOCK();
 		ofLogError("Pd") << "could not init";
 		clear();
 		return false;
 	}
-	// setup built in pd externals
-	bonk_tilde_setup();
-	choice_setup();
-	fiddle_tilde_setup();
-	loop_tilde_setup();
-	lrshift_tilde_setup();
-	//void pd_tilde_setup();
-	pique_setup();
-	sigmund_tilde_setup();
-	stdout_setup();
 	_UNLOCK();
 
 	// allocate buffers
@@ -91,10 +68,11 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 	ofLogVerbose("Pd") <<"inited";
 	ofLogVerbose("Pd") <<" samplerate: " << sampleRate;
 	ofLogVerbose("Pd") <<" channels in: " << numInChannels;
-	ofLogVerbose("Pd") <<" out: " << numOutChannels;
+	ofLogVerbose("Pd") <<" channels out: " << numOutChannels;
 	ofLogVerbose("Pd") <<" ticks: " << ticksPerBuffer;
 	ofLogVerbose("Pd") <<" block size: " << blockSize();
 	ofLogVerbose("Pd") <<" calc buffer size: " << ticksPerBuffer*blockSize();
+	ofLogVerbose("Pd") <<" queued: " << (queued ? "yes" : "no");
 
 	return true;
 }
@@ -277,7 +255,7 @@ void ofxPd::addReceiver(PdReceiver& receiver) {
 	}
 
 	// receive from all sources by default
-	receive(receiver);
+	receiveSource(receiver);
 }
 
 void ofxPd::removeReceiver(PdReceiver& receiver) {
@@ -297,7 +275,7 @@ void ofxPd::removeReceiver(PdReceiver& receiver) {
 	}
 
 	// remove from all sources
-	ignore(receiver);		
+	ignoreSource(receiver);
 }
 
 bool ofxPd::receiverExists(PdReceiver& receiver) {
@@ -319,7 +297,7 @@ void ofxPd::clearReceivers() {
 }
 
 //----------------------------------------------------------
-void ofxPd::receive(PdReceiver& receiver, const std::string& source) {
+void ofxPd::receiveSource(PdReceiver& receiver, const std::string& source) {
 
 	if(!receiverExists(receiver)) {
 		ofLogWarning("Pd") << "receive: unknown receiver, call addReceiver first";
@@ -350,14 +328,14 @@ void ofxPd::receive(PdReceiver& receiver, const std::string& source) {
 	}
 	else {
 		// make sure all sources are ignored
-		ignore(receiver);
+		ignoreSource(receiver);
 	
 		// receive from the global source
 		g_iter->second.addReceiver(&receiver);
 	}
 }
 
-void ofxPd::ignore(PdReceiver& receiver, const std::string& source) {
+void ofxPd::ignoreSource(PdReceiver& receiver, const std::string& source) {
 
 	if(!receiverExists(receiver)) {
 		ofLogWarning("Pd") << "ignore: ignoring unknown receiver";
@@ -403,7 +381,7 @@ void ofxPd::ignore(PdReceiver& receiver, const std::string& source) {
 	}
 }
 
-bool ofxPd::isReceiving(PdReceiver& receiver, const std::string& source) {
+bool ofxPd::isReceivingSource(PdReceiver& receiver, const std::string& source) {
 	map<string,Source>::iterator s_iter;
 	s_iter = sources.find(source);
 	if(s_iter != sources.end() && s_iter->second.receiverExists(&receiver))
@@ -427,7 +405,7 @@ void ofxPd::addMidiReceiver(PdMidiReceiver& receiver) {
 	}
 
 	// receive from all channels by default
-	receiveMidi(receiver);
+	receiveMidiChannel(receiver);
 }
 
 void ofxPd::removeMidiReceiver(PdMidiReceiver& receiver) {
@@ -447,7 +425,7 @@ void ofxPd::removeMidiReceiver(PdMidiReceiver& receiver) {
 	}
 
 	// remove from all sources
-	ignoreMidi(receiver);	
+	ignoreMidiChannel(receiver);
 }
 
 bool ofxPd::midiReceiverExists(PdMidiReceiver& receiver) {
@@ -469,7 +447,7 @@ void ofxPd::clearMidiReceivers() {
 }
 
 //----------------------------------------------------------
-void ofxPd::receiveMidi(PdMidiReceiver& receiver, int channel) {
+void ofxPd::receiveMidiChannel(PdMidiReceiver& receiver, int channel) {
 
 	if(!midiReceiverExists(receiver)) {
 		ofLogWarning("Pd") << "receiveMidi: unknown receiver, call addMidiReceiver first";
@@ -505,14 +483,14 @@ void ofxPd::receiveMidi(PdMidiReceiver& receiver, int channel) {
 	}
 	else {
 		// make sure all channels are ignored
-		ignoreMidi(receiver);
+		ignoreMidiChannel(receiver);
 
 		// receive from the global channel
 		g_iter->second.addMidiReceiver(&receiver);
 	}
 }
 
-void ofxPd::ignoreMidi(PdMidiReceiver& receiver, int channel) {
+void ofxPd::ignoreMidiChannel(PdMidiReceiver& receiver, int channel) {
 
 	if(!midiReceiverExists(receiver)) {
 		ofLogWarning("Pd") << "ignoreMidi: ignoring unknown receiver";
@@ -563,7 +541,7 @@ void ofxPd::ignoreMidi(PdMidiReceiver& receiver, int channel) {
 	}
 }
 
-bool ofxPd::isReceivingMidi(PdMidiReceiver& receiver, int channel) {
+bool ofxPd::isReceivingMidiChannel(PdMidiReceiver& receiver, int channel) {
 
 	// handle bad channel numbers
 	if(channel < 0)

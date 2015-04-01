@@ -1,3 +1,10 @@
+v1.5.1: 2015 Apr
+
+	- updated to libpd & pd version 0.46-6 (includes new bob~ external)
+	- old polling interface removed since it's no longer part of PdBase, use queued=true in init() & receiveMessages()/receieveMidi()
+	- fixed examples not building correctly due to remaining polling interface code
+	- fixed build issue due to missing expr~ and d_fft_fftsg.c sources 
+
 v1.5.0: 2015 Jan
 
 	- updated to latest libpd & pd version 0.46-4 (some libpd source files changed, update your projects)

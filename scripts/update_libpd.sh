@@ -45,7 +45,6 @@ rm $SRC/pure-data/src/s_midi_pm.c
 rm $SRC/pure-data/src/s_midi.c
 
 # remove uneeded fft library interfaces
-rm $SRC/pure-data/src/d_fft_fftsg.c
 rm $SRC/pure-data/src/d_fft_fftw.c
 
 # remove some other stuff we don't need ...

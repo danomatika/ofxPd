@@ -54,7 +54,6 @@ void ofApp::setup() {
 	pd.subscribe("inputGain");
 	pd.subscribe("outputGain");
 	pd.addToSearchPath("pd");
-//	pd.start();
 
 	// open patch
 	Patch patch = pd.openPatch("pd/_main.pd");
@@ -102,9 +101,6 @@ void ofApp::draw() {
 	}
 	ofSetLineWidth(1.0);
 }
-
-//--------------------------------------------------------------
-void ofApp::exit() {}
 
 //--------------------------------------------------------------
 void ofApp::touchDown(ofTouchEventArgs &touch) {}

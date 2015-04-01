@@ -26,7 +26,6 @@ class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
 		void setup();
 		void update();
 		void draw();
-		void exit();
 
 		// do something
 		void playTone(int pitch);
@@ -56,9 +55,6 @@ class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
 		void receivePolyAftertouch(const int channel, const int pitch, const int value);
 		
 		void receiveMidiByte(const int port, const int byte);
-		
-		// demonstrates how to manually poll for messages
-		void processEvents();
 		
 		ofxPd pd;
 		vector<float> scopeArray;

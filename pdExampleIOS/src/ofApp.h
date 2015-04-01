@@ -28,7 +28,6 @@ class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 		void setup();
 		void update();
 		void draw();
-		void exit();
 
 		// input callbacks
 		void keyPressed(int key);
@@ -66,9 +65,6 @@ class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 		void receivePolyAftertouch(const int channel, const int pitch, const int value);
 		
 		void receiveMidiByte(const int port, const int byte);
-		
-		// demonstrates how to manually poll for messages
-		void processEvents();
 	
 		// do something
 		void playTone(int pitch);

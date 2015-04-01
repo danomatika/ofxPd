@@ -114,7 +114,7 @@ Then after renaming:
 openFrameworks/apps/myApps/myPdProject/
 </pre>
 
-### For XCode:
+### For Xcode:
 
 Rename the project in Xcode (do not rename the .xcodeproj file in Finder!): Xcode Menu->Project->Rename
 
@@ -136,14 +136,16 @@ You will also need to include some additional C Flags for building the libpd sou
 
     -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
 
-### For XCode:
+_Note: **-DLIBPD_EXTRA** is optional if you do not need/use the externals in `libpd/pure-data/extra`_
+
+### For Xcode:
 
 * create a new group "ofxPd" 
 * drag these directories from ofxpd into this new group: ofxPd/src
 * add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Header Search Paths (make sure "All" is selected)
 * under Targets->YourApp->Build->**Other C Flags** (make sure "All" is selected), add
 	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA</pre>
-  * *Note: Make sure you use Other **C** Flags! Other **C++** Flags will **not** work since libpd is written in C.*
+  * _Note: Make sure you use Other **C** Flags! Other **C++** Flags will **not** work since libpd is written in C._
 
 ### For Linux (Makefiles & Codeblocks):
 
