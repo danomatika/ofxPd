@@ -54,17 +54,6 @@ cd ofxPd
 git checkout 0062
 </pre>
 
-#### Using the latest ofxPd
-
-The master branch of ofxPd will work with the current stable version of OpenFrameworks and can be considered *relatively* stable. The develop branch is used for testing new features and bugfixes before they are applied to master.
-
-If you want to work with the latest unstable (still in development) ofxPd, download the source from the develop branch [https://github.com/danomatika/ofxPd/tree/develop](https://github.com/danomatika/ofxPd/tree/develop) or via git clone:
-<pre>
-git clone git://github.com/danomatika/ofxPd.git -b develop
-</pre> 
-
-Warning: The develop branch will be in flux, so don't be surprised if things do not always work as expected!
-
 Running the Example Projects
 ----------------------------
 
