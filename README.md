@@ -11,7 +11,7 @@ BSD Simplified License.
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "LICENSE.txt," in this distribution.
 
-See https://github.com/danomatika/ofxPd for documentation as well as the [OF forum post on ofxPd](http://forum.openframeworks.cc/index.php?topic=6492.0)
+See https://github.com/danomatika/ofxPd for documentation as well as the [OF forum post on ofxPd](http://forum.openframeworks.cc/t/ofxpd/6492)
 
 Description
 -----------
@@ -95,7 +95,7 @@ An example Codeblocks workspace is included. Visual Studio is not currently supp
 PitchShifter
 ------------
 
-PitchShifter is a simple example application which uses an OF gui to control a pitch shifter within a PD patch. It's in `pitchShifter` and `pitchShifterIOS`. Liek the basic example, you will have to generate the project files using the ProjectGenerator. 
+PitchShifter is a simple example application which uses an OF gui to control a pitch shifter within a PD patch. It's in `pitchShifter` and `pitchShifterIOS`. Like the basic example, you will have to generate the project files using the ProjectGenerator. 
 
 How to Create a New ofxPd Project
 ---------------------------------
