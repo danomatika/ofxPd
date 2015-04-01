@@ -242,8 +242,6 @@ The external sources can be found in the `externals` folder. For instance, the z
 
 Note: Some libraries may require external libraries of their own and/or special compile time definitions. Make sure you read the build documentation on the external and include these with your project. 
 
-Note: Some special objects included with Pd-Vanilla are not part of the libpd distribution for licensing reasons, mainly expr~, fiddle~, and sigmund~. The sources for these are found with the sources for Pd itself in the `pd/extra` folder in the Subverison repo.
-
 ### Calling the external setup function
 
 In order for libpd to use an external library, the library has to register itself on startup. This accomplished by calling the library's setup function which is named after the library followed by a "_setup" suffix: "library_setup()". The zexy setup function is simply "zexy_setup()". Call this setup function after initializing ofxPd in your app's setup() function:
