@@ -177,10 +177,12 @@ void ofxPd::closePatch(Patch& patch) {
 
 //--------------------------------------------------------------------
 void ofxPd::computeAudio(bool state) {
-	if(state)
+	if(state) {
 		ofLogVerbose("Pd") << "audio processing on";
-	else
+	}
+	else {
 		ofLogVerbose("Pd") << "audio processing off";
+	}
 
 	// [; pd dsp $1(
 	_LOCK();
@@ -224,8 +226,9 @@ void ofxPd::unsubscribe(const std::string& source) {
 }
 
 bool ofxPd::exists(const std::string& source) {
-	if(sources.find(source) != sources.end())
+	if(sources.find(source) != sources.end()) {
 		return true;
+	}
 	return false;
 }
 
@@ -384,8 +387,9 @@ void ofxPd::ignoreSource(PdReceiver& receiver, const std::string& source) {
 bool ofxPd::isReceivingSource(PdReceiver& receiver, const std::string& source) {
 	map<string,Source>::iterator s_iter;
 	s_iter = sources.find(source);
-	if(s_iter != sources.end() && s_iter->second.receiverExists(&receiver))
+	if(s_iter != sources.end() && s_iter->second.receiverExists(&receiver)) {
 		return true;
+	}
 	return false;
 }
 
@@ -429,8 +433,9 @@ void ofxPd::removeMidiReceiver(PdMidiReceiver& receiver) {
 }
 
 bool ofxPd::midiReceiverExists(PdMidiReceiver& receiver) {
-	if(midiReceivers.find(&receiver) != midiReceivers.end())
+	if(midiReceivers.find(&receiver) != midiReceivers.end()) {
 		return true;
+	}
 	return false;
 }
 
@@ -455,8 +460,9 @@ void ofxPd::receiveMidiChannel(PdMidiReceiver& receiver, int channel) {
 	}
 
 	// handle bad channel numbers
-	if(channel < 0)
+	if(channel < 0) {
 		channel = 0;
+	}
 
 	// insert channel if it dosen't exist yet
 	if(channels.find(channel) == channels.end()) {
@@ -498,8 +504,9 @@ void ofxPd::ignoreMidiChannel(PdMidiReceiver& receiver, int channel) {
 	} 
 
 	// handle bad channel numbers
-	if(channel < 0)
+	if(channel < 0) {
 		channel = 0;
+	}
 
 	// insert channel if it dosen't exist yet
 	if(channels.find(channel) == channels.end()) {
@@ -544,8 +551,9 @@ void ofxPd::ignoreMidiChannel(PdMidiReceiver& receiver, int channel) {
 bool ofxPd::isReceivingMidiChannel(PdMidiReceiver& receiver, int channel) {
 
 	// handle bad channel numbers
-	if(channel < 0)
+	if(channel < 0) {
 		channel = 0;
+	}
 
 	map<int,Channel>::iterator c_iter;
 	c_iter = channels.find(channel);
