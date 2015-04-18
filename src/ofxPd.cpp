@@ -29,10 +29,10 @@ using namespace std;
 using namespace pd;
 
 // used to lock libpd for thread safety
-Poco::Mutex mutex;
+Poco::Mutex _mutex;
 
-#define _LOCK() mutex.lock()
-#define _UNLOCK() mutex.unlock()
+#define _LOCK() _mutex.lock()
+#define _UNLOCK() _mutex.unlock()
 
 //--------------------------------------------------------------------
 ofxPd::ofxPd() : PdBase() {
