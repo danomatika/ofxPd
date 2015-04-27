@@ -2,14 +2,6 @@
 # built
 *.app
 *.a
-example/obj
-example/bin/libs
-example/bin/example
-example/bin/example_debug
-examplePitchShifter/obj
-examplePitchShifter/bin/libs
-examplePitchShifter/bin/examplePitchShifter
-examplePitchShifter/bin/examplePitchShifter_debug
 
 # osx
 .DS_Store
@@ -17,9 +9,6 @@ examplePitchShifter/bin/examplePitchShifter_debug
 # win
 *.exe
 *.dll
-
-# linux
-#*~
 
 # xcode
 *.pbxuser
@@ -40,6 +29,12 @@ pdExample/*.xcodeproj
 pdExample/*.make
 pdExample/*xcconfig
 pdExample/*.plist
+
+pdMultiExample/Makefile
+pdMultiExample/*.xcodeproj
+pdMultiExample/*.make
+pdMultiExample/*xcconfig
+pdMultiExample/*.plist
 
 pdExampleIOS/Makefile
 pdExampleIOS/*.xcodeproj
