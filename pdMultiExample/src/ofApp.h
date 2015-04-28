@@ -55,6 +55,9 @@ class ofApp : public ofBaseApp, public PdReceiver{
 		ofxPd pd;
 	
 		// pd instance handles, not full fledged ofxPd objects yet , but internal
-		// pd types which tell libpd to address a searpate internal "instance"
+		// pd types which tell libpd to address a separate internal "instance"
 		t_pdinstance *pdinstance1, *pdinstance2;
+	
+		float* outputBuffer1; //< interleaved audio output buffer for instance 1
+		float* outputBuffer2; //< interleaved audio output buffer for instance 2
 };

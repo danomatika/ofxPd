@@ -27,9 +27,10 @@ void ofApp::setup() {
 		int ticksPerBuffer = 8; // 8 * 64 = buffer len of 512
 		int numInputs = 1;
 	#endif
+	int numOutputs = 2;
 
 	// setup OF sound stream
-	ofSoundStreamSetup(2, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
+	ofSoundStreamSetup(numOutputs, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 4);
 
 	// allocate pd instance handles
 	pdinstance1 = pdinstance_new();
@@ -52,10 +53,17 @@ void ofApp::setup() {
     // per-instance.  The sample rate is still global within Pd but we might
     // also consider relaxing that restrction.
 	//
-	if(!pd.init(2, numInputs, 44100, ticksPerBuffer, false)) {
-		OF_EXIT_APP(1);
+	if(!pd.init(numOutputs, numInputs, 44100, ticksPerBuffer, false)) {
+		ofExit(1);
 	}
 	pd.setReceiver(this);
+	
+	// allocate instance output buffers
+	int bufferSize = numOutputs*ticksPerBuffer*ofxPd::blockSize();
+	outputBuffer1 = new float[bufferSize];
+	outputBuffer2 = new float[bufferSize];
+	memset(outputBuffer1, 0, bufferSize);
+	memset(outputBuffer2, 0, bufferSize);
 
 	pd_setinstance(pdinstance1);  // talk to first pd instance
 
@@ -83,12 +91,12 @@ void ofApp::setup() {
     // Note also that I'm using the fact that $0 is set to 1003, 1004, ...
     // as patches are opened, it would be better to open the patches with
     // settable $1, etc parameters to openPatch().
-    
-	// [; pd frequency 1 (
-	pd << StartMessage() << 1.0f << FinishMessage("1003-frequency", "float");
+	
+	// [; pd frequency 220 (
+	pd << StartMessage() << 440.0f << FinishMessage("1003-frequency", "float");
 
-	// [; pd frequency 2 (
-	pd << StartMessage() << 2.0f << FinishMessage("1004-frequency", "float");
+	// [; pd frequency 440 (
+	pd << StartMessage() << 880.0f << FinishMessage("1004-frequency", "float");
 }
 
 //--------------------------------------------------------------
@@ -128,11 +136,17 @@ void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 	
 	// process audio output for instance 1
 	pd_setinstance(pdinstance1);
-	pd.audioOut(output, bufferSize, nChannels);
+	pd.audioOut(outputBuffer1, bufferSize, nChannels);
 	
 	// process audio output for instance 2
 	pd_setinstance(pdinstance2);
-	pd.audioOut(output, bufferSize, nChannels);
+	pd.audioOut(outputBuffer2, bufferSize, nChannels);
+
+	// mix the two instance output buffers together
+	int size = bufferSize*sizeof(float);
+	for(int i = 0; i < size; i += sizeof(float)) {
+		output[i] = (outputBuffer1[i] + outputBuffer2[i]) * 0.5f; // mix
+	}
 }
 
 //--------------------------------------------------------------
