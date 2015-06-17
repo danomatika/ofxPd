@@ -1,3 +1,7 @@
+v1.5.2: 2015 Jun
+
+	- updated latest libpd whick includes big fix for ringbuffer race condition
+
 v1.5.1: 2015 Apr
 
 	- updated to libpd & pd version 0.46-6 (includes new bob~ external)
