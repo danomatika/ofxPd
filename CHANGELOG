@@ -1,6 +1,11 @@
+v1.5.3: 2015 Oct
+
+	- updated to libpd 0.8.4
+	- ofxPd now reinits itself if the buffer size or number of channels changes in audioIn()/audioOut()
+
 v1.5.2: 2015 Jun
 
-	- updated latest libpd whick includes big fix for ringbuffer race condition
+	- updated latest libpd which includes big fix for ringbuffer race condition
 
 v1.5.1: 2015 Apr
 

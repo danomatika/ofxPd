@@ -36,7 +36,6 @@ Poco::Mutex _mutex;
 
 //--------------------------------------------------------------------
 ofxPd::ofxPd() : PdBase() {
-	ticksPerBuffer = 32;
 	inputBuffer = NULL;
 	clear();
 }
@@ -50,8 +49,6 @@ ofxPd::~ofxPd() {
 bool ofxPd::init(const int numOutChannels, const int numInChannels, 
                  const int sampleRate, const int ticksPerBuffer, bool queued) {
 	
-	this->ticksPerBuffer = ticksPerBuffer;
-	
 	// init pd
 	_LOCK();
 	if(!PdBase::init(numInChannels, numOutChannels, sampleRate, queued)) {
@@ -61,9 +58,15 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 		return false;
 	}
 	_UNLOCK();
+	
+	ticks = ticksPerBuffer;
+	bsize = ticksPerBuffer*blockSize();
+	srate = sampleRate;
+	inChannels = numInChannels;
+	outChannels = numOutChannels;
 
 	// allocate buffers
-	inputBuffer = new float[numInChannels*ticksPerBuffer*blockSize()];
+	inputBuffer = new float[numInChannels*bsize];
 
 	ofLogVerbose("Pd") <<"inited";
 	ofLogVerbose("Pd") <<" samplerate: " << sampleRate;
@@ -71,7 +74,7 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 	ofLogVerbose("Pd") <<" channels out: " << numOutChannels;
 	ofLogVerbose("Pd") <<" ticks: " << ticksPerBuffer;
 	ofLogVerbose("Pd") <<" block size: " << blockSize();
-	ofLogVerbose("Pd") <<" calc buffer size: " << ticksPerBuffer*blockSize();
+	ofLogVerbose("Pd") <<" calc buffer size: " << bsize;
 	ofLogVerbose("Pd") <<" queued: " << (queued ? "yes" : "no");
 
 	return true;
@@ -100,6 +103,12 @@ void ofxPd::clear() {
 	// add default global channel
 	Channel c;
 	channels.insert(make_pair(-1, c));
+	
+	ticks = 0;
+	bsize = 0;
+	srate = 0;
+	inChannels = 0;
+	outChannels = 0;
 }
 
 //--------------------------------------------------------------------
@@ -297,6 +306,23 @@ void ofxPd::clearReceivers() {
 	}
 	
 	PdBase::setReceiver(NULL);
+}
+
+//----------------------------------------------------------
+int ofxPd::ticksPerBuffer() {
+	return ticks;
+}
+
+int ofxPd::sampleRate() {
+	return srate;
+}
+
+int ofxPd::numInChannels() {
+	return inChannels;
+}
+
+int ofxPd::numOutChannels() {
+	return outChannels;
 }
 
 //----------------------------------------------------------
@@ -714,22 +740,34 @@ void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
 	try {
 		if(inputBuffer != NULL) {
 			_LOCK();
+			if(bufferSize != bsize || nChannels != inChannels) {
+				ticks = bufferSize/blockSize();
+				bsize = bufferSize;
+				inChannels = nChannels;
+				ofLogVerbose("Pd") << "buffer size or num input channels updated";
+				init(outChannels, inChannels, srate, ticks, isQueued());
+			}
 			memcpy(inputBuffer, input, bufferSize*nChannels*sizeof(float));
 			_UNLOCK();
 		}
 	}
 	catch (...) {
-		ofLogError("Pd") << "could not copy input buffer, " <<
-			"check your buffer size and num channels";
+		ofLogError("Pd") << "could not copy input buffer";
 	}
 }
 
 void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
 	if(inputBuffer != NULL) {
 		_LOCK();
-		if(!PdBase::processFloat(ticksPerBuffer, inputBuffer, output)) {
-			ofLogError("Pd") << "could not process output buffer, " <<
-				"check your buffer size and num channels";
+		if(bufferSize != bsize || nChannels != outChannels) {
+			ticks = bufferSize/blockSize();
+			bsize = bufferSize;
+			outChannels = nChannels;
+			ofLogVerbose("Pd") << "buffer size or num output channels updated";
+			init(outChannels, inChannels, srate, ticks, isQueued());
+		}
+		if(!PdBase::processFloat(ticks, inputBuffer, output)) {
+			ofLogError("Pd") << "could not process output buffer";
 		}
 		_UNLOCK();
 	}

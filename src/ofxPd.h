@@ -387,13 +387,28 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// bool isInited();
 		///
 		/// get the blocksize of pd (sample length per channel)
-		/// static int getBlockSize();
+		/// static int blockSize();
 		///
 		/// get/set the max length of messages and lists, default: 32
 		/// void setMaxMsgLength(unsigned int len);
-		/// unsigned int getMaxMsgLength();
+		/// unsigned int maxMsgLength();
 		///
 		/// see PdBase.h for function declarations
+	
+		/// get the current ticks per buffer,
+		/// updated if the buffer size changes in audioIn or audioOut
+		int ticksPerBuffer();
+	
+		/// get the current sample rate
+		int sampleRate();
+	
+		/// get the number of input channels,
+		/// updated if the number changes in audioIn()
+		int numInChannels();
+	
+		/// get the number of output channels,
+		/// updated if the number changes in audioOut()
+		int numOutChannels();
 
 	/// \section Audio Processing Callbacks
 
@@ -422,7 +437,11 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 	private:
 
-		int ticksPerBuffer; //< number of ticks per buffer
+		int ticks; //< number of ticks per buffer
+		int bsize; //< current buffer size aka tbp*blocksize
+		int srate; //< current sample rate
+		int inChannels, outChannels; //< current num of input & output channels
+	
 		float* inputBuffer; //< interleaved input audio buffer
 
 		/// a receiving source's pointer and receivers
