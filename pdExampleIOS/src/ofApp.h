@@ -68,6 +68,10 @@ class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 	
 		// do something
 		void playTone(int pitch);
+	
+		// sets the preferred sample rate, returns the *actual* samplerate
+		// which may be different ie. iPhone 6S only wants 48k
+		float setAVSessionSampleRate(float preferredSampleRate);
 		
 		ofxPd pd;
 		vector<float> scopeArray;

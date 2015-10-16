@@ -191,6 +191,12 @@ For example: The default sample rate on Mac OSX is 96000. Running the app at 441
 Bugs & Errors
 -------------
 
+### Pitch is off on the iPhone 6S
+
+The iPhone 6S hardware seems to prefer a sample rate of 48000 and calling ofSoundStreamSetup() with 44100 will not change that in versions of OF 0.8.4 or les. This means ofxPd will be running at 44100 but the audio stream is actually 48000, resulting in a higher pitch comeing out of your patches and a lower pitch going in.
+
+The fix is to follow Apple's method of setting the *preferred* sample rate, then grabbing what the *actual* sample rate is afterwards. You can then use this real value in ofSoundStreamSetup() and ofxPd::init(). The pdExampleIOS has been updated to show how to do this. Hopefully, this funtionality will be added to OF in the future.
+
 ### File "tr1/memory" not found in Xcode
 
 You just upgraded to OSX 10.9 and Xcode 5 right? The default compiler is now LLVM and you need to rebuild your Xcode project files so OF will build correctly. Ude the ProjectGenerator in the OF 0.8.0 download to regenerate the project:
