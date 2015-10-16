@@ -35,9 +35,9 @@ void ofApp::setup() {
 	// set landscape
 	//ofSetOrientation(OF_ORIENTATION_90_RIGHT;
 	
-	// try to set the preffered iOS samplerate, but get the actual sample rate
+	// try to set the preferred iOS sample rate, but get the actual sample rate
 	// being used by the AVSession since newer devices like the iPhone 6S only
-	// want specific values (ie 48k instead of 44100)
+	// want specific values (ie 48000 instead of 44100)
 	float sampleRate = setAVSessionSampleRate(44100);
 	
 	// the number if libpd ticks per buffer,
