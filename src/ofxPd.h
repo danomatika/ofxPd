@@ -46,12 +46,15 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 	/// \section Initializing Pd
 
-		/// initialize resources
+		/// initialize audio resources
 		///
 		/// set the audio latency by setting the libpd ticks per buffer:
 		/// ticks per buffer * lib pd block size (always 64)
 		///
 		/// ie 4 ticks per buffer * 64 = buffer len of 512
+		///
+		/// you can call this again after loading patches & setting receivers
+		/// in order to update the audio settings
 		///
 		/// the lower the number of ticks, the faster the audio processing
 		/// if you experience audio dropouts (audible clicks), increase the
