@@ -412,10 +412,16 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// get the number of output channels,
 		/// updated if the number changes in audioOut()
 		int numOutChannels();
+	
+		/// check if ofxPd is currently computing audio
+		bool isComputingAudio();
 
 	/// \section Audio Processing Callbacks
 
-		/// the libpd processing is done in the audioOut callback
+		/// audio settings will be inited if the buffersize or number of
+		/// channels changes in these callbacks
+		///
+		/// note: the libpd processing is done in the audioOut callback
 		virtual void audioIn(float * input, int bufferSize, int nChannels);
 		virtual void audioOut(float * output, int bufferSize, int nChannels);
 
@@ -444,6 +450,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		int bsize; //< current buffer size aka tbp*blocksize
 		int srate; //< current sample rate
 		int inChannels, outChannels; //< current num of input & output channels
+		bool computing; //< is compute audio on?
 	
 		float* inputBuffer; //< interleaved input audio buffer
 

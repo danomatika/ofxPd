@@ -37,6 +37,7 @@ Poco::Mutex _mutex;
 //--------------------------------------------------------------------
 ofxPd::ofxPd() : PdBase() {
 	inputBuffer = NULL;
+	computing = false;
 	clear();
 }
 
@@ -192,6 +193,7 @@ void ofxPd::computeAudio(bool state) {
 	else {
 		ofLogVerbose("Pd") << "audio processing off";
 	}
+	computing = state;
 
 	// [; pd dsp $1(
 	_LOCK();
@@ -323,6 +325,10 @@ int ofxPd::numInChannels() {
 
 int ofxPd::numOutChannels() {
 	return outChannels;
+}
+
+bool ofxPd::isComputingAudio() {
+	return computing;
 }
 
 //----------------------------------------------------------
@@ -746,6 +752,7 @@ void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
 				inChannels = nChannels;
 				ofLogVerbose("Pd") << "buffer size or num input channels updated";
 				init(outChannels, inChannels, srate, ticks, isQueued());
+				PdBase::computeAudio(computing);
 			}
 			memcpy(inputBuffer, input, bufferSize*nChannels*sizeof(float));
 			_UNLOCK();
@@ -765,6 +772,7 @@ void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
 			outChannels = nChannels;
 			ofLogVerbose("Pd") << "buffer size or num output channels updated";
 			init(outChannels, inChannels, srate, ticks, isQueued());
+			PdBase::computeAudio(computing);
 		}
 		if(!PdBase::processFloat(ticks, inputBuffer, output)) {
 			ofLogError("Pd") << "could not process output buffer";
