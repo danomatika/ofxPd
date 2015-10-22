@@ -187,7 +187,17 @@ libpd as utilized in ofxPd does not handle any of the audio interfacing itself, 
 The sample rate is set to 44100 when initializing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
 
 For example: The default sample rate on Mac OSX is 96000. Running the app at 44100 results in double the playback pitch while initing ofxPd at 96000 gives the correct pitch.
-	
+
+### Running App in the Background on iOS
+
+If you're using ofxPd to build an audio app on iOS, you probably want the app to keep running while in the background (aka switching between other apps or going to the home screen). You can enable this in Xcode by clicking on the Project in the project tree, selecting the "Capabilities" tab, and turning on the "Background Modes" switch, then checking "Audio, Airplay and Picture in Picture". Next, Set "Application does not run in background" to NO in the "Info" tab.
+
+### Disabling Automatic Screen Locking on iOS
+
+You may be building an audio app for iOS that you want to run without the automatic screen locking mechanism closing it. You can disable the screen lock timer by adding the following to your ofApp setup() function:
+
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+
 Bugs & Errors
 -------------
 

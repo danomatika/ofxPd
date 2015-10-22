@@ -206,7 +206,7 @@ void ofApp::setup() {
 
 	pd.sendSymbol("fromOF", "test");
 
-	cout << "FINISH PD Test" << endl << endl;
+	cout << "FINISH PD Test" << endl;
 
 	// -----------------------------------------------------
 	cout << endl << "BEGIN Instance Test" << endl;
