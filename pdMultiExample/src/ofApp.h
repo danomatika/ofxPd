@@ -54,7 +54,7 @@ class ofApp : public ofBaseApp, public PdReceiver{
 		// main ofxPd object we use to access libpd
 		ofxPd pd;
 	
-		// pd instance handles, not full fledged ofxPd objects yet , but internal
+		// pd instance handles, not full fledged ofxPd objects yet, but internal
 		// pd types which tell libpd to address a separate internal "instance"
 		t_pdinstance *pdinstance1, *pdinstance2;
 	

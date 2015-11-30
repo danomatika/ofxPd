@@ -118,10 +118,10 @@ void ofApp::update() {
 		pd.receiveMessages();
 	}
 	
-	// run for 1 second and exit
-	if(ofGetElapsedTimef() > 1.0) {
-		ofExit(); // exit app
-	}
+//	// run for 1 second and exit
+//	if(ofGetElapsedTimef() > 1.0) {
+//		ofExit(); // exit app
+//	}
 }
 
 //--------------------------------------------------------------
