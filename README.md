@@ -41,20 +41,18 @@ Installation
 ------------
 
 Place ofxPd within a folder in the apps folder of the OF dir tree:
-<pre>
-openframeworks/addons/ofxPd
-</pre>
+
+    openframeworks/addons/ofxPd
 
 #### Which version to use?
 
 If you are using a stable version (0062, 007, ...) of OpenFrameworks then you want to use a git tag of ofxPd for that version. You can select the tag in the Github "Current Branch" menu or clone and check it out using git.
 
 For example, the following commands will clone ofxPd and switch to the OF 0062 tagged version:
-<pre>
-git clone git://github.com/danomatika/ofxPd.git
-cd ofxPd
-git checkout 0062
-</pre>
+
+    git clone git://github.com/danomatika/ofxPd.git
+    cd ofxPd
+    git checkout 0062
 
 Running the Example Projects
 ----------------------------
@@ -74,10 +72,9 @@ Open the Xcode project, select the "pdExample Debug" scheme, and hit "Run".
 Open the Code::Blocks .cbp and hit F9 to build. Optionally, you can build the example with the Makefile.
 
 To build and run it on the terminal:
-<pre>
-make
-make run
-</pre>
+
+    make
+    make run
 
 ### Windows
 
@@ -94,16 +91,14 @@ How to Create a New ofxPd Project
 _Note: These instructions are for manually creating a new project from an existing ofxPd project and it's project files (aka Xcode, C::B, etc). You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
 
 To develop your own project based on ofxPd, either generate a new project with the ProjectGenerator or generate one of the examples, copy, and rename it. You probably want to put it in your apps folder, for example, after copying:
-<pre>
-openFrameworks/addons/ofxPd/pdExample/ => openFrameworks/apps/myApps/pdExample/
-</pre>
+
+    openFrameworks/addons/ofxPd/pdExample/ => openFrameworks/apps/myApps/pdExample/
 
 It must be 3 levels down in the openframeworks folder structure.
 
 Then after renaming:
-<pre>
-openFrameworks/apps/myApps/myPdProject/
-</pre>
+
+    openFrameworks/apps/myApps/myPdProject/
 
 ### For Xcode:
 
@@ -119,9 +114,8 @@ Adding ofxPd to an Existing Project
 _Note: These instructions are for manually add ofxPd to an existing project. You do not need to follow these steps if you use the ProjecGenerator app in which case you *may* need to add the C Flags as the PG currently seems to have a problem doing this. See the IDE specific instructions on how to do this._
 
 If you want to add ofxPd to another project, you need to make sure you include the src folder:
-<pre>
-openFrameworks/addons/ofxPd/src
-</pre>
+
+    openFrameworks/addons/ofxPd/src
 
 You will also need to include some additional C Flags for building the libpd source:
 
@@ -187,9 +181,25 @@ libpd as utilized in ofxPd does not handle any of the audio interfacing itself, 
 The sample rate is set to 44100 when initializing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
 
 For example: The default sample rate on Mac OSX is 96000. Running the app at 44100 results in double the playback pitch while initing ofxPd at 96000 gives the correct pitch.
-	
+
+### Running App in the Background on iOS
+
+If you're using ofxPd to build an audio app on iOS, you probably want the app to keep running while in the background (aka switching between other apps or going to the home screen). You can enable this in Xcode by clicking on the Project in the project tree, selecting the "Capabilities" tab, and turning on the "Background Modes" switch, then checking "Audio, Airplay and Picture in Picture". Next, Set "Application does not run in background" to NO in the "Info" tab.
+
+### Disabling Automatic Screen Locking on iOS
+
+You may be building an audio app for iOS that you want to run without the automatic screen locking mechanism closing it. You can disable the screen lock timer by adding the following to your ofApp setup() function:
+
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+
 Bugs & Errors
 -------------
+
+### Pitch is off on the iPhone 6S
+
+The iPhone 6S hardware seems to prefer a sample rate of 48000 and calling ofSoundStreamSetup() with 44100 will not change that in versions of OF 0.8.4 and previous. This means ofxPd will be running at 44100 but the audio stream is actually 48000, resulting in a higher pitch coming out of your patches and a lower pitch going in.
+
+The fix is to follow Apple's method of setting the *preferred* sample rate, then grabbing what the *actual* sample rate is afterwards. You can then use this real value in ofSoundStreamSetup() and ofxPd::init(). The pdExampleIOS has been updated to show how to do this. Hopefully, this funtionality will be added to OF in the future.
 
 ### File "tr1/memory" not found in Xcode
 
@@ -209,9 +219,9 @@ The compiler doesn't recognize the internal Pd types because it's missing the C 
 ### Undefined basic_ostream in XCode
 
 If you get the following [linker error](http://www.openframeworks.cc/forum/viewtopic.php?f=8&t=5344&p=26537&hilit=Undefined+symbol#p26537) in XCode:
-<pre>
-Undefined symbols: "std::basic_ostream<char, std::char_traits<char> ...
-</pre>
+
+    Undefined symbols: "std::basic_ostream<char, std::char_traits<char> ...
+
 you need to change the Base SDK to 10.6: Project > Edit Project Settings
 
 ### RtAudio Hang on Exit in 0062
@@ -238,7 +248,8 @@ ofxPd only includes the standard set of Pure Data objects as found in the "Vanil
 The source files for externals included with Pd-Extended can be found in the Pure Data Subversion repository on Sourceforge. It is recommended that you use the latest Pd-Extended release branch as it will be more stable then the development version. See http://puredata.info/docs/developer/GettingPdSource
 
 For example, if we want to include the zexy external in our project, we first download the sources files for the latest stable Pd-Extended (0.42 as of this writing) from the Subversion repository (make sure you have svn installed):
-<pre>svn checkout https://pure-data.svn.sourceforge.net/svnroot/pure-data/branches/pd-extended/0.42</pre>
+
+    svn checkout https://pure-data.svn.sourceforge.net/svnroot/pure-data/branches/pd-extended/0.42
 
 The external sources can be found in the `externals` folder. For instance, the zexy sources are in `externals/zexy/src/`. Copy the .h and .c files into your project folder. In my case I create an externals folder in src folder of my project, something like `myProject/src/externals/zexy`. Then add these files to your ofxPd project.
 

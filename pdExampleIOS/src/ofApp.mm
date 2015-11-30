@@ -10,6 +10,8 @@
  */
 #include "ofApp.h"
 
+#import <AVFoundation/AVFoundation.h>
+
 //--------------------------------------------------------------
 void ofApp::setup() {
 
@@ -33,12 +35,17 @@ void ofApp::setup() {
 	// set landscape
 	//ofSetOrientation(OF_ORIENTATION_90_RIGHT;
 	
+	// try to set the preferred iOS sample rate, but get the actual sample rate
+	// being used by the AVSession since newer devices like the iPhone 6S only
+	// want specific values (ie 48000 instead of 44100)
+	float sampleRate = setAVSessionSampleRate(44100);
+	
 	// the number if libpd ticks per buffer,
 	// used to compute the audio buffer len: tpb * blocksize (always 64)
 	int ticksPerBuffer = 8; // 8 * 64 = buffer len of 512
 
-	// setup OF sound stream
-	ofSoundStreamSetup(2, 1, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
+	// setup OF sound stream using the current *actual* samplerate
+	ofSoundStreamSetup(2, 1, this, sampleRate, ofxPd::blockSize()*ticksPerBuffer, 3);
 
 	// setup Pd
 	//
@@ -49,7 +56,7 @@ void ofApp::setup() {
 	// note: you won't see any message prints until update() is called since
 	// the queued messages are processed there, this is normal
 	//
-	if(!pd.init(2, 1, 44100, ticksPerBuffer, false)) {
+	if(!pd.init(2, 1, sampleRate, ticksPerBuffer, false)) {
 		OF_EXIT_APP(1);
 	}
 
@@ -199,7 +206,7 @@ void ofApp::setup() {
 
 	pd.sendSymbol("fromOF", "test");
 
-	cout << "FINISH PD Test" << endl << endl;
+	cout << "FINISH PD Test" << endl;
 
 	// -----------------------------------------------------
 	cout << endl << "BEGIN Instance Test" << endl;
@@ -456,4 +463,44 @@ void ofApp::receiveMidiByte(const int port, const int byte) {
 //--------------------------------------------------------------
 void ofApp::playTone(int pitch) {
 	pd << StartMessage() << "pitch" << pitch << FinishList("tone") << Bang("tone");
+}
+
+//--------------------------------------------------------------
+// set the samplerate the Apple approved way since newer devices
+// like the iPhone 6S only allow certain sample rates,
+// the following code may not be needed once this functionality is
+// incorporated into the ofxiOSSoundStream
+// thanks to Seth aka cerupcat
+float ofApp::setAVSessionSampleRate(float preferredSampleRate) {
+	
+	NSError *audioSessionError = nil;
+	AVAudioSession *session = [AVAudioSession sharedInstance];
+
+	// disable active
+	[session setActive:NO error:&audioSessionError];
+	if (audioSessionError) {
+		NSLog(@"Error %ld, %@", (long)audioSessionError.code, audioSessionError.localizedDescription);
+	}
+
+	// set category
+	[session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionAllowBluetooth|AVAudioSessionCategoryOptionMixWithOthers|AVAudioSessionCategoryOptionDefaultToSpeaker error:&audioSessionError];
+	if(audioSessionError) {
+		NSLog(@"Error %ld, %@", (long)audioSessionError.code, audioSessionError.localizedDescription);
+	}
+
+	// try to set the preferred sample rate
+	[session setPreferredSampleRate:preferredSampleRate error:&audioSessionError];
+	if(audioSessionError) {
+		NSLog(@"Error %ld, %@", (long)audioSessionError.code, audioSessionError.localizedDescription);
+	}
+
+	// *** Activate the audio session before asking for the "current" values ***
+	[session setActive:YES error:&audioSessionError];
+	if (audioSessionError) {
+		NSLog(@"Error %ld, %@", (long)audioSessionError.code, audioSessionError.localizedDescription);
+	}
+	ofLogNotice() << "AVSession samplerate: " << session.sampleRate << ",  I/O buffer duration: " << session.IOBufferDuration;
+
+	// our actual samplerate, might be differnt aka 48k on iPhone 6S
+	return session.sampleRate;
 }
