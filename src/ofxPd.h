@@ -418,8 +418,8 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 	/// \section Audio Processing Callbacks
 
-		/// audio settings will be inited if the buffersize or number of
-		/// channels changes in these callbacks
+		/// audio settings will be reinited if the buffersize or number of
+		/// channels changes, will produce a verbose print for debugging as well
 		///
 		/// note: the libpd processing is done in the audioOut callback
 		virtual void audioIn(float * input, int bufferSize, int nChannels);
