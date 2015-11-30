@@ -25,7 +25,7 @@ common:
 	# required for libpd
 	ADDON_CFLAGS = -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
 
-win_cb:
+msys2:
 	# not sure if pd~ is working on Windows, so leave it out
 	ADDON_SOURCES_EXCLUDE = libs/libpd/pure-data/extra/pd~
 	ADDON_INCLUDES_EXCLUDE = libs/libpd/pure-data/extra/pd~

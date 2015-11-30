@@ -63,11 +63,11 @@ void ofApp::setup() {
 	pd.setReceiver(this);
 	
 	// allocate instance output buffers
-	int bufferSize = numOutputs*ticksPerBuffer*ofxPd::blockSize();
-	outputBuffer1 = new float[bufferSize];
-	outputBuffer2 = new float[bufferSize];
-	memset(outputBuffer1, 0, bufferSize);
-	memset(outputBuffer2, 0, bufferSize);
+	outputBufferSize = numOutputs*ticksPerBuffer*ofxPd::blockSize();
+	outputBuffer1 = new float[outputBufferSize];
+	outputBuffer2 = new float[outputBufferSize];
+	memset(outputBuffer1, 0, outputBufferSize);
+	memset(outputBuffer2, 0, outputBufferSize);
 
 	instanceMutex.lock();
 	pd_setinstance(pdinstance1);  // talk to first pd instance
@@ -157,8 +157,7 @@ void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 	pd.audioOut(outputBuffer2, bufferSize, nChannels);
 
 	// mix the two instance output buffers together
-	int size = bufferSize*sizeof(float);
-	for(int i = 0; i < size; i += sizeof(float)) {
+	for(int i = 0; i < outputBufferSize; i += 1) {
 		output[i] = (outputBuffer1[i] + outputBuffer2[i]) * 0.5f; // mix
 	}
 }
