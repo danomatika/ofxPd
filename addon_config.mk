@@ -25,7 +25,40 @@ common:
 	# required for libpd
 	ADDON_CFLAGS = -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
 
+linux64:
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
+
+linux:
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
+
+linuxarmv6l:
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
+
+linuxarmv7l:
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
+
 msys2:
 	# not sure if pd~ is working on Windows, so leave it out
 	ADDON_SOURCES_EXCLUDE = libs/libpd/pure-data/extra/pd~
 	ADDON_INCLUDES_EXCLUDE = libs/libpd/pure-data/extra/pd~
+
+vs:
+
+android/armeabi:
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
+
+android/armeabi-v7a:
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
+
+osx:
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
+
+ios:
+
