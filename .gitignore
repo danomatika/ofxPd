@@ -26,19 +26,19 @@ build
 
 pdExample/Makefile
 pdExample/*.xcodeproj
-pdExample/*.make
+pdExample/config.make
 pdExample/*xcconfig
 pdExample/*.plist
 
 pdMultiExample/Makefile
 pdMultiExample/*.xcodeproj
-pdMultiExample/*.make
+pdMultiExample/config.make
 pdMultiExample/*xcconfig
 pdMultiExample/*.plist
 
 pdExampleIOS/Makefile
 pdExampleIOS/*.xcodeproj
-pdExampleIOS/*.make
+pdExampleIOS/config.make
 pdExampleIOS/*xcconfig
 pdExampleIOS/*.plist
 pdExampleIOS/*.pch
@@ -47,13 +47,13 @@ pdExampleIOS/bin/data/Icon*.png
 
 pitchShifter/Makefile
 pitchShifter/*.xcodeproj
-pitchShifter/*.make
+pitchShifter/config.make
 pitchShifter/*xcconfig
 pitchShifter/*.plist
 
 pitchShifterIOS/Makefile
 pitchShifterIOS/*.xcodeproj
-pitchShifterIOS/*.make
+pitchShifterIOS/config.make
 pitchShifterIOS/*xcconfig
 pitchShifterIOS/*.plist
 pitchShifterIOS/*.pch
