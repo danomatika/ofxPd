@@ -238,9 +238,12 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 	/// \section Sending Functions
 
 		/// messages
-		void sendBang(const std::string& dest);
-		void sendFloat(const std::string& dest, float value);
-		void sendSymbol(const std::string& dest, const std::string& symbol);
+		///
+		/// pd.sendBang("test");
+		/// pd.sendFloat("test", 1.23);
+		/// pd.sendSymbol("test", "hello");
+		///
+		/// see PdBase.h for function declarations
 
 		/// compound messages
 		///
@@ -259,13 +262,9 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// pd.addFloat(1.23);
 		/// pd.finishMessage("test", "msg1");
 		///
-		void startMessage();
-		void addFloat(const float value);
-		void addSymbol(const std::string& symbol);
-		void finishList(const std::string& dest);
-		void finishMessage(const std::string& dest, const std::string& msg);
+		/// see PdBase.h for function declarations
 
-		/// compound messages using the ofxPd List type
+		/// compound messages using the Pd List type
 		///
 		/// List list;
 		/// list.addSymbol("hello");
@@ -285,8 +284,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		///
 		/// sends a typed message -> [; test msg1 hello 1.23(
 		///
-		void sendList(const std::string& dest, const pd::List& list);
-		void sendMessage(const std::string& dest, const std::string& msg, const pd::List& list);
+		/// see PdBase.h for function declarations
 
 		/// midi
 		///
@@ -311,21 +309,6 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void sendPitchBend(const int channel, const int value);
 		void sendAftertouch(const int channel, const int value);
 		void sendPolyAftertouch(const int channel, const int pitch, const int value);
-
-		/// raw midi bytes
-		///
-		/// value is a raw midi byte value 0 - 255
-		/// port is the raw portmidi port #, similar to a channel
-		///
-		/// for some reason, [midiin], [sysexin] & [realtimein] add 2 to the port num,
-		/// so sending to port 1 in ofxPd returns port 3 in pd
-		///
-		/// however, [midiout], [sysexout], & [realtimeout] do not add to the port num,
-		/// so sending port 1 to [midiout] returns port 1 in ofxPd
-		///
-		void sendMidiByte(const int port, const int value);
-		void sendSysex(const int port, const int value);
-		void sendSysRealTime(const int port, const int value);
 
 	/// \section Sending Stream Interface
 
@@ -354,35 +337,20 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 	/// \section Array Access
 
-		/// get the size of a pd array
-		/// returns 0 if array not found
-		int arraySize(const std::string& arrayName);
-
-		/// read from a pd array
+		/// get array size
 		///
-		/// resizes given vector to readLen, checks readLen and offset
+		/// int s = pd.arraySize("array1");
 		///
-		/// returns true on success, false on failure
-		///
-		/// calling without setting readLen and offset reads the whole array:
+		/// read an array into a float vector
 		///
 		/// vector<float> array1;
 		/// readArray("array1", array1);
 		///
-		bool readArray(const std::string& arrayName, std::vector<float>& dest,
-					   int readLen=-1, int offset=0);
-
-		/// write to a pd array
-		///
-		/// calling without setting writeLen and offset writes the whole array:
+		/// write a float vector to an array
 		///
 		/// writeArray("array1", array1);
 		///
-		bool writeArray(const std::string& arrayName, std::vector<float>& source,
-						int writeLen=-1, int offset=0);
-
-		/// clear array and set to a specific value
-		void clearArray(const std::string& arrayName, int value=0);
+		/// see PdBase.h for function declarations
 
 	/// \section Utils
 
@@ -401,6 +369,10 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// get the current ticks per buffer,
 		/// updated if the buffer size changes in audioIn or audioOut
 		int ticksPerBuffer();
+
+		/// get the current buffer size: ticks per buffer * blockSize(),
+		/// updated if the buffer size changes in audioIn or audioOut
+		int bufferSize();
 	
 		/// get the current sample rate
 		int sampleRate();
@@ -415,6 +387,10 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 	
 		/// check if ofxPd is currently computing audio
 		bool isComputingAudio();
+
+		/// get the input buffer which is filled in audioIn(),
+		/// returns NULL if cleared
+		float * inputBuffer();
 
 	/// \section Audio Processing Callbacks
 
@@ -452,7 +428,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		int inChannels, outChannels; //< current num of input & output channels
 		bool computing; //< is compute audio on?
 	
-		float* inputBuffer; //< interleaved input audio buffer
+		float * inBuffer; //< interleaved input audio buffer
 
 		/// a receiving source's pointer and receivers
 		struct Source {

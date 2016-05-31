@@ -23,7 +23,7 @@ meta:
 
 common:
 	# required for libpd
-	ADDON_CFLAGS = -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
+	ADDON_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA -DLIBPD_USE_STD_MUTEX
 
 linux64:
 	# support dynamic loading

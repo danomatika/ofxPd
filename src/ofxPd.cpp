@@ -28,15 +28,9 @@
 using namespace std;
 using namespace pd;
 
-// used to lock libpd for thread safety
-Poco::Mutex _mutex;
-
-#define _LOCK() _mutex.lock()
-#define _UNLOCK() _mutex.unlock()
-
 //--------------------------------------------------------------------
 ofxPd::ofxPd() : PdBase() {
-	inputBuffer = NULL;
+	inBuffer = NULL;
 	computing = false;
 	clear();
 }
@@ -51,14 +45,11 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
                  const int sampleRate, const int ticksPerBuffer, bool queued) {
 	
 	// init pd
-	_LOCK();
 	if(!PdBase::init(numInChannels, numOutChannels, sampleRate, queued)) {
-		_UNLOCK();
 		ofLogError("Pd") << "could not init";
 		clear();
 		return false;
 	}
-	_UNLOCK();
 	
 	ticks = ticksPerBuffer;
 	bsize = ticksPerBuffer*blockSize();
@@ -67,7 +58,7 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 	outChannels = numOutChannels;
 
 	// allocate buffers
-	inputBuffer = new float[numInChannels*bsize];
+	inBuffer = new float[numInChannels*bsize];
 
 	ofLogVerbose("Pd") <<"inited";
 	ofLogVerbose("Pd") <<" samplerate: " << sampleRate;
@@ -88,16 +79,17 @@ void ofxPd::clear() {
 	//
 	// hopefully to be fixed for real at a future point ...
 	#ifndef TARGET_WIN32
-		_LOCK();
+		lock();
 	#endif
-	if(inputBuffer != NULL) {
-		delete[] inputBuffer;
-		inputBuffer = NULL;
+	if(inBuffer != NULL) {
+		delete[] inBuffer;
+		inBuffer = NULL;
 	}
-	PdBase::clear();
+	PdContext::instance().clear();
 	#ifndef TARGET_WIN32
-		_UNLOCK();
+		unlock();
 	#endif
+	unsubscribeAll();
 
 	channels.clear();
 
@@ -116,16 +108,12 @@ void ofxPd::clear() {
 void ofxPd::addToSearchPath(const std::string& path) {
 	string fullpath = ofFilePath::getAbsolutePath(ofToDataPath(path));
 	ofLogVerbose("Pd") << "adding search path: "+fullpath;
-	_LOCK();
 	PdBase::addToSearchPath(fullpath.c_str());
-	_UNLOCK();
 }
 
 void ofxPd::clearSearchPath() {
 	ofLogVerbose("Pd") << "clearing search paths";
-	_LOCK();
 	PdBase::clearSearchPath();
-	_UNLOCK();
 }
 
 //--------------------------------------------------------------------
@@ -143,9 +131,7 @@ Patch ofxPd::openPatch(const std::string& patch) {
 	ofLogVerbose("Pd") << "opening patch: "+file+" path: "+folder;
 
 	// [; pd open file folder(
-	_LOCK();
 	Patch p = PdBase::openPatch(file.c_str(), folder.c_str());
-	_UNLOCK();
  	if(!p.isValid()) {
 		ofLogError("Pd") << "opening patch \""+file+"\" failed";
 	}
@@ -154,35 +140,22 @@ Patch ofxPd::openPatch(const std::string& patch) {
 }
 
 pd::Patch ofxPd::openPatch(pd::Patch& patch) {
-	
 	ofLogVerbose("Pd") << "opening patch: "+patch.filename()+" path: "+patch.path();
-	
-	_LOCK();
 	Patch p = PdBase::openPatch(patch);
-	_UNLOCK();
 	if(!p.isValid()) {
 		ofLogError("Pd") << "opening patch \""+patch.filename()+"\" failed";
 	}
-	
 	return p;
 }
 
 void ofxPd::closePatch(const std::string& patch) {
-
 	ofLogVerbose("Pd") << "closing path: "+patch;
-
-	_LOCK();
 	PdBase::closePatch(patch);
-	_UNLOCK();
 }
 
 void ofxPd::closePatch(Patch& patch) {
-	
 	ofLogVerbose("Pd") << "closing patch: "+patch.filename();
-	
-	_LOCK();
 	PdBase::closePatch(patch);
-	_UNLOCK();
 }	
 
 //--------------------------------------------------------------------
@@ -196,9 +169,7 @@ void ofxPd::computeAudio(bool state) {
 	computing = state;
 
 	// [; pd dsp $1(
-	_LOCK();
 	PdBase::computeAudio(state);
-	_UNLOCK();
 }
 void ofxPd::start() {
 	// [; pd dsp 1(
@@ -212,26 +183,22 @@ void ofxPd::stop() {
 
 //----------------------------------------------------------
 void ofxPd::subscribe(const std::string& source) {
-
 	if(exists(source)) {
 		ofLogWarning("Pd") << "subscribe: ignoring duplicate source";
 		return;
 	}
-
 	PdBase::subscribe(source);
 	Source s;
 	sources.insert(pair<string,Source>(source, s));
 }
 
 void ofxPd::unsubscribe(const std::string& source) {
-	
 	map<string,Source>::iterator iter;
 	iter = sources.find(source);
 	if(iter == sources.end()) {
 		ofLogWarning("Pd") << "unsubscribe: ignoring unknown source";
 		return;
 	}
-
 	PdBase::unsubscribe(source);
 	sources.erase(iter);
 }
@@ -315,6 +282,10 @@ int ofxPd::ticksPerBuffer() {
 	return ticks;
 }
 
+int ofxPd::bufferSize() {
+	return bsize;
+}
+
 int ofxPd::sampleRate() {
 	return srate;
 }
@@ -329,6 +300,10 @@ int ofxPd::numOutChannels() {
 
 bool ofxPd::isComputingAudio() {
 	return computing;
+}
+
+float* ofxPd::inputBuffer(){
+	return inBuffer;
 }
 
 //----------------------------------------------------------
@@ -595,157 +570,35 @@ bool ofxPd::isReceivingMidiChannel(PdMidiReceiver& receiver, int channel) {
 }
 
 //----------------------------------------------------------
-void ofxPd::sendBang(const std::string& dest) {
-	_LOCK();
-	PdBase::sendBang(dest);
-	_UNLOCK();
-}
-
-void ofxPd::sendFloat(const std::string& dest, float value) {
-	_LOCK();
-	PdBase::sendFloat(dest, value);
-	_UNLOCK();
-}
-
-void ofxPd::sendSymbol(const std::string& dest, const std::string& symbol) {
-	_LOCK();
-	PdBase::sendSymbol(dest, symbol);
-	_UNLOCK();
-}
-
-//----------------------------------------------------------
-void ofxPd::startMessage() {
-	_LOCK();	
-	PdBase::startMessage();
-	_UNLOCK();
-}
-
-void ofxPd::addFloat(const float value) {
-	_LOCK();
-	PdBase::addFloat(value);
-	_UNLOCK();
-}
-
-void ofxPd::addSymbol(const std::string& symbol) {
-	_LOCK();
-	PdBase::addSymbol(symbol);
-	_UNLOCK();
-}
-
-void ofxPd::finishList(const std::string& dest) {
-	_LOCK();
-	PdBase::finishList(dest);
-	_UNLOCK();
-}
-
-void ofxPd::finishMessage(const std::string& dest, const std::string& msg) {
-	_LOCK();
-	PdBase::finishMessage(dest, msg);
-	_UNLOCK();
-}
-
-//----------------------------------------------------------
-void ofxPd::sendList(const std::string& dest, const List& list) {
-	_LOCK();	
-	PdBase::sendList(dest, list);
-	_UNLOCK();
-}
-
-void ofxPd::sendMessage(const std::string& dest, const std::string& msg, const List& list) {
-	_LOCK();	
-	PdBase::sendMessage(dest, msg, list);
-	_UNLOCK();
-}
-
-//----------------------------------------------------------
 void ofxPd::sendNoteOn(const int channel, const int pitch, const int velocity) {
-	_LOCK();
 	PdBase::sendNoteOn(channel-1, pitch, velocity);
-	_UNLOCK();
 }
 
 void ofxPd::sendControlChange(const int channel, const int control, const int value) {
-	_LOCK();
 	PdBase::sendControlChange(channel-1, control, value);
-	_UNLOCK();
 }
 
 void ofxPd::sendProgramChange(const int channel, int program) {
-	_LOCK();
 	PdBase::sendProgramChange(channel-1, program-1);
-	_UNLOCK();
 }
 
 void ofxPd::sendPitchBend(const int channel, const int value) {
-	_LOCK();
 	PdBase::sendPitchBend(channel-1, value);
-	_UNLOCK();
 }
 
 void ofxPd::sendAftertouch(const int channel, const int value) {
-	_LOCK();
 	PdBase::sendAftertouch(channel-1, value);
-	_UNLOCK();
 }
 
 void ofxPd::sendPolyAftertouch(const int channel, int pitch, int value) {
-	_LOCK();
 	PdBase::sendPolyAftertouch(channel-1, pitch, value);
-	_UNLOCK();
-}
-
-//----------------------------------------------------------
-void ofxPd::sendMidiByte(const int port, const int value) {
-	_LOCK();
-	PdBase::sendMidiByte(port, value);
-	_UNLOCK();
-}
-
-void ofxPd::sendSysex(const int port, const int value) {
-	_LOCK();
-	PdBase::sendSysex(port, value);
-	_UNLOCK();
-}
-
-void ofxPd::sendSysRealTime(const int port, const int value) {
-	_LOCK();
-	PdBase::sendSysRealTime(port, value);
-	_UNLOCK();
-}
-
-//----------------------------------------------------------
-int ofxPd::arraySize(const std::string& arrayName) {
-	_LOCK();
-	int len = PdBase::arraySize(arrayName);
-	_UNLOCK();
-	return len;
-}
-		
-bool ofxPd::readArray(const std::string& arrayName, std::vector<float>& dest, int readLen, int offset) {
-	_LOCK();
-	bool ret = PdBase::readArray(arrayName, dest, readLen, offset);
-	_UNLOCK();
-	return ret;
-}
-		
-bool ofxPd::writeArray(const std::string& arrayName, std::vector<float>& source, int writeLen, int offset) {
-	_LOCK();
-	bool ret = PdBase::writeArray(arrayName, source, writeLen, offset);
-	_UNLOCK();
-    return ret;
-}
-
-void ofxPd::clearArray(const std::string& arrayName, int value) {
-	_LOCK();
-	PdBase::clearArray(arrayName, value);
-	_UNLOCK();
 }
 
 //----------------------------------------------------------
 void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
 	try {
-		if(inputBuffer != NULL) {
-			_LOCK();
+		if(inBuffer != NULL) {
+			lock();
 			if(bufferSize != bsize || nChannels != inChannels) {
 				ticks = bufferSize/blockSize();
 				bsize = bufferSize;
@@ -754,8 +607,8 @@ void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
 				init(outChannels, inChannels, srate, ticks, isQueued());
 				PdBase::computeAudio(computing);
 			}
-			memcpy(inputBuffer, input, bufferSize*nChannels*sizeof(float));
-			_UNLOCK();
+			memcpy(inBuffer, input, bufferSize*nChannels*sizeof(float));
+			unlock();
 		}
 	}
 	catch (...) {
@@ -764,8 +617,8 @@ void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
 }
 
 void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
-	if(inputBuffer != NULL) {
-		_LOCK();
+	if(inBuffer != NULL) {
+		lock();
 		if(bufferSize != bsize || nChannels != outChannels) {
 			ticks = bufferSize/blockSize();
 			bsize = bufferSize;
@@ -774,10 +627,10 @@ void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
 			init(outChannels, inChannels, srate, ticks, isQueued());
 			PdBase::computeAudio(computing);
 		}
-		if(!PdBase::processFloat(ticks, inputBuffer, output)) {
+		if(!PdBase::processFloat(ticks, inBuffer, output)) {
 			ofLogError("Pd") << "could not process output buffer";
 		}
-		_UNLOCK();
+		unlock();
 	}
 }
 
