@@ -85,7 +85,7 @@ Patch PdBase::openPatch(const std::string& patch, const std::string& path) {
     // [; pd open file folder(
     void* handle = libpd_openfile(patch.c_str(), path.c_str());
     if(handle == NULL) {
-		_UNLOCK();
+        _UNLOCK();
         return Patch(); // return empty Patch
     }
     int dollarZero = libpd_getdollarzero(handle);
@@ -808,11 +808,11 @@ unsigned int PdBase::maxMessageLen() {
 
 //----------------------------------------------------------
 void PdBase::lock() {
-	_LOCK();
+    _LOCK();
 }
 
 void PdBase::unlock() {
-	_UNLOCK();
+    _UNLOCK();
 }
 
 /* ***** PD CONTEXT ***** */
