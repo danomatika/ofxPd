@@ -302,10 +302,6 @@ bool ofxPd::isComputingAudio() {
 	return computing;
 }
 
-float* ofxPd::inputBuffer(){
-	return inBuffer;
-}
-
 //----------------------------------------------------------
 void ofxPd::receiveSource(PdReceiver& receiver, const std::string& source) {
 
@@ -598,7 +594,6 @@ void ofxPd::sendPolyAftertouch(const int channel, int pitch, int value) {
 void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
 	try {
 		if(inBuffer != NULL) {
-			lock();
 			if(bufferSize != bsize || nChannels != inChannels) {
 				ticks = bufferSize/blockSize();
 				bsize = bufferSize;
@@ -608,7 +603,6 @@ void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
 				PdBase::computeAudio(computing);
 			}
 			memcpy(inBuffer, input, bufferSize*nChannels*sizeof(float));
-			unlock();
 		}
 	}
 	catch (...) {
@@ -618,7 +612,6 @@ void ofxPd::audioIn(float* input, int bufferSize, int nChannels) {
 
 void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
 	if(inBuffer != NULL) {
-		lock();
 		if(bufferSize != bsize || nChannels != outChannels) {
 			ticks = bufferSize/blockSize();
 			bsize = bufferSize;
@@ -630,7 +623,6 @@ void ofxPd::audioOut(float* output, int bufferSize, int nChannels) {
 		if(!PdBase::processFloat(ticks, inBuffer, output)) {
 			ofLogError("Pd") << "could not process output buffer";
 		}
-		unlock();
 	}
 }
 

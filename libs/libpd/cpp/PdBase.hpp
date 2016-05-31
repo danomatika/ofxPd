@@ -422,11 +422,11 @@ class PdBase {
         unsigned int maxMessageLen();
 	
 		/// lock the internal mutex
-		/// does nothing if not compiled with std::mutex support
+		/// does nothing if not compiled with LIBPD_USE_STD_MUTEX
 		void lock();
 
 		/// unlock the internal mutex
-		/// does nothing if not compiled with std::mutex support
+		/// does nothing if not compiled with LIBPD_USE_STD_MUTEX
 		void unlock();
 
     protected:
@@ -526,7 +526,7 @@ class PdBase {
 
 		#ifdef LIBPD_USE_STD_MUTEX
 			/// locks libpd C function calls, enable by defining LIBPD_USE_STD_MUTEX
-			std::mutex mutex;
+			std::mutex _mutex;
 		#endif
 };
 

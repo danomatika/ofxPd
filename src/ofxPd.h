@@ -388,10 +388,6 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// check if ofxPd is currently computing audio
 		bool isComputingAudio();
 
-		/// get the input buffer which is filled in audioIn(),
-		/// returns NULL if cleared
-		float * inputBuffer();
-
 	/// \section Audio Processing Callbacks
 
 		/// audio settings will be reinited if the buffersize or number of

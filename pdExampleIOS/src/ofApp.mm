@@ -56,7 +56,7 @@ void ofApp::setup() {
 	// note: you won't see any message prints until update() is called since
 	// the queued messages are processed there, this is normal
 	//
-	if(!pd.init(2, 1, sampleRate, ticksPerBuffer, false)) {
+	if(!pd.init(2, 1, sampleRate, ticksPerBuffer-1, false)) {
 		OF_EXIT_APP(1);
 	}
 
@@ -499,7 +499,7 @@ float ofApp::setAVSessionSampleRate(float preferredSampleRate) {
 	if (audioSessionError) {
 		NSLog(@"Error %ld, %@", (long)audioSessionError.code, audioSessionError.localizedDescription);
 	}
-	ofLogNotice() << "AVSession samplerate: " << session.sampleRate << ",  I/O buffer duration: " << session.IOBufferDuration;
+	ofLogNotice() << "AVSession samplerate: " << session.sampleRate << ", I/O buffer duration: " << session.IOBufferDuration;
 
 	// our actual samplerate, might be differnt aka 48k on iPhone 6S
 	return session.sampleRate;
