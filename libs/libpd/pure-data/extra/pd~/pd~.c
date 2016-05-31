@@ -450,7 +450,11 @@ static t_int *pd_tilde_perform(t_int *w)
                 if (numbuffill)
                 {
                     numbuf[numbuffill] = 0;
+#if PD_FLOATSIZE == 32
                     if (sscanf(numbuf, "%f", &z) < 1)
+#else
+                    if (sscanf(numbuf, "%lf", &z) < 1)
+#endif
                         continue;
                     if (i < x->x_noutsig)
                         x->x_outsig[i][j] = z;
@@ -488,7 +492,10 @@ static void pd_tilde_dsp(t_pd_tilde *x, t_signal **sp)
         
     for (i = 0, g = x->x_insig; i < x->x_ninsig; i++, g++)
         *g = (*(sp++))->s_vec;
-    
+        /* if there were no input signals Pd still provided us with one,
+        which we ignore: */
+    if (!x->x_ninsig)
+        sp++;
     for (i = 0, g = x->x_outsig; i < x->x_noutsig; i++, g++)
         *g = (*(sp++))->s_vec;
     

@@ -125,7 +125,7 @@ If you want to add ofxPd to another project, you need to make sure you include t
 
 You will also need to include some additional C Flags for building the libpd source:
 
-	-DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
+	-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
 
 _Note: **-DLIBPD_EXTRA** is optional if you do not need/use the externals in `libpd/pure-data/extra`_
 
@@ -135,7 +135,7 @@ _Note: **-DLIBPD_EXTRA** is optional if you do not need/use the externals in `li
 * drag these directories from ofxpd into this new group: ofxPd/src
 * add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Header Search Paths (make sure "All" is selected)
 * under Targets->YourApp->Build->**Other C Flags** (make sure "All" is selected), add
-	<pre>-DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA</pre>
+	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA</pre>
   * _Note: Make sure you use Other **C** Flags! Other **C++** Flags will **not** work since libpd is written in C._
 
 ### For Linux (Makefiles & Codeblocks):

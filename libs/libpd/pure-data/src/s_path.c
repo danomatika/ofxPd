@@ -8,7 +8,7 @@
  *
  * Generalized by MSP to provide an open_via_path function
  * and lists of files for all purposes.
- */ 
+ */
 
 /* #define DEBUG(x) x */
 #define DEBUG(x)
@@ -23,13 +23,13 @@
 #include <windows.h>
 #endif
 
-#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
-# include <alloca.h>        /* linux, mac, mingw, cygwin */
-#elif defined _MSC_VER
-# include <malloc.h>        /* MSVC */
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
-# include <stddef.h>        /* BSDs for example */
-#endif                      /* end alloca() ifdef nonsense */
+# include <stdlib.h> /* BSDs for example */
+#endif
 
 #include <string.h>
 #include "m_pd.h"
@@ -56,7 +56,7 @@ t_namelist *sys_helppath;
 void sys_bashfilename(const char *from, char *to)
 {
     char c;
-    while (c = *from++)
+    while ((c = *from++))
     {
 #ifdef _WIN32
         if (c == '/') c = '\\';
@@ -70,7 +70,7 @@ void sys_bashfilename(const char *from, char *to)
 void sys_unbashfilename(const char *from, char *to)
 {
     char c;
-    while (c = *from++)
+    while ((c = *from++))
     {
 #ifdef _WIN32
         if (c == '\\') c = '/';
@@ -93,7 +93,7 @@ int sys_isabsolutepath(const char *dir)
     }
     else
     {
-        return 0;            
+        return 0;
     }
 }
 
@@ -107,7 +107,7 @@ static void sys_expandpath(const char *from, char *to, int bufsize)
 #else
         const char *home = getenv("HOME");
 #endif
-        if (home) 
+        if (home)
         {
             strncpy(to, home, bufsize);
             to[bufsize-1] = 0;
@@ -129,14 +129,14 @@ static void sys_expandpath(const char *from, char *to, int bufsize)
         strncpy(to, buf, bufsize);
         to[bufsize-1] = 0;
     }
-#endif    
+#endif
 }
 
 /*******************  Utility functions used below ******************/
 
 /*!
  * \brief copy until delimiter
- * 
+ *
  * \arg to destination buffer
  * \arg to_len destination buffer length
  * \arg from source buffer
@@ -177,7 +177,10 @@ t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup)
         for (nl = listwas; ;)
         {
             if (!allowdup && !strcmp(nl->nl_string, s))
+            {
+                freebytes(nl2->nl_string, strlen(nl2->nl_string) + 1);
                 return (listwas);
+            }
             if (!nl->nl_next)
                 break;
             nl = nl->nl_next;
@@ -200,7 +203,7 @@ t_namelist *namelist_append_files(t_namelist *listwas, const char *s)
     const char *npos;
     char temp[MAXPDSTRING];
     t_namelist *nl = listwas, *rtn = listwas;
-    
+
     npos = s;
     do
     {
@@ -240,9 +243,12 @@ void sys_setextrapath(const char *p)
     namelist_free(sys_staticpath);
     /* add standard place for users to install stuff first */
 #ifdef __gnu_linux__
-    sys_expandpath("~/pd-externals", pathbuf, MAXPDSTRING);
+    sys_expandpath("~/.local/lib/pd/extra/", pathbuf, MAXPDSTRING);
     sys_staticpath = namelist_append(0, pathbuf, 0);
-    sys_staticpath = namelist_append(sys_staticpath, "/usr/local/lib/pd-externals", 0);
+    sys_expandpath("~/pd-externals", pathbuf, MAXPDSTRING);
+    sys_staticpath = namelist_append(sys_staticpath, pathbuf, 0);
+    sys_staticpath = namelist_append(sys_staticpath,
+        "/usr/local/lib/pd-externals", 0);
 #endif
 
 #ifdef __APPLE__
@@ -252,9 +258,9 @@ void sys_setextrapath(const char *p)
 #endif
 
 #ifdef _WIN32
-    sys_expandpath("%CommonProgramFiles%/Pd", pathbuf, MAXPDSTRING);
-    sys_staticpath = namelist_append(0, pathbuf, 0);
     sys_expandpath("%AppData%/Pd", pathbuf, MAXPDSTRING);
+    sys_staticpath = namelist_append(0, pathbuf, 0);
+    sys_expandpath("%CommonProgramFiles%/Pd", pathbuf, MAXPDSTRING);
     sys_staticpath = namelist_append(sys_staticpath, pathbuf, 0);
 #endif
     /* add built-in "extra" path last so its checked last */
@@ -264,7 +270,7 @@ void sys_setextrapath(const char *p)
     /* try to open a file in the directory "dir", named "name""ext",
     for reading.  "Name" may have slashes.  The directory is copied to
     "dirresult" which must be at least "size" bytes.  "nameresult" is set
-    to point to the filename (copied elsewhere into the same buffer). 
+    to point to the filename (copied elsewhere into the same buffer).
     The "bin" flag requests opening for binary (which only makes a difference
     on Windows). */
 
@@ -312,7 +318,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
             }
             else *nameresult = dirresult;
 
-            return (fd);  
+            return (fd);
         }
     }
     else
@@ -334,7 +340,7 @@ int sys_open_absolute(const char *name, const char* ext,
         if (!z)
             return (0);
         dirlen = z - name;
-        if (dirlen > MAXPDSTRING-1) 
+        if (dirlen > MAXPDSTRING-1)
             dirlen = MAXPDSTRING-1;
         strncpy(dirbuf, name, dirlen);
         dirbuf[dirlen] = 0;
@@ -366,7 +372,7 @@ static int do_open_via_path(const char *dir, const char *name,
         /* first check if "name" is absolute (and if so, try to open) */
     if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
         return (fd);
-    
+
         /* otherwise "name" is relative; try the directory "dir" first. */
     if ((fd = sys_trytoopenone(dir, name, ext,
         dirresult, nameresult, size, bin)) >= 0)
@@ -450,7 +456,7 @@ int sys_open(const char *path, int oflag, ...)
            -> http://www.mail-archive.com/bug-gnulib@gnu.org/msg14212.html
            -> http://bugs.debian.org/647345
         */
-        
+
         imode = va_arg (ap, int);
         mode = (mode_t)imode;
         va_end(ap);
@@ -503,7 +509,7 @@ void open_via_helppath(const char *name, const char *dir)
     if (strlen(realname) > 3 && !strcmp(realname+strlen(realname)-3, ".pd"))
         realname[strlen(realname)-3] = 0;
     strcat(realname, "-help.pd");
-    if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename, 
+    if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
         MAXPDSTRING, 0, sys_helppath)) >= 0)
             goto gotone;
 
@@ -511,7 +517,7 @@ void open_via_helppath(const char *name, const char *dir)
     strcpy(realname, "help-");
     strncat(realname, name, MAXPDSTRING-10);
     realname[MAXPDSTRING-1] = 0;
-    if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename, 
+    if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
         MAXPDSTRING, 0, sys_helppath)) >= 0)
             goto gotone;
 
@@ -543,15 +549,15 @@ int sys_rcfile(void)
     char* buffer;
     char  fname[MAXPDSTRING], buf[1000], *home = getenv("HOME");
     int retval = 1; /* that's what we will return at the end; for now, let's think it'll be an error */
- 
+
     /* initialize rc-arg-array so we can safely clean up at the end */
     for (i = 1; i < NUMARGS-1; i++)
       rcargv[i]=0;
 
 
     /* parse a startup file */
-    
-    *fname = '\0'; 
+
+    *fname = '\0';
 
     strncat(fname, home? home : ".", MAXPDSTRING-10);
     strcat(fname, "/");
@@ -582,7 +588,6 @@ int sys_rcfile(void)
 
     /* parse the options */
 
-    fclose(file);
     if (sys_verbose)
     {
         if (rcargc)
@@ -603,9 +608,11 @@ int sys_rcfile(void)
 
 
  cleanup: /* prevent memleak */
+    fclose(file);
+
     for (i = 1; i < NUMARGS-1; i++)
       if(rcargv[i])free(rcargv[i]);
-    
+
     return(retval);
 }
 #endif /* _WIN32 */
