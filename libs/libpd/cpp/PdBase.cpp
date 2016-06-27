@@ -19,12 +19,13 @@
 #include <iostream>
 
 #ifdef LIBPD_USE_STD_MUTEX
-    #if __cplusplus <= 201103L // C++ 11 check
+    #if __cplusplus >= 201103L // C++ 11 check
         #define _LOCK() _mutex.lock()
         #define _UNLOCK() _mutex.unlock()
         #define _GUARD() std::lock_guard<std::mutex> lock(_mutex);
     #endif
-#else
+#endif
+#ifndef _LOCK
     // no ops
     #define _LOCK()
     #define _UNLOCK()
