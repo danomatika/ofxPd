@@ -248,34 +248,36 @@ Newer versions of libpd check the windows version, so this needs to be set via a
 Adding Pure Data external libraries to ofxPd
 --------------------------------------------
 
-ofxPd only includes the standard set of Pure Data objects as found in the "Vanilla" version of PD. If you wish to include an external library from Pd-Extended, etc you need to include the source files in your project and call the library setup function after initializing ofxPd in order to load the lib.
+ofxPd only includes the standard set of Pure Data objects as found in the "Vanilla" version of Pd. If you wish to include an external library from Pd-extended, etc you need to include the source files in your project and call the library setup function after initializing ofxPd in order to load the lib.
 
 ### Adding external source files
 
-The source files for externals included with Pd-Extended can be found in the Pure Data Subversion repository on Sourceforge. It is recommended that you use the latest Pd-Extended release branch as it will be more stable then the development version. See http://puredata.info/docs/developer/GettingPdSource
+The source files for externals included with Pd-extended can be found in the Pure Data Git repositories: <http://git.puredata.info/cgit>. Other externs may be found elsewhere, including on GitHub.
 
-For example, if we want to include the zexy external in our project, we first download the sources files for the latest stable Pd-Extended (0.42 as of this writing) from the Subversion repository (make sure you have svn installed):
+For example, if we want to include the [zexy external](http://git.puredata.info/cgit/svn2git/libraries/zexy.git/) in your project, first download the sources files from the Git repository (make sure you have git installed):
 
-    svn checkout https://pure-data.svn.sourceforge.net/svnroot/pure-data/branches/pd-extended/0.42
+    git clone https://git.puredata.info/cgit/svn2git/libraries/zexy.git
 
-The external sources can be found in the `externals` folder. For instance, the zexy sources are in `externals/zexy/src/`. Copy the .h and .c files into your project folder. In my case I create an externals folder in src folder of my project, something like `myProject/src/externals/zexy`. Then add these files to your ofxPd project.
+Once cloned, the zexy sources are in `zexy/src/`. Copy the .h and .c files into your project folder. In my case I create an externals folder in the src folder of my project, something like `myProject/src/externals/zexy`. Then add these files to your project.
 
 Note: Some libraries may require external libraries of their own and/or special compile time definitions. Make sure you read the build documentation on the external and include these with your project. 
 
 ### Calling the external setup function
 
-In order for libpd to use an external library, the library has to register itself on startup. This accomplished by calling the library's setup function which is named after the library followed by a "_setup" suffix: "library_setup()". The zexy setup function is simply "zexy_setup()". Call this setup function after initializing ofxPd in your app's setup() function:
-<pre>
-	if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
-		OF_EXIT_APP(1);
-	}
-	
-	// load libs
-	zexy_setup();
-</pre>
+In order for ofxPd to use an external library, the library has to register itself on startup. This is accomplished by calling the library's setup function which is named after the library followed by a "_setup" suffix: "library_setup()". The zexy setup function is simply "zexy_setup()". Call this setup function after initializing ofxPd in your app's setup() function:
+~~~
+if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
+	OF_EXIT_APP(1);
+}
+
+// load libs
+zexy_setup();
+
+...
+~~~
 
 If all goes well, you should see some sort of print from the library as it initializes:
-<pre>
+~~~
 [zexy] part of zexy-2.2.3 (compiled: Aug  7 2011)
 	Copyright (l) 1999-2008 IOhannes m zmölnig, forum::für::umläute & IEM
 [&&~] part of zexy-2.2.3 (compiled: Aug  7 2011)
@@ -283,21 +285,21 @@ If all goes well, you should see some sort of print from the library as it initi
 [.] part of zexy-2.2.3 (compiled: Aug  7 2011)
 	Copyright (l) 1999-2008 IOhannes m zmölnig, forum::für::umläute & IEM
 ...
-...
-...
-</pre>
+~~~
 
-For C++ and some C libraries, this is all your need. The project should compile and the external load fine. However, some pure C libraries are not written with explicit C++ support in mind and, for arcane reasons best not delved into here, the C++ compiler will not be able to find the library's setup function.  This is the case with zexy and the compiler error looks like this:
-<pre>'zexy_setup' was not declared in this scope</pre>
+For C++ and some C libraries, this is all your need. The project should compile and the external load fine. However, some pure C libraries are not written with explicit C++ support in mind and, for arcane reasons best not delved into here, the C++ compiler will not be able to find the library's setup function. This is the case with zexy and the compiler error looks like this:
+~~~
+'zexy_setup' was not declared in this scope
+~~~
 
-In order for the C++ compiler to find the function, we need to add our own declaration. This can be done in your app .cpp file, a project header file, etc. In order to keep things organized, I create an "Externals.h" header file and place it in `myProject/src/externals`. Here I declare the zexy_setup function using a special syntax:
-<pre>
+In order for the C++ compiler to find the function, we need to add our own declaration. This can be done in your app .cpp file, a project header file, etc. In order to keep things organized, I create an "Externals.h" header file and place it in `myProject/src/externals`. Here I declare the "zexy_setup()" function using a special syntax:
+~~~
 #pragma once
 
 extern "C" {
 	void zexy_setup();
 }
-</pre>
+~~~
 
 The `extern "C"` keywords tell the compiler to look for a pure C function, not a C++ function. Make sure to include the "Externals.h" header file where you include "ofxPd.h". Add a setup function declaration for any other externals that need it here.
 
