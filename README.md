@@ -44,15 +44,22 @@ Place ofxPd within a folder in the apps folder of the OF dir tree:
 
     openframeworks/addons/ofxPd
 
-#### Which version to use?
+The easiest way to do this is via cloning with git:
 
-If you are using a stable version (0062, 007, ...) of OpenFrameworks then you want to use a git tag of ofxPd for that version. You can select the tag in the Github "Current Branch" menu or clone and check it out using git.
+    cd openframeworks/addons/
+    git clone git://github.com/danomatika/ofxPd.git
 
-For example, the following commands will clone ofxPd and switch to the OF 0062 tagged version:
+### Which version to use?
+
+The master branch of ofxPd will work with the current stable version of OpenFrameworks and can be considered *relatively* stable.
+
+Previous versions are tagged using [Semantic Versioning](http://semver.org) with the updates to newer versions of OpenFrameworks and libpd noted in the changelog, CHANGES.txt. You can select the tag in the Github "Current Branch" menu or clone and check it out using git.
+
+If you want to use ofxPd with a previous version of OpenFrameworks, checkout the corresponding version tag after cloning:
 
     git clone git://github.com/danomatika/ofxPd.git
     cd ofxPd
-    git checkout 0062
+    git checkout 1.5.3
 
 Running the Example Projects
 ----------------------------

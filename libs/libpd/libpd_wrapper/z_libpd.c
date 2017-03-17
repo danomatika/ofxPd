@@ -13,6 +13,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#ifdef LIBPD_SETLOCALE
+# include <locale.h>
+#endif
 #include "z_libpd.h"
 #include "x_libpdreceive.h"
 #include "z_hooks.h"
@@ -29,7 +32,9 @@
 #else
 # define SCHED_TICK(x) sched_tick()
 #endif
+
 void pd_init(void);
+int sys_startgui(const char *libdir);
 
 // (optional) built in pd externals setup functions
 #ifdef LIBPD_EXTRA
@@ -82,7 +87,7 @@ int libpd_init(void) {
   libpdreceive_setup();
   sys_set_audio_api(API_DUMMY);
   sys_searchpath = NULL;
-
+  sys_startgui(NULL);
 #ifdef LIBPD_EXTRA
   bob_tilde_setup();
   bonk_tilde_setup();
@@ -94,7 +99,9 @@ int libpd_init(void) {
   sigmund_tilde_setup();
   stdout_setup();
 #endif
-
+#ifdef LIBPD_SETLOCALE
+  setlocale(LC_NUMERIC, "C");
+#endif
   return 0;
 }
 

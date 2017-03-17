@@ -1,189 +1,189 @@
-1.6.0: 2016 May
+1.6.1: 2017 Mar 17
 
-some libpd source files changed, update your projects
+* updated to latest libpd 0.10 (pd 0.47-1)
+* updated readme section on externs
 
-* updated to libpd 0.9.0 & pd version 0.47-0:
-  * new clone object
-  * expr is now BSD licensed
-  * HAVE_ALLOCA_H no longer required
-* updated for OF 0.9.0+
-* removed Poco mutex as we can now use the PdBase std::mutex with C++11
+* fixed bad C++11 preprocessor check (reported by Mateus Knelsen)
+
+1.6.0: 2016 May 31
+
+  some libpd source files changed, update your projects
+
 * added HAVE_LIBDL define for dynamic external loading on desktop
 
-1.5.3: 2015 Oct
+* updated to libpd 0.9.0 & pd version 0.47-0:
+  - new clone object
+  - expr is now BSD licensed
+  - HAVE_ALLOCA_H no longer required
+* updated for OF 0.9.0
+
+* removed Poco mutex as we can now use the PdBase std::mutex with C++11
+
+1.5.3: 2015 Nov 30
 
 * updated to libpd 0.8.4
 * ofxPd now reinits itself if the buffer size or number of channels changes in
   audioIn()/audioOut()
+* pdMultiExample updates
 
-1.5.2: 2015 Jun
+1.5.2: 2015 Jun 16
 
 * updated latest libpd which includes big fix for ringbuffer race condition
 
-1.5.1: 2015 Apr
+1.5.1: 2015 Apr 28
 
 * updated to libpd & pd version 0.46-6 (includes new bob~ external)
-* old polling interface removed since it's no longer part of PdBase,
-  use queued=true in init() & receiveMessages()/receiveMidi()
+
 * fixed examples not building correctly due to remaining polling interface code
 * fixed build issue due to missing expr~ and d_fft_fftsg.c sources 
 
-1.5.0: 2015 Jan
+* old polling interface removed since it's no longer part of PdBase,
+  use queued=true in init() & receiveMessages()/receiveMidi()
 
-some libpd source files changed, update your projects
+1.5.0: 2015 Feb 22
+
+  some libpd source files changed, update your projects
 
 * updated to latest libpd & pd version 0.46-4
 * included extra externals are now loaded by default (expr, bonk~, fiddle~, etc)
 * updated addons_config.mk to work with upcoming OF 0.9.0 project generator
 * renamed examples and removed example project files (use the project generator)
 
-1.4.0: 2013 Aug
+1.4.0: 2013 Aug 13
 
-* general udpates for OF 0.8.0:
+* added PitchShifter example
+
+* general updates for OF 0.8.0:
   * moved libpd source into libs/libpd to match ofxAddonsTemplate
   * split example into seperate desktop & ios projects (easier to generate)
   * regenerated project files
+* updated to latest libpd
+
 * built-in pd externals now work (bonk~, choice, fiddle~, loop~, lrshift~,
   pique~, sigmund~, stdout)
-* added PitchShifter example
-* updated to latest libpd
 
-1.3.0: 2012 Aug, Sep, Oct
+1.3.0: 2012 Nov 7
 
-* updated to latest libpd
-* removed [expr~] due to licensing, should be left up to individual developers
 * added ability to open a new patch instance with an existing patch object
+
+* updated to latest libpd
 * changed logging to use "Pd" logging module
 
-1.2.0: 2012 Jul
+* fixed Windows hang on exit due to stuck mutex lock in ofxPd::clear()
+
+* removed [expr~] due to licensing, should be left up to individual developers
+
+1.2.0: 2012 Jul 30
 
 * added support for PdBase event polling in ofxPd
 
-1.1.0: 2012 Mar
+1.1.0: 2012 Mar 22
 
 * updated to latest libpd
-* List::asFloat() & List::asSymbol() are now
-  List::getFloat() & List::getSymbol()
+* List::asFloat() & List::asSymbol() are now List::getFloat() & 
+  List::getSymbol()
 
-1.0.0: 2011 Oct, Nov
+* bugfixes for Visual Studio 2010 (thanks Laurence Muller)
+
+1.0.0: 2012 Jan 18
+
+  streamlined api
 
 * added List building & sending
 * wrapped Pd receiver and types within a "pd" namespace
 * reworked api to better match libpd Java api
-  * channel is now first arg in midi functions
-  * port is now first arg in raw midi byte functions
-  * pgm num range is now 1-128 to match [pgmin]/[pgmout] (was 0-127)
-  * destination names are now set when finishing compound messages
-  * renamed "sysRT" functions to "sysRt"
-  * renamed "getArrayLen" to "getArraySize"
-  * renamed "*Source" functions to "subscribe" functions
-  * renamed "*subscribe" functions to "receive/ignore" functions
-  * renamed "ofxPdListener" class to "PdReceiver"
-  * renamed "*Listener" functions to "*Receiver" functions
-  * renamed Receiver functions (bangReceived, floatReceived, etc) to match
+  - channel is now first arg in midi functions
+  - port is now first arg in raw midi byte functions
+  - pgm num range is now 1-128 to match [pgmin]/[pgmout] (was 0-127)
+  - destination names are now set when finishing compound messages
+  - renamed "sysRT" functions to "sysRt"
+  - renamed "getArrayLen" to "getArraySize"
+  - renamed "*Source" functions to "subscribe" functions
+  - renamed "*subscribe" functions to "receive/ignore" functions
+  - renamed "ofxPdListener" class to "PdReceiver"
+  - renamed "*Listener" functions to "*Receiver" functions
+  - renamed Receiver functions (bangReceived, floatReceived, etc) to match
         Java Receiver (receiveBang, receiveFloat, etc)
-  * split midi receiving into PdMidiReceiver base class
-  * renamed "dspOn/dspOff" to "start/stop"
-  * added computeAudio function
-  * receivers now receive from all subscribed sources by default
-  * renamed ofxPdListener and ofxPdTypes source files to PdReceiver and PdTypes
-  * renamed "getArraySize" function to "arraySize"
-  * renamed "setMaxMsgLength" function to "setMaxMessageLen"
-  * renamed "getMaxMsgLength" function to "maxMessgeLen"
-  * renamed "getBlockSize" function to "blockSize"
-  * renamed "sendMsg" & "finishMsg" functions to "sendMessage" & finishMessage"
-  * renamed midi funcs/objects to match java api (ie Note->NoteOn,
+  - split midi receiving into PdMidiReceiver base class
+  - renamed "dspOn/dspOff" to "start/stop"
+  - added computeAudio function
+  - receivers now receive from all subscribed sources by default
+  - renamed ofxPdListener and ofxPdTypes source files to PdReceiver and PdTypes
+  - renamed "getArraySize" function to "arraySize"
+  - renamed "setMaxMsgLength" function to "setMaxMessageLen"
+  - renamed "getMaxMsgLength" function to "maxMessgeLen"
+  - renamed "getBlockSize" function to "blockSize"
+  - renamed "sendMsg" & "finishMsg" functions to "sendMessage" & finishMessage"
+  - renamed midi funcs/objects to match java api (ie Note->NoteOn,
     Ctl->ControlChange, etc)
-  * renamed "receivedPrint" function to "print"
+  - renamed "receivedPrint" function to "print"
 * added receiveMidi/ignoreMidi functions to filter midi channel events for
   PdMidiReceivers
-* separated base libpd wrapper into PdBase class, now extended by ofxPd
-  * added setReceiver and setMidiReceiver functions
-  * added audio processing (processRaw, processShort, etc) functions
-  * Pd class source files (PdTypes, PdReceiver, etc) have been moved to
-    src/pd/cpp
 * added isInited function
+
+* separated base libpd wrapper into PdBase class, now extended by ofxPd
+  - added setReceiver and setMidiReceiver functions
+  - added audio processing (processRaw, processShort, etc) functions
+  - Pd class source files (PdTypes, PdReceiver, etc) have been moved to
+    src/pd/cpp
 * now checks if HAVE_UNISTD_H & USEAPI_DUMMY are defined before defining
 * PdBase instance calls now wrapped by a PdContext singleton (global instance
   until multiple context support is added to libpd)
 
-0.9.0: 2011 Sep
+0.3.0: 2011 Sep 22
 
-* updated to newest libpd
 * added max message length setting
-* merged win codeblocks branch
-* cleaned Xcode projects, removed OF 0062 project
-* tagged OF 0062 version
 
-0.8.0: 2011 Aug
-    
-* added codeblocks project for linux
-* added branch with codeblocks project for windows
-* updated readme with minigw info
+* updated for OF 0062
+* updated to newest libpd
+* merged win codeblocks branch
+
+* cleaned Xcode projects, removed OF 0062 project
+
+0.2.0: 2011 Aug 7
+
+* fleshed out entire libpd api:
+  - array access
+  - Patch object
+  - stream interface and type structs
+  - receiving control functions
+  - path handling in addToSearchPath()
+  - ticksPerBuffer added to init()
+  - etc
+* sound in and out working
+* added support for Linux and Codeblocks project (thanks Damian Stewart)
+* added iOS example project
+* added libpd source update script
 * added pd external libs tutorial to readme
 
-0.7.0: 2011 Jun-Jul
-
-* added path handling to addToSearchPath()
-* added search path abs test to example
-* added realtime scope array to example
-* updated OF 007 project
-* updated readme and comments
-
-0.6.0: 2011 May 29
-
-* added array access
-* added Patch object
-* cleaned and updated api tests in example
+* now using BSD license
+* updated for OF 007
 * simplified some api names to match corresponding pd names (midi)
 * midi channels are now numbered 1-16
-* added keyboard piano to example
-* added delay to example
-* now thread safe on all platforms
-* added BSD license
-
-0.5.0: 2011 May 26
-    
-* added OF 007 iOS project
-* reorganized example into AppCore
-* added ticksPerBuffer to init()
-* updated OF 0062 project
-* audio out working on iOS
+* now thread safe on all platforms (thanks Damian Stewart)
+* reorganized examples into AppCore class
 * swapped num in and out channel arg order in init() to match ofSoundStream
-* list and message receiving now working
-
-0.4.0: 2011 May 22
-
-* added linux support
-* added mutex for thread safety on linux (required by rtaudio)
 * moved libpd sources to src folder
+* updated example:
+  - search path abs test
+  - realtime scope array
+  - keyboard piano
+  - delay
+
+* bugfix 0062 hangs on exit
 * bugfix soundstream hang on exit
-* message event sources and subscriptions are now working
-
-0.3.0: 2011 May 18
-
-* fleshed out entire libpd api
-* sound in and out working
-* added stream interface and type structs
-* added receiving control functions
-* updated example
 * bugfix listener bugs and print handling
 
-0.2.0: 2011 May 13
-    
-* added libpd source update script
-* removed 'pd' function name prefix
-* added midinote callback
-* added Xcode OF 0062 project
-* updated Xcode 007 project files
 * removed need for libpd static lib
-* bugfix 0062 hangs on exit
+* removed 'pd' function name prefix
 
-0.1.0:  Initial version 2011 Jan
+0.1.0: 2011 Jan 24
+
+  initial version
 
 * added Xcode OF 007 beta project file
 * added libpd as a static lib
 * added message sending functions
 * added message receiving functions
 * audio out working
-* added event listeners
+* added event listeners (thanks Marek Bereza)
