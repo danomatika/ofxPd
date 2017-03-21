@@ -16,9 +16,7 @@
 #include "ofxPd.h"
 
 #include <algorithm>
-
 #include "ofUtils.h"
-#include <Poco/Mutex.h>
 
 // needed for libpd audio passing
 #ifndef USEAPI_DUMMY
