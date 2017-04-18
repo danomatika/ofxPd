@@ -301,7 +301,7 @@ For C++ and some C libraries, this is all your need. The project should compile 
 
 In order for the C++ compiler to find the function, we need to add our own declaration. This can be done in your app .cpp file, a project header file, etc. In order to keep things organized, I create an "Externals.h" header file and place it in `myProject/src/externals`. Here I declare the "zexy_setup()" function using a special syntax:
 ~~~
-#pragma once
+# pragma once
 
 extern "C" {
 	void zexy_setup();
