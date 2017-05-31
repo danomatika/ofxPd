@@ -56,7 +56,7 @@ class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
 		
 		void receiveMidiByte(const int port, const int byte);
 		
-                ofSoundStream soundStream;
+		ofSoundStream soundStream;
 		ofxPd pd;
 		vector<float> scopeArray;
 		vector<Patch> instances;
