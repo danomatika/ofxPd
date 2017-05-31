@@ -32,16 +32,16 @@ void ofApp::setup() {
 	#endif
 
 	// setup OF sound stream
-        ofSoundStreamSettings settings;
-        // On Linux using PulseAudio:
-        // settings.setApi(ofSoundDevice::Api::PULSE);
-        settings.setOutListener(this);
+	ofSoundStreamSettings settings;
+	// On Linux using PulseAudio:
+	// settings.setApi(ofSoundDevice::Api::PULSE);
+	settings.setOutListener(this);
 	settings.sampleRate = 44100;
 	settings.numOutputChannels = 2;
 	settings.numInputChannels = 0;
 	settings.bufferSize = ofxPd::blockSize()*ticksPerBuffer;
-        settings.numBuffers = 3;
-        soundStream.setup(settings);
+	settings.numBuffers = 3;
+	soundStream.setup(settings);
 
 	// setup Pd
 	//
