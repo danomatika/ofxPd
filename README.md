@@ -31,7 +31,7 @@ To use ofxPd, first you need to download and install Open Frameworks. Developmen
 
 [OF github repository](https://github.com/openframeworks/openFrameworks)
 
-On Mac OSX, you will need to install Xcode from the Mac Developer Tools.
+On macOS, you will need to install Xcode from the Mac Developer Tools.
 
 On Linux, you can use the Makefile and/or Codeblocks project files (without the "_win" suffix).
 
@@ -76,9 +76,14 @@ To (re)generate project files for an *existing* project:
 
 If everything went Ok, you should now be able to open the generated project and build/run the example.
 
-### OSX
+Notes for iOS projects:
 
-Open the Xcode project, select the "pdExample Debug" scheme, and hit "Run".
+* if you use the OF release zips from openframeworks.cc, you need the iOS zip *not* the macOS zip
+* make sure that "iOS (Xcode)" is selected in the PG's "Platforms" box
+
+### macOS & iOS
+
+Open the Xcode project, select the "pdExample Debug" or "pdExampleIOS Debug" scheme, and hit "Run".
 
 ### Linux
 
@@ -194,7 +199,7 @@ libpd as utilized in ofxPd does not handle any of the audio interfacing itself, 
 
 The sample rate is set to 44100 when initializing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
 
-For example: The default sample rate on Mac OSX is 96000. Running the app at 44100 results in double the playback pitch while initing ofxPd at 96000 gives the correct pitch.
+For example: The default sample rate on macOS is 96000. Running the app at 44100 results in double the playback pitch while initing ofxPd at 96000 gives the correct pitch.
 
 ### Running App in the Background on iOS
 
@@ -217,7 +222,7 @@ The fix is to follow Apple's method of setting the *preferred* sample rate, then
 
 ### File "tr1/memory" not found in Xcode
 
-You just upgraded to OSX 10.9 and Xcode 5 right? The default compiler is now LLVM and you need to rebuild your Xcode project files so OF will build correctly. Ude the ProjectGenerator in the OF 0.8.0 download to regenerate the project:
+You just upgraded to macOS 10.9 and Xcode 5 right? The default compiler is now LLVM and you need to rebuild your Xcode project files so OF will build correctly. Ude the ProjectGenerator in the OF 0.8.0 download to regenerate the project:
 
 * choose the _parent folder_ of your project folder
 * set the name of the project
