@@ -61,4 +61,6 @@ osx:
 	ADDON_CFLAGS += -DHAVE_LIBDL
 
 ios:
+	# set No common blocks option to avoid duplicate symbols link error
+	ADDON_CFLAGS += -fcommon
 
