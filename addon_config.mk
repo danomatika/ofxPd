@@ -59,8 +59,13 @@ android/armeabi-v7a:
 osx:
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL
+	
+	# fix dispatch.h error with macOS SDK 10.13+
+	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1
 
 ios:
 	# set No common blocks option to avoid duplicate symbols link error
 	ADDON_CFLAGS += -fcommon
-
+	
+	# fix dispatch.h error with macOS SDK 10.13+
+	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1
