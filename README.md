@@ -166,7 +166,7 @@ Add libpd.lib to link stage of the Visual Studio project:
 * Make sure Active configuration & platform are set (you will need to do this for both Debug & Release builds)
 * Configuration Properties -> Linker -> Input
 * Additional Dependencies -> click on right hand drop down, choose Edit...
-* add the path libpd.lib: $(OF_ROOT)\addons\ofxPd\libs\libpd\lib\libpd.lib
+* add the path libpd.lib: `$(OF_ROOT)\addons\ofxPd\libs\libpd\lib\libpd.lib`
 
 Add the runtime libraries to the project's `bin` folder:
 
