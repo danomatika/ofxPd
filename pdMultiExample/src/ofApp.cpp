@@ -30,7 +30,14 @@ void ofApp::setup() {
 	int numOutputs = 2;
 
 	// setup OF sound stream
-	ofSoundStreamSetup(numOutputs, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 4);
+	ofSoundStreamSettings settings;
+	settings.numInputChannels = numInputs;
+	settings.numOutputChannels = numOutputs;
+	settings.sampleRate = 44100;
+	settings.bufferSize = ofxPd::blockSize() * ticksPerBuffer;
+	settings.setInListener(this);
+	settings.setOutListener(this);
+	ofSoundStreamSetup(settings);
 
 	// allocate pd instance handles
 	instanceMutex.lock();
@@ -126,6 +133,13 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {}
+
+//--------------------------------------------------------------
+void ofApp::exit() {
+
+	// cleanup
+	ofSoundStreamStop();
+}
 
 //--------------------------------------------------------------
 void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {

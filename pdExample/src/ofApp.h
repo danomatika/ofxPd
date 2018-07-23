@@ -26,6 +26,7 @@ class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
 		void setup();
 		void update();
 		void draw();
+		void exit();
 
 		// do something
 		void playTone(int pitch);

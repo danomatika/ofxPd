@@ -32,7 +32,14 @@ void ofApp::setup() {
 	#endif
 
 	// setup OF sound stream
-	ofSoundStreamSetup(2, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
+	ofSoundStreamSettings settings;
+	settings.numInputChannels = 2;
+	settings.numOutputChannels = 2;
+	settings.sampleRate = 44100;
+	settings.bufferSize = ofxPd::blockSize() * ticksPerBuffer;
+	settings.setInListener(this);
+	settings.setOutListener(this);
+	ofSoundStreamSetup(settings);
 
 	// setup Pd
 	//
@@ -268,6 +275,13 @@ void ofApp::draw() {
 		ofDrawLine(x, y+scopeArray[i]*h, x+w, y+scopeArray[i+1]*h);
 		x += w;
 	}
+}
+
+//--------------------------------------------------------------
+void ofApp::exit() {
+
+	// cleanup
+	ofSoundStreamStop();
 }
 
 //--------------------------------------------------------------

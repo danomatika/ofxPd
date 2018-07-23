@@ -43,6 +43,7 @@ class ofApp : public ofBaseApp, public PdReceiver{
 		void setup();
 		void update();
 		void draw();
+		void exit();
 		
 		// audio callbacks
 		void audioReceived(float * input, int bufferSize, int nChannels);
