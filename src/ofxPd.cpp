@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include "ofUtils.h"
+#include "ofLog.h"
 
 // needed for libpd audio passing
 #ifndef USEAPI_DUMMY
