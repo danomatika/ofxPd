@@ -1,3 +1,12 @@
+1.7.0: 2018 Jul 24
+
+* updated for OF 0.10.0
+* updated to latest libpd pre-0.11 (pd 0.48-1)
+
+* fixed macOS 10.13 SDK disptach.h error
+* fixed compile error due to leftover Poco/Mutex include (reported by Dan Moore)
+* fixed iOS duplicate symbols link error by setting -fcommon (reported by ukelady)
+
 1.6.1: 2017 Mar 17
 
 * updated to latest libpd 0.10 (pd 0.47-1)
