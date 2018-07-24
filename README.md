@@ -33,9 +33,9 @@ To use ofxPd, first you need to download and install Open Frameworks. Developmen
 
 On macOS, you will need to install Xcode from the Mac Developer Tools.
 
-On Linux, you can use the Makefile and/or Codeblocks project files (without the "_win" suffix).
+On Linux, you can use the Makefile and/or Codeblocks project files (without the "\_win" suffix).
 
-On Win, you will need [Codeblocks+MiniGW](http://www.codeblocks.org/downloads/26) and the [Win Codeblocks OF package](http://www.openframeworks.cc/download). Use the Codeblocks projects files with the "_win" suffix. Also, some versions of CB+MinGW are missing some libraries needed by OF (pthreads, etc). Make sure you've followed the [OF Win Codeblocks setup guide](http://openframeworks.cc/setup/codeblocks).
+On Windows, Qt Creator/Msys2 are recommended as the libpd sources do not currently build in Visual Studio. However, you *can* use a libpd.dll built by MinGW in a Visual Studio project. See the "Using ofxPd with Visual Studio" section below.
 
 Installation
 ------------
@@ -81,23 +81,6 @@ Notes for iOS projects:
 * if you use the OF release zips from openframeworks.cc, you need the iOS zip *not* the macOS zip
 * make sure that "iOS (Xcode)" is selected in the PG's "Platforms" box
 
-### macOS & iOS
-
-Open the Xcode project, select the "pdExample Debug" or "pdExampleIOS Debug" scheme, and hit "Run".
-
-### Linux
-
-Open the Code::Blocks .cbp and hit F9 to build. Optionally, you can build the example with the Makefile.
-
-To build and run it on the terminal:
-
-    make
-    make run
-
-### Windows
-
-An example Codeblocks workspace is included. Visual Studio is not currently supported by the libpd source.
-
 PitchShifter
 ------------
 
@@ -124,7 +107,7 @@ Rename the project in Xcode (do not rename the .xcodeproj file in Finder!): Xcod
 
 ### For Codeblocks (Win & Linux):
 
-Rename the *.cbp and *.workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
+Rename the \*.cbp and \*.workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
 
 Adding ofxPd to an Existing Project
 -----------------------------------
@@ -155,39 +138,49 @@ _Note: **-DLIBPD_EXTRA** is optional if you do not need/use the externals in `li
 * edit addons.make in your project folder and add the following line to the end of the file: 
 	<pre>ofxPd</pre>
 
-### For Codeblocks (Win):
+Using ofxPd with Visual Studio
+------------------------------
 
-* add the ofxPd sources to the project:
-	* right-click on your project in the project tree
-	* select "Add Files Recursively ..."
-	* navigate and choose the `ofxPd/src` & `ofx/libs` folder
-	* remove `ofxPd/libs/libpd/pure-data/extra/pd~` as it dosen't currently build in Win CB
-* add defines, search paths, and libraries to link:
-	* right-click on your project in the project tree
-	* select "Build options..."
-	* make sure the project name is selected in the tree (not release or debug)
-	* select the "Compiler settings" tab, add the following to the "#defines" tab:
-	<pre>
-	HAVE_UNISTD_H
-	USEAPI_DUMMY
-	LIBPD_EXTRA
-	LIBPD_USE_STD_MUTEX
-	MSW
-	PD
-	PD_INTERNAL
-	WINVER=0x502
-	</pre>
-	* select the "Search directories" tab, click add the search paths:
-	<pre>
-	..\\..\\..\addons\ofxPd\src
-	..\\..\\..\addons\ofxPd\libs\libpd\pure-data\src
-	..\\..\\..\addons\ofxPd\libs\libpd\libpd_wrapper
-	</pre>
-	* select the Linker settings" tab, add the following libraries:
-	<pre>
-	pthread
-	</pre>
-	
+The libpd sources do not currently build with the Visual Studio C compiler. In
+order to use libpd with ofxPd in a Visual Studio project, you need to build a
+libpd.dll dynamic library using MinGW (Minimal GNU for Windows) which provides
+a Unix command shell and compiler.
+
+The steps for 64 bit are basically:
+
+1. set up Msys2/MinGW, see https://github.com/libpd/libpd#windows
+2. build libpd using MinGW64: `make`
+3. install libpd to a temp folder: `make install prefix=build/libpd`
+
+Once built, replace the libpd source code in ofxPd with the libpd headers and library files:
+
+1. delete the ofxPd `ofxPd/libs/libpd` folder
+2. copy `libpd/build/libpd` into `ofxPd/libs`
+
+To set up a VS project using ofxPd, you need to link to the libpd.lib import library and place the runtime libraries for libpd in your project's `bin` folder.
+
+Add libpd.lib to link stage of the Visual Studio project:
+
+* set "x64" target
+* Project -> Properties
+* Make sure Active configuration & platform are set (you will need to do this for both Debug & Release builds)
+* Configuration Properties -> Linker -> Input
+* Additional Dependencies -> click on right hand drop down, choose Edit...
+* add the path libpd.lib: `$(OF_ROOT)\addons\ofxPd\libs\libpd\lib\libpd.lib`
+
+Add the runtime libraries to the project's `bin` folder:
+
+* `libpd/build/libpd/lib/libpd.dll`
+* `libpd/libs/mingw64/libwinpthread-1.dll`
+
+_Note: You will need to re-add libpd.lib to the VS link stage whenever you regenerate the project with the OF ProjectGenerator._
+
+For 32 bit:
+
+* build libpd using MinGW32
+* set the "Win32" target in your VS project before setting the libpd.lib path
+* copy pthread from the "mingw32" folder: `libpd/libs/mingw32/libwinpthread-1.dll`
+
 Notes
 -----
 
