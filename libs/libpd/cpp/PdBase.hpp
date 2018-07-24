@@ -1113,10 +1113,8 @@ class PdBase {
                             libpd_set_queued_aftertouchhook(NULL);
                             libpd_set_queued_polyaftertouchhook(NULL);
                             libpd_set_queued_midibytehook(NULL);
-
-                            if(bLibPdInited) {
-                            	libpd_queued_release();
-                            }
+                            
+                            libpd_queued_release();
                         }
                         else {
                             libpd_set_printhook(NULL);

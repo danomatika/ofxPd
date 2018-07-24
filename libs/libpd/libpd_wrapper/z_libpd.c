@@ -208,15 +208,15 @@ static const t_sample sample_to_short = SHRT_MAX,
   sys_unlock(); \
   return 0;
 
-int libpd_process_short(int ticks, const short *inBuffer, short *outBuffer) {
+int libpd_process_short(const int ticks, const short *inBuffer, short *outBuffer) {
   PROCESS(* short_to_sample, * sample_to_short)
 }
 
-int libpd_process_float(int ticks, const float *inBuffer, float *outBuffer) {
+int libpd_process_float(const int ticks, const float *inBuffer, float *outBuffer) {
   PROCESS(,)
 }
 
-int libpd_process_double(int ticks, const double *inBuffer, double *outBuffer) {
+int libpd_process_double(const int ticks, const double *inBuffer, double *outBuffer) {
   PROCESS(,)
 }
  
@@ -247,7 +247,7 @@ int libpd_read_array(float *dest, const char *name, int offset, int n) {
   return 0;
 }
 
-int libpd_write_array(const char *name, int offset, float *src, int n) {
+int libpd_write_array(const char *name, int offset, const float *src, int n) {
   sys_lock();
   MEMCPY((vec++)->w_float, *src++)
   sys_unlock();
