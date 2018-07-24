@@ -183,7 +183,7 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
         x2 = y2 = -0x7fffffff;
         for (y = templatecanvas->gl_list; y; y = y->g_next)
         {
-            t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
+            const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
             int nx1, ny1, nx2, ny2;
             if (!wb) continue;
             (*wb->w_parentgetrectfn)(y, owner,
@@ -310,7 +310,7 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
 
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
-        t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
+        const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
         (*wb->w_parentvisfn)(y, owner, x->sc_vec, template, basex, basey, vis);
     }
@@ -324,8 +324,11 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
 
 static void scalar_doredraw(t_gobj *client, t_glist *glist)
 {
-    scalar_vis(client, glist, 0);
-    scalar_vis(client, glist, 1);
+    if (glist_isvisible(glist))
+    {
+        scalar_vis(client, glist, 0);
+        scalar_vis(client, glist, 1);
+    }
 }
 
 void scalar_redraw(t_scalar *x, t_glist *glist)
@@ -355,7 +358,7 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
             sc, gensym("click"), 2, at);
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
-        t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
+        const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
         if ((hit = (*wb->w_parentclickfn)(y, owner,
             data, template, sc, ap, basex + xloc, basey + yloc,
@@ -407,7 +410,7 @@ static void scalar_properties(t_gobj *z, struct _glist *owner)
     t_freebytes(buf, bufsize+1);
 }
 
-static t_widgetbehavior scalar_widgetbehavior =
+static const t_widgetbehavior scalar_widgetbehavior =
 {
     scalar_getrect,
     scalar_displace,
@@ -424,6 +427,7 @@ static void scalar_free(t_scalar *x)
     t_dataslot *datatypes, *dt;
     t_symbol *templatesym = x->sc_template;
     t_template *template = template_findbyname(templatesym);
+    sys_unqueuegui(x);
     if (!template)
     {
         error("scalar: couldn't find template %s", templatesym->s_name);

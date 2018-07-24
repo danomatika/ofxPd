@@ -28,6 +28,7 @@ class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 		void setup();
 		void update();
 		void draw();
+		void exit();
 
 		// input callbacks
 		void keyPressed(int key);

@@ -5,16 +5,26 @@
 /* MIDI. */
 
 #include "m_pd.h"
-#include "m_imp.h"
 void outmidi_noteon(int portno, int channel, int pitch, int velo);
 void outmidi_controlchange(int portno, int channel, int ctlno, int value);
 void outmidi_programchange(int portno, int channel, int value);
 void outmidi_pitchbend(int portno, int channel, int value);
 void outmidi_aftertouch(int portno, int channel, int value);
 void outmidi_polyaftertouch(int portno, int channel, int pitch, int value);
-void outmidi_mclk(int portno);
 void outmidi_byte(int portno, int value);
 
+struct _instancemidi
+{
+    t_symbol *m_midiin_sym;
+    t_symbol *m_sysexin_sym;
+    t_symbol *m_notein_sym;
+    t_symbol *m_ctlin_sym;
+    t_symbol *m_pgmin_sym;
+    t_symbol *m_bendin_sym;
+    t_symbol *m_touchin_sym;
+    t_symbol *m_polytouchin_sym;
+    t_symbol *m_midirealtimein_sym;
+};
 
 /* ----------------------- midiin and sysexin ------------------------- */
 
@@ -27,12 +37,12 @@ typedef struct _midiin
     t_outlet *x_outlet2;
 } t_midiin;
 
-static void *midiin_new( void)
+static void *midiin_new(void)
 {
     t_midiin *x = (t_midiin *)pd_new(midiin_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midiin_sym);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_midiin_sym);
     return (x);
 }
 
@@ -44,21 +54,21 @@ static void midiin_list(t_midiin *x, t_symbol *s, int ac, t_atom *av)
 
 static void midiin_free(t_midiin *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midiin_sym);
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_midiin_sym);
 }
 
-static void *sysexin_new( void)
+static void *sysexin_new(void)
 {
     t_midiin *x = (t_midiin *)pd_new(sysexin_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_sysexin_sym);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_sysexin_sym);
     return (x);
 }
 
 static void sysexin_free(t_midiin *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_sysexin_sym);
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_sysexin_sym);
 }
 
 static void midiin_setup(void)
@@ -79,22 +89,22 @@ static void midiin_setup(void)
 void inmidi_byte(int portno, int byte)
 {
     t_atom at[2];
-    if (pd_this->pd_midiin_sym->s_thing)
+    if (pd_this->pd_midi->m_midiin_sym->s_thing)
     {
         SETFLOAT(at, byte);
         SETFLOAT(at+1, portno);
-        pd_list(pd_this->pd_midiin_sym->s_thing, 0, 2, at);
+        pd_list(pd_this->pd_midi->m_midiin_sym->s_thing, 0, 2, at);
     }
 }
 
 void inmidi_sysex(int portno, int byte)
 {
     t_atom at[2];
-    if (pd_this->pd_sysexin_sym->s_thing)
+    if (pd_this->pd_midi->m_sysexin_sym->s_thing)
     {
         SETFLOAT(at, byte);
         SETFLOAT(at+1, portno);
-        pd_list(pd_this->pd_sysexin_sym->s_thing, 0, 2, at);
+        pd_list(pd_this->pd_midi->m_sysexin_sym->s_thing, 0, 2, at);
     }
 }
 
@@ -118,7 +128,7 @@ static void *notein_new(t_floatarg f)
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
     if (f == 0) x->x_outlet3 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_notein_sym);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_notein_sym);
     return (x);
 }
 
@@ -143,7 +153,7 @@ static void notein_list(t_notein *x, t_symbol *s, int argc, t_atom *argv)
 
 static void notein_free(t_notein *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_notein_sym);
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_notein_sym);
 }
 
 static void notein_setup(void)
@@ -156,13 +166,13 @@ static void notein_setup(void)
 
 void inmidi_noteon(int portno, int channel, int pitch, int velo)
 {
-    if (pd_this->pd_notein_sym->s_thing)
+    if (pd_this->pd_midi->m_notein_sym->s_thing)
     {
         t_atom at[3];
         SETFLOAT(at, pitch);
         SETFLOAT(at+1, velo);
         SETFLOAT(at+2, (channel + (portno << 4) + 1));
-        pd_list(pd_this->pd_notein_sym->s_thing, &s_list, 3, at);
+        pd_list(pd_this->pd_midi->m_notein_sym->s_thing, &s_list, 3, at);
     }
 }
 
@@ -195,7 +205,7 @@ static void *ctlin_new(t_symbol *s, int argc, t_atom *argv)
         if (x->x_ctlno < 0) x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
         x->x_outlet3 = outlet_new(&x->x_obj, &s_float);
     }
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_ctlin_sym);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_ctlin_sym);
     return (x);
 }
 
@@ -213,7 +223,7 @@ static void ctlin_list(t_ctlin *x, t_symbol *s, int argc, t_atom *argv)
 
 static void ctlin_free(t_ctlin *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_ctlin_sym);
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_ctlin_sym);
 }
 
 static void ctlin_setup(void)
@@ -227,13 +237,13 @@ static void ctlin_setup(void)
 
 void inmidi_controlchange(int portno, int channel, int ctlnumber, int value)
 {
-    if (pd_this->pd_ctlin_sym->s_thing)
+    if (pd_this->pd_midi->m_ctlin_sym->s_thing)
     {
         t_atom at[3];
         SETFLOAT(at, ctlnumber);
         SETFLOAT(at+1, value);
         SETFLOAT(at+2, (channel + (portno << 4) + 1));
-        pd_list(pd_this->pd_ctlin_sym->s_thing, &s_list, 3, at);
+        pd_list(pd_this->pd_midi->m_ctlin_sym->s_thing, &s_list, 3, at);
     }
 }
 
@@ -255,7 +265,7 @@ static void *pgmin_new(t_floatarg f)
     x->x_channel = f;
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     if (f == 0) x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_pgmin_sym);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_pgmin_sym);
     return (x);
 }
 
@@ -277,7 +287,7 @@ static void pgmin_list(t_pgmin *x, t_symbol *s, int argc, t_atom *argv)
 
 static void pgmin_free(t_pgmin *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_pgmin_sym);
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_pgmin_sym);
 }
 
 static void pgmin_setup(void)
@@ -291,12 +301,12 @@ static void pgmin_setup(void)
 
 void inmidi_programchange(int portno, int channel, int value)
 {
-    if (pd_this->pd_pgmin_sym->s_thing)
+    if (pd_this->pd_midi->m_pgmin_sym->s_thing)
     {
         t_atom at[2];
         SETFLOAT(at, value + 1);
         SETFLOAT(at+1, (channel + (portno << 4) + 1));
-        pd_list(pd_this->pd_pgmin_sym->s_thing, &s_list, 2, at);
+        pd_list(pd_this->pd_midi->m_pgmin_sym->s_thing, &s_list, 2, at);
     }
 }
 
@@ -318,7 +328,7 @@ static void *bendin_new(t_floatarg f)
     x->x_channel = f;
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     if (f == 0) x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_bendin_sym);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_bendin_sym);
     return (x);
 }
 
@@ -340,7 +350,7 @@ static void bendin_list(t_bendin *x, t_symbol *s, int argc, t_atom *argv)
 
 static void bendin_free(t_bendin *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_bendin_sym);
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_bendin_sym);
 }
 
 static void bendin_setup(void)
@@ -353,12 +363,12 @@ static void bendin_setup(void)
 
 void inmidi_pitchbend(int portno, int channel, int value)
 {
-    if (pd_this->pd_bendin_sym->s_thing)
+    if (pd_this->pd_midi->m_bendin_sym->s_thing)
     {
         t_atom at[2];
         SETFLOAT(at, value);
         SETFLOAT(at+1, (channel + (portno << 4) + 1));
-        pd_list(pd_this->pd_bendin_sym->s_thing, &s_list, 2, at);
+        pd_list(pd_this->pd_midi->m_bendin_sym->s_thing, &s_list, 2, at);
     }
 }
 
@@ -380,7 +390,7 @@ static void *touchin_new(t_floatarg f)
     x->x_channel = f;
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     if (f == 0) x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_touchin_sym);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_touchin_sym);
     return (x);
 }
 
@@ -402,7 +412,7 @@ static void touchin_list(t_touchin *x, t_symbol *s, int argc, t_atom *argv)
 
 static void touchin_free(t_touchin *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_touchin_sym);
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_touchin_sym);
 }
 
 static void touchin_setup(void)
@@ -416,12 +426,12 @@ static void touchin_setup(void)
 
 void inmidi_aftertouch(int portno, int channel, int value)
 {
-    if (pd_this->pd_touchin_sym->s_thing)
+    if (pd_this->pd_midi->m_touchin_sym->s_thing)
     {
         t_atom at[2];
         SETFLOAT(at, value);
         SETFLOAT(at+1, (channel + (portno << 4) + 1));
-        pd_list(pd_this->pd_touchin_sym->s_thing, &s_list, 2, at);
+        pd_list(pd_this->pd_midi->m_touchin_sym->s_thing, &s_list, 2, at);
     }
 }
 
@@ -445,7 +455,7 @@ static void *polytouchin_new(t_floatarg f)
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
     if (f == 0) x->x_outlet3 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_polytouchin_sym);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_polytouchin_sym);
     return (x);
 }
 
@@ -471,7 +481,7 @@ static void polytouchin_list(t_polytouchin *x, t_symbol *s, int argc,
 
 static void polytouchin_free(t_polytouchin *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_polytouchin_sym);
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_polytouchin_sym);
 }
 
 static void polytouchin_setup(void)
@@ -485,85 +495,17 @@ static void polytouchin_setup(void)
 
 void inmidi_polyaftertouch(int portno, int channel, int pitch, int value)
 {
-    if (pd_this->pd_polytouchin_sym->s_thing)
+    if (pd_this->pd_midi->m_polytouchin_sym->s_thing)
     {
         t_atom at[3];
         SETFLOAT(at, pitch);
         SETFLOAT(at+1, value);
         SETFLOAT(at+2, (channel + (portno << 4) + 1));
-        pd_list(pd_this->pd_polytouchin_sym->s_thing, &s_list, 3, at);
+        pd_list(pd_this->pd_midi->m_polytouchin_sym->s_thing, &s_list, 3, at);
     }
 }
 
-/*----------------------- midiclkin--(midi F8 message )---------------------*/
-
-static t_class *midiclkin_class;
-
-typedef struct _midiclkin
-{
-    t_object x_obj;
-    t_outlet *x_outlet1;
-    t_outlet *x_outlet2;
-} t_midiclkin;
-
-static void *midiclkin_new(t_floatarg f)
-{
-    t_midiclkin *x = (t_midiclkin *)pd_new(midiclkin_class);
-    x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
-    x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midiclkin_sym);
-    return (x);
-}
-
-static void midiclkin_list(t_midiclkin *x, t_symbol *s, int argc, t_atom *argv)
-{
-    t_float value = atom_getfloatarg(0, argc, argv);
-    t_float count = atom_getfloatarg(1, argc, argv);
-    outlet_float(x->x_outlet2, count);
-    outlet_float(x->x_outlet1, value);
-}
-
-static void midiclkin_free(t_midiclkin *x)
-{
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midiclkin_sym);
-}
-
-static void midiclkin_setup(void)
-{
-    midiclkin_class = class_new(gensym("midiclkin"),
-        (t_newmethod)midiclkin_new, (t_method)midiclkin_free,
-            sizeof(t_midiclkin), CLASS_NOINLET, A_DEFFLOAT, 0);
-    class_addlist(midiclkin_class, midiclkin_list);
-        class_sethelpsymbol(midiclkin_class, gensym("midi"));
-}
-
-void inmidi_clk(double timing)
-{
-
-    static t_float prev = 0;
-    static t_float count = 0;
-    t_float cur,diff;
-
-    if (pd_this->pd_midiclkin_sym->s_thing)
-    {
-        t_atom at[2];
-        diff =timing - prev;
-        count++;
-
-        if (count == 3)
-        {  /* 24 count per quoter note */
-             SETFLOAT(at, 1 );
-             count = 0;
-        }
-        else SETFLOAT(at, 0);
-
-        SETFLOAT(at+1, diff);
-        pd_list(pd_this->pd_midiclkin_sym->s_thing, &s_list, 2, at);
-        prev = timing;
-    }
-}
-
-/*----------midirealtimein (midi FA,FB,FC,FF message )-----------------*/
+/*----------midirealtimein (midi F8,FA,FB,FC,FE,FF message)-----------------*/
 
 static t_class *midirealtimein_class;
 
@@ -574,12 +516,12 @@ typedef struct _midirealtimein
     t_outlet *x_outlet2;
 } t_midirealtimein;
 
-static void *midirealtimein_new( void)
+static void *midirealtimein_new(void)
 {
     t_midirealtimein *x = (t_midirealtimein *)pd_new(midirealtimein_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midirealtimein_sym);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_midirealtimein_sym);
     return (x);
 }
 
@@ -595,7 +537,7 @@ static void midirealtimein_list(t_midirealtimein *x, t_symbol *s,
 
 static void midirealtimein_free(t_midirealtimein *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midirealtimein_sym);
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_midirealtimein_sym);
 }
 
 static void midirealtimein_setup(void)
@@ -609,12 +551,12 @@ static void midirealtimein_setup(void)
 
 void inmidi_realtimein(int portno, int SysMsg)
 {
-    if (pd_this->pd_midirealtimein_sym->s_thing)
+    if (pd_this->pd_midi->m_midirealtimein_sym->s_thing)
     {
         t_atom at[2];
         SETFLOAT(at, portno);
         SETFLOAT(at+1, SysMsg);
-        pd_list(pd_this->pd_midirealtimein_sym->s_thing, &s_list, 2, at);
+        pd_list(pd_this->pd_midi->m_midirealtimein_sym->s_thing, &s_list, 2, at);
     }
 }
 
@@ -644,11 +586,22 @@ static void midiout_float(t_midiout *x, t_floatarg f)
     outmidi_byte(x->x_portno - 1, f);
 }
 
+static void midiout_list(t_midiout *x, t_symbol *s, int ac, t_atom *av)
+{
+    int i;
+    for (i = 0; i < ac; ++i)
+    {
+        if(av[i].a_type == A_FLOAT)
+            outmidi_byte(x->x_portno - 1, av[i].a_w.w_float);
+    }
+}
+
 static void midiout_setup(void)
 {
     midiout_class = class_new(gensym("midiout"), (t_newmethod)midiout_new, 0,
         sizeof(t_midiout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addfloat(midiout_class, midiout_float);
+    class_addlist(midiout_class, midiout_list);
     class_sethelpsymbol(midiout_class, gensym("midi"));
 }
 
@@ -999,7 +952,7 @@ typedef struct _stripnote
     t_outlet *x_velout;
 } t_stripnote;
 
-static void *stripnote_new(void )
+static void *stripnote_new(void)
 {
     t_stripnote *x = (t_stripnote *)pd_new(stripnote_class);
     floatinlet_new(&x->x_obj, &x->x_velo);
@@ -1079,9 +1032,9 @@ static void poly_float(t_poly *x, t_float f)
             serialon = serialoff = 0xffffffff; i < x->x_n; v++, i++)
         {
             if (v->v_used && v->v_serial < serialon)
-                    firston = v, serialon = v->v_serial, onindex = i;
+                    firston = v, serialon = (unsigned int)v->v_serial, onindex = i;
             else if (!v->v_used && v->v_serial < serialoff)
-                    firstoff = v, serialoff = v->v_serial, offindex = i;
+                    firstoff = v, serialoff = (unsigned int)v->v_serial, offindex = i;
         }
         if (firstoff)
         {
@@ -1108,7 +1061,7 @@ static void poly_float(t_poly *x, t_float f)
         for (v = x->x_vec, i = 0, firston = 0, serialon = 0xffffffff;
             i < x->x_n; v++, i++)
                 if (v->v_used && v->v_pitch == f && v->v_serial < serialon)
-                    firston = v, serialon = v->v_serial, onindex = i;
+                    firston = v, serialon = (unsigned int)v->v_serial, onindex = i;
         if (firston)
         {
             firston->v_used = 0;
@@ -1174,7 +1127,7 @@ typedef struct _bag
     t_bagelem *x_first;
 } t_bag;
 
-static void *bag_new(void )
+static void *bag_new(void)
 {
     t_bag *x = (t_bag *)pd_new(bag_class);
     x->x_velo = 0;
@@ -1251,10 +1204,6 @@ static void bag_setup(void)
     class_addmethod(bag_class, (t_method)bag_clear, gensym("clear"), 0);
 }
 
-void sys_setmidiprefix(const char *prefix)
-{
-}
-
 void x_midi_setup(void)
 {
     midiin_setup();
@@ -1265,7 +1214,6 @@ void x_midi_setup(void)
     bendin_setup();
     touchin_setup();
     polytouchin_setup();
-    midiclkin_setup();
     midiout_setup();
     noteout_setup();
     ctlout_setup();
@@ -1277,4 +1225,23 @@ void x_midi_setup(void)
     stripnote_setup();
     poly_setup();
     bag_setup();
+}
+
+void x_midi_newpdinstance(void)
+{
+    pd_this->pd_midi = getbytes(sizeof(t_instancemidi));
+    pd_this->pd_midi->m_midiin_sym = gensym("#midiin");
+    pd_this->pd_midi->m_sysexin_sym = gensym("#sysexin");
+    pd_this->pd_midi->m_notein_sym = gensym("#notein");
+    pd_this->pd_midi->m_ctlin_sym = gensym("#ctlin");
+    pd_this->pd_midi->m_pgmin_sym = gensym("#pgmin");
+    pd_this->pd_midi->m_bendin_sym = gensym("#bendin");
+    pd_this->pd_midi->m_touchin_sym = gensym("#touchin");
+    pd_this->pd_midi->m_polytouchin_sym = gensym("#polytouchin");
+    pd_this->pd_midi->m_midirealtimein_sym = gensym("#midirealtimein");
+}
+
+void x_midi_freepdinstance(void)
+{
+    freebytes(pd_this->pd_midi, sizeof(t_instancemidi));
 }

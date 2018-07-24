@@ -77,17 +77,17 @@ void ofxPd::clear() {
 	// which causes a hang on exit
 	//
 	// hopefully to be fixed for real at a future point ...
-	#ifndef TARGET_WIN32
-		lock();
-	#endif
+//	#ifndef TARGET_WIN32
+//		lock();
+//	#endif
 	if(inBuffer != NULL) {
 		delete[] inBuffer;
 		inBuffer = NULL;
 	}
 	PdContext::instance().clear();
-	#ifndef TARGET_WIN32
-		unlock();
-	#endif
+//	#ifndef TARGET_WIN32
+//		unlock();
+//	#endif
 	unsubscribeAll();
 
 	channels.clear();

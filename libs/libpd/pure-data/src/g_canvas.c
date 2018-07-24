@@ -15,7 +15,7 @@ to be different but are now unified except for some fossilized names.) */
 #include "g_all_guis.h"
 
 #ifdef _MSC_VER
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
     /* LATER consider adding font size to this struct (see glist_getfont()) */
@@ -43,7 +43,6 @@ desktops because the borders have both window title area and menus. */
 
 /* ---------------------- variables --------------------------- */
 
-extern t_pd *newest;
 t_class *canvas_class;
 t_canvas *canvas_whichfind;         /* last canvas we did a find in */
 
@@ -62,15 +61,12 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 
 /* --------- functions to handle the canvas environment ----------- */
 
-static t_symbol *canvas_newfilename = &s_;
-static t_symbol *canvas_newdirectory = &s_;
-static int canvas_newargc;
-static t_atom *canvas_newargv;
 
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
 void canvas_updatewindowlist( void)
 {
-    if (!glist_reloadingabstraction)  /* not if we're in a reload */
+            /* not if we're in a reload */
+    if (!THISGUI->i_reloadingabstraction)
         sys_gui("::pd_menus::update_window_menu\n");
 }
 
@@ -100,16 +96,16 @@ void canvas_setargs(int argc, t_atom *argv)
         /* if there's an old one lying around free it here.  This
         happens if an abstraction is loaded but never gets as far
         as calling canvas_new(). */
-    if (canvas_newargv)
-        freebytes(canvas_newargv, canvas_newargc * sizeof(t_atom));
-    canvas_newargc = argc;
-    canvas_newargv = copybytes(argv, argc * sizeof(t_atom));
+    if (THISGUI->i_newargv)
+        freebytes(THISGUI->i_newargv, THISGUI->i_newargc * sizeof(t_atom));
+    THISGUI->i_newargc = argc;
+    THISGUI->i_newargv = copybytes(argv, argc * sizeof(t_atom));
 }
 
 void glob_setfilename(void *dummy, t_symbol *filesym, t_symbol *dirsym)
 {
-    canvas_newfilename = filesym;
-    canvas_newdirectory = dirsym;
+    THISGUI->i_newfilename = filesym;
+    THISGUI->i_newdirectory = dirsym;
 }
 
 void glob_menunew(void *dummy, t_symbol *filesym, t_symbol *dirsym)
@@ -154,7 +150,8 @@ int canvas_getdollarzero( void)
 
 void canvas_getargs(int *argcp, t_atom **argvp)
 {
-    t_canvasenvironment *e = canvas_getenv(canvas_getcurrent());
+    t_canvas *x = canvas_getcurrent();
+    t_canvasenvironment *e = canvas_getenv(x);
     *argcp = e->ce_argc;
     *argvp = e->ce_argv;
 }
@@ -199,7 +196,7 @@ void canvas_makefilename(t_canvas *x, char *file, char *result, int resultsize)
         int nleft;
         strncpy(result, dir, resultsize);
         result[resultsize-1] = 0;
-        nleft = resultsize - strlen(result) - 1;
+        nleft = resultsize - (int)strlen(result) - 1;
         if (nleft <= 0) return;
         strcat(result, "/");
         strncat(result, file, nleft);
@@ -276,15 +273,17 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
     {
         int inplus = (t->tr_nin == 1 ? 1 : t->tr_nin - 1);
         int outplus = (t->tr_nout == 1 ? 1 : t->tr_nout - 1);
+        int iow = IOWIDTH * t->tr_x->gl_zoom;
+        int iom = IOMIDDLE * t->tr_x->gl_zoom;
         gobj_getrect(&t->tr_ob2->ob_g, t->tr_x,
             &t->tr_x21, &t->tr_y21, &t->tr_x22, &t->tr_y22);
         t->tr_lx1 = t->tr_x11 +
-            ((t->tr_x12 - t->tr_x11 - IOWIDTH) * t->tr_outno) /
-                outplus + IOMIDDLE;
+            ((t->tr_x12 - t->tr_x11 - iow) * t->tr_outno) /
+                outplus + iom;
         t->tr_ly1 = t->tr_y12;
         t->tr_lx2 = t->tr_x21 +
-            ((t->tr_x22 - t->tr_x21 - IOWIDTH) * t->tr_inno)/inplus +
-                IOMIDDLE;
+            ((t->tr_x22 - t->tr_x21 - iow) * t->tr_inno)/inplus +
+                iom;
         t->tr_ly2 = t->tr_y21;
     }
     else
@@ -316,7 +315,7 @@ void glist_init(t_glist *x)
 }
 
     /* make a new glist.  It will either be a "root" canvas or else
-    it appears as a "text" object in another window (canvas_getcurrnet()
+    it appears as a "text" object in another window (canvas_getcurrent()
     tells us which.) */
 t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
 {
@@ -334,45 +333,40 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
 
     if (argc == 5)  /* toplevel: x, y, w, h, font */
     {
-        xloc = atom_getintarg(0, argc, argv);
-        yloc = atom_getintarg(1, argc, argv);
-        width = atom_getintarg(2, argc, argv);
-        height = atom_getintarg(3, argc, argv);
-        font = atom_getintarg(4, argc, argv);
+        xloc = atom_getfloatarg(0, argc, argv);
+        yloc = atom_getfloatarg(1, argc, argv);
+        width = atom_getfloatarg(2, argc, argv);
+        height = atom_getfloatarg(3, argc, argv);
+        font = atom_getfloatarg(4, argc, argv);
     }
     else if (argc == 6)  /* subwindow: x, y, w, h, name, vis */
     {
-        xloc = atom_getintarg(0, argc, argv);
-        yloc = atom_getintarg(1, argc, argv);
-        width = atom_getintarg(2, argc, argv);
-        height = atom_getintarg(3, argc, argv);
+        xloc = atom_getfloatarg(0, argc, argv);
+        yloc = atom_getfloatarg(1, argc, argv);
+        width = atom_getfloatarg(2, argc, argv);
+        height = atom_getfloatarg(3, argc, argv);
         s = atom_getsymbolarg(4, argc, argv);
-        vis = atom_getintarg(5, argc, argv);
+        vis = atom_getfloatarg(5, argc, argv);
     }
         /* (otherwise assume we're being created from the menu.) */
-
-    if (canvas_newdirectory->s_name[0])
+    if (THISGUI->i_newdirectory &&
+        THISGUI->i_newdirectory->s_name[0])
     {
-        static int dollarzero = 1000;
         t_canvasenvironment *env = x->gl_env =
             (t_canvasenvironment *)getbytes(sizeof(*x->gl_env));
-        if (!canvas_newargv)
-            canvas_newargv = getbytes(0);
-        env->ce_dir = canvas_newdirectory;
-        env->ce_argc = canvas_newargc;
-        env->ce_argv = canvas_newargv;
-        env->ce_dollarzero = dollarzero++;
+        if (!THISGUI->i_newargv)
+            THISGUI->i_newargv = getbytes(0);
+        env->ce_dir = THISGUI->i_newdirectory;
+        env->ce_argc = THISGUI->i_newargc;
+        env->ce_argv = THISGUI->i_newargv;
+        env->ce_dollarzero = THISGUI->i_dollarzero++;
         env->ce_path = 0;
-        canvas_newdirectory = &s_;
-        canvas_newargc = 0;
-        canvas_newargv = 0;
+        THISGUI->i_newdirectory = &s_;
+        THISGUI->i_newargc = 0;
+        THISGUI->i_newargv = 0;
     }
     else x->gl_env = 0;
 
-    if (yloc < GLIST_DEFCANVASYLOC)
-        yloc = GLIST_DEFCANVASYLOC;
-    if (xloc < 0)
-        xloc = 0;
     x->gl_x1 = 0;
     x->gl_y1 = 0;
     x->gl_x2 = 1;
@@ -381,7 +375,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_owner = owner;
     x->gl_isclone = 0;
     x->gl_name = (*s->s_name ? s :
-        (canvas_newfilename ? canvas_newfilename : gensym("Pd")));
+        (THISGUI->i_newfilename ? THISGUI->i_newfilename : gensym("Pd")));
     canvas_bind(x);
     x->gl_loading = 1;
     x->gl_goprect = 0;      /* no GOP rectangle unless it's turned on later */
@@ -413,15 +407,15 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     x->gl_y1 = atom_getfloatarg(1, argc, argv);
     x->gl_x2 = atom_getfloatarg(2, argc, argv);
     x->gl_y2 = atom_getfloatarg(3, argc, argv);
-    x->gl_pixwidth = atom_getintarg(4, argc, argv);
-    x->gl_pixheight = atom_getintarg(5, argc, argv);
+    x->gl_pixwidth = atom_getfloatarg(4, argc, argv);
+    x->gl_pixheight = atom_getfloatarg(5, argc, argv);
     if (argc <= 7)
-        canvas_setgraph(x, atom_getintarg(6, argc, argv), 1);
+        canvas_setgraph(x, atom_getfloatarg(6, argc, argv), 1);
     else
     {
-        x->gl_xmargin = atom_getintarg(7, argc, argv);
-        x->gl_ymargin = atom_getintarg(8, argc, argv);
-        canvas_setgraph(x, atom_getintarg(6, argc, argv), 0);
+        x->gl_xmargin = atom_getfloatarg(7, argc, argv);
+        x->gl_ymargin = atom_getfloatarg(8, argc, argv);
+        canvas_setgraph(x, atom_getfloatarg(6, argc, argv), 0);
     }
 }
 
@@ -431,7 +425,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     t_float x1, t_float y1, t_float x2, t_float y2,
     t_float px1, t_float py1, t_float px2, t_float py2)
 {
-    static int gcount = 0;
+    static int gcount = 0;  /* it's OK if two threads get the same value */
     int zz;
     int menu = 0;
     char *str;
@@ -599,6 +593,11 @@ void canvas_reflecttitle(t_canvas *x)
         strcat(namebuf, ")");
     }
     else namebuf[0] = 0;
+    if (x->gl_edit)
+    {
+        strncat(namebuf, " *edit*", MAXPDSTRING);
+        namebuf[MAXPDSTRING-1] = 0;
+    }
     sys_vgui("pdtk_canvas_reflecttitle .x%lx {%s} {%s} {%s} %d\n",
         x, canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf, x->gl_dirty);
 }
@@ -607,7 +606,7 @@ void canvas_reflecttitle(t_canvas *x)
 void canvas_dirty(t_canvas *x, t_floatarg n)
 {
     t_canvas *x2 = canvas_getrootfor(x);
-    if (glist_reloadingabstraction)
+    if (THISGUI->i_reloadingabstraction)
         return;
     if ((unsigned)n != x2->gl_dirty)
     {
@@ -620,14 +619,14 @@ void canvas_dirty(t_canvas *x, t_floatarg n)
 void canvas_drawredrect(t_canvas *x, int doit)
 {
     if (doit)
-        sys_vgui(".x%lx.c create line\
-            %d %d %d %d %d %d %d %d %d %d -fill #ff8080 -tags GOP\n",
+        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
+            "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
             glist_getcanvas(x),
             x->gl_xmargin, x->gl_ymargin,
             x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin,
             x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin + x->gl_pixheight,
             x->gl_xmargin, x->gl_ymargin + x->gl_pixheight,
-            x->gl_xmargin, x->gl_ymargin);
+            x->gl_xmargin, x->gl_ymargin, glist_getzoom(x));
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
 
@@ -850,10 +849,16 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
     }
 }
 
+typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
+
 static void canvas_pop(t_canvas *x, t_floatarg fvis)
 {
     if (glist_istoplevel(x) && (sys_zoom_open == 2))
-        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)2);
+    {
+        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
+        if (zoommethod)
+            (*zoommethod)(&x->gl_pd, (t_floatarg)2);
+    }
     if (fvis != 0)
         canvas_vis(x, 1);
     pd_popsym(&x->gl_pd);
@@ -984,7 +989,7 @@ static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
 
 void canvas_popabstraction(t_canvas *x)
 {
-    newest = &x->gl_pd;
+    pd_this->pd_newest = &x->gl_pd;
     pd_popsym(&x->gl_pd);
     x->gl_loading = 0;
     canvas_resortinlets(x);
@@ -1138,31 +1143,31 @@ static void canvas_dsp(t_canvas *x, t_signal **sp)
     canvas_dodsp(x, 0, sp);
 }
 
-int canvas_dspstate;
+int canvas_dspstate;    /* for back compatibility with externs - don't use */
 
     /* this routine starts DSP for all root canvases. */
 static void canvas_start_dsp(void)
 {
     t_canvas *x;
-    if (pd_this->pd_dspstate) ugen_stop();
+    if (THISGUI->i_dspstate) ugen_stop();
     else sys_gui("pdtk_pd_dsp ON\n");
     ugen_start();
 
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_dodsp(x, 1, 0);
 
-    canvas_dspstate = pd_this->pd_dspstate = 1;
+    canvas_dspstate = THISGUI->i_dspstate = 1;
     if (gensym("pd-dsp-started")->s_thing)
         pd_bang(gensym("pd-dsp-started")->s_thing);
 }
 
 static void canvas_stop_dsp(void)
 {
-    if (pd_this->pd_dspstate)
+    if (THISGUI->i_dspstate)
     {
         ugen_stop();
         sys_gui("pdtk_pd_dsp OFF\n");
-        canvas_dspstate = pd_this->pd_dspstate = 0;
+        canvas_dspstate = THISGUI->i_dspstate = 0;
         if (gensym("pd-dsp-stopped")->s_thing)
             pd_bang(gensym("pd-dsp-stopped")->s_thing);
     }
@@ -1175,7 +1180,7 @@ static void canvas_stop_dsp(void)
 
 int canvas_suspend_dsp(void)
 {
-    int rval = pd_this->pd_dspstate;
+    int rval = THISGUI->i_dspstate;
     if (rval) canvas_stop_dsp();
     return (rval);
 }
@@ -1188,7 +1193,7 @@ void canvas_resume_dsp(int oldstate)
     /* this is equivalent to suspending and resuming in one step. */
 void canvas_update_dsp(void)
 {
-    if (pd_this->pd_dspstate) canvas_start_dsp();
+    if (THISGUI->i_dspstate) canvas_start_dsp();
 }
 
 /* the "dsp" message to pd starts and stops DSP somputation, and, if
@@ -1205,20 +1210,20 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
     int newstate;
     if (argc)
     {
-        newstate = atom_getintarg(0, argc, argv);
-        if (newstate && !pd_this->pd_dspstate)
+        newstate = atom_getfloatarg(0, argc, argv);
+        if (newstate && !THISGUI->i_dspstate)
         {
             sys_set_audio_state(1);
             canvas_start_dsp();
         }
-        else if (!newstate && pd_this->pd_dspstate)
+        else if (!newstate && THISGUI->i_dspstate)
         {
             canvas_stop_dsp();
             if (!audio_shouldkeepopen())
                 sys_set_audio_state(0);
         }
     }
-    else post("dsp state %d", pd_this->pd_dspstate);
+    else post("dsp state %d", THISGUI->i_dspstate);
 }
 
 void *canvas_getblock(t_class *blockclass, t_canvas **canvasp)
@@ -1396,8 +1401,6 @@ static int check_exists(const char*path)
 }
 #endif
 
-extern t_namelist *sys_staticpath;
-
 static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
 {
     t_namelist*nl;
@@ -1420,7 +1423,7 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
         return;
     }
     /* check whether the given subdir is in one of the standard-paths */
-    for (nl=sys_staticpath; nl; nl=nl->nl_next)
+    for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
         snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
         strbuf[MAXPDSTRING-1]=0;
@@ -1451,7 +1454,7 @@ static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
         return;
 
     /* check whether the given library is located in one of the standard-paths */
-    for (nl=sys_staticpath; nl; nl=nl->nl_next)
+    for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
         snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
         strbuf[MAXPDSTRING-1]=0;
@@ -1560,7 +1563,13 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
     return (co.fd);
 }
 
-int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
+/*
+ * Iterate over all search-paths for <x> calling <fun> with the user-supplied
+ * <data>.  The function is called with two arguments: a pathname to try to
+ * open, and <data>.
+ */
+int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
+    void *user_data)
 {
     t_canvas *y = 0;
     t_namelist *nl = 0;
@@ -1571,11 +1580,8 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     for (y = x; y; y = y->gl_owner)
         if (y->gl_env)
     {
-        t_canvas *x2 = x;
         char *dir;
-        while (x2 && x2->gl_owner)
-            x2 = x2->gl_owner;
-        dir = (x2 ? canvas_getdir(x2)->s_name : ".");
+        dir = canvas_getdir(y)->s_name;
         for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
         {
             char realname[MAXPDSTRING];
@@ -1600,7 +1606,7 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     count++;
 
     /* now iterate through the global paths */
-    for (nl = sys_searchpath; nl; nl = nl->nl_next)
+    for (nl = STUFF->st_searchpath; nl; nl = nl->nl_next)
     {
         if (!fun(nl->nl_string, user_data))
             return count+1;
@@ -1608,7 +1614,7 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     }
     /* and the default paths */
     if (sys_usestdpath)
-        for (nl = sys_staticpath; nl; nl = nl->nl_next)
+        for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
         {
             if (!fun(nl->nl_string, user_data))
                 return count+1;
@@ -1809,4 +1815,29 @@ void canvas_add_for_class(t_class *c)
     canvas_editor_for_class(c);
     canvas_readwrite_for_class(c);
     /* g_graph_setup_class(c); */
+}
+
+void g_canvas_newpdinstance( void)
+{
+    THISGUI = getbytes(sizeof(*THISGUI));
+    THISGUI->i_newfilename = THISGUI->i_newdirectory = &s_;
+    THISGUI->i_newargc = 0;
+    THISGUI->i_newargv = 0;
+    THISGUI->i_reloadingabstraction = 0;
+    THISGUI->i_dspstate = 0;
+    THISGUI->i_dollarzero = 1000;
+    g_editor_newpdinstance();
+    g_template_newpdinstance();
+}
+
+void g_canvas_freepdinstance( void)
+{
+    g_editor_freepdinstance();
+    g_template_freepdinstance();
+    freebytes(THISGUI, sizeof(*THISGUI));
+}
+
+EXTERN int pd_getdspstate(void)
+{
+    return (THISGUI->i_dspstate);
 }

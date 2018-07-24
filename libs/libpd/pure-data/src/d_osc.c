@@ -378,7 +378,7 @@ static t_int *sigvcf_perform(t_int *w)
     float *out1 = (float *)(w[3]);
     float *out2 = (float *)(w[4]);
     t_vcfctl *c = (t_vcfctl *)(w[5]);
-    int n = (t_int)(w[6]);
+    int n = (int)w[6];
     int i;
     float re = c->c_re, re2;
     float im = c->c_im;
@@ -466,6 +466,8 @@ typedef struct _noise
 static void *noise_new(void)
 {
     t_noise *x = (t_noise *)pd_new(noise_class);
+        /* seed each instance differently.  Once in a blue moon two threads
+        could grab the same seed value.  We can live with that. */
     static int init = 307;
     x->x_val = (init *= 1319);
     outlet_new(&x->x_obj, gensym("signal"));

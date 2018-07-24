@@ -27,7 +27,7 @@ typedef long t_pa_sample;
 #define SYS_XFERSAMPS (SYS_DEFAULTCH*DEFDACBLKSIZE)
 #define SYS_XFERSIZE (SYS_SAMPLEWIDTH * SYS_XFERSAMPS)
 #define MAXNDEV 20
-#define DEVDESCSIZE 80
+#define DEVDESCSIZE 1024
 
 static void audio_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti, int *cancallback,
@@ -46,10 +46,6 @@ static t_sample sys_outmax;        /* max output amplitude */
 
     /* exported variables */
 int sys_schedadvance;   /* scheduler advance in microseconds */
-t_float sys_dacsr;
-
-t_sample *sys_soundout;
-t_sample *sys_soundin;
 
     /* the "state" is normally one if we're open and zero otherwise;
     but if the state is one, we still haven't necessarily opened the
@@ -167,30 +163,30 @@ void sys_setchsr(int chin, int chout, int sr)
     int outbytes = (chout ? chout : 2) *
                 (DEFDACBLKSIZE*sizeof(t_sample));
 
-    if (sys_soundin)
-        freebytes(sys_soundin,
-            (sys_inchannels? sys_inchannels : 2) *
+    if (STUFF->st_soundin)
+        freebytes(STUFF->st_soundin,
+            (STUFF->st_inchannels? STUFF->st_inchannels : 2) *
                 (DEFDACBLKSIZE*sizeof(t_sample)));
-    if (sys_soundout)
-        freebytes(sys_soundout,
-            (sys_outchannels? sys_outchannels : 2) *
+    if (STUFF->st_soundout)
+        freebytes(STUFF->st_soundout,
+            (STUFF->st_outchannels? STUFF->st_outchannels : 2) *
                 (DEFDACBLKSIZE*sizeof(t_sample)));
-    sys_inchannels = chin;
-    sys_outchannels = chout;
-    sys_dacsr = sr;
-    sys_advance_samples = (sys_schedadvance * sys_dacsr) / (1000000.);
+    STUFF->st_inchannels = chin;
+    STUFF->st_outchannels = chout;
+    STUFF->st_dacsr = sr;
+    sys_advance_samples = (sys_schedadvance * STUFF->st_dacsr) / (1000000.);
     if (sys_advance_samples < DEFDACBLKSIZE)
         sys_advance_samples = DEFDACBLKSIZE;
 
-    sys_soundin = (t_sample *)getbytes(inbytes);
-    memset(sys_soundin, 0, inbytes);
+    STUFF->st_soundin = (t_sample *)getbytes(inbytes);
+    memset(STUFF->st_soundin, 0, inbytes);
 
-    sys_soundout = (t_sample *)getbytes(outbytes);
-    memset(sys_soundout, 0, outbytes);
+    STUFF->st_soundout = (t_sample *)getbytes(outbytes);
+    memset(STUFF->st_soundout, 0, outbytes);
 
     if (sys_verbose)
         post("input channels = %d, output channels = %d",
-            sys_inchannels, sys_outchannels);
+            STUFF->st_inchannels, STUFF->st_outchannels);
     canvas_resume_dsp(canvas_suspend_dsp());
 }
 
@@ -443,8 +439,8 @@ void sys_reopen_audio( void)
         if (sys_verbose)
             fprintf(stderr, "blksize %d, advance %d\n", blksize, sys_advance_samples/blksize);
         outcome = pa_open_audio((naudioindev > 0 ? chindev[0] : 0),
-        (naudiooutdev > 0 ? choutdev[0] : 0), rate, sys_soundin,
-            sys_soundout, blksize, sys_advance_samples/blksize,
+        (naudiooutdev > 0 ? choutdev[0] : 0), rate, STUFF->st_soundin,
+            STUFF->st_soundout, blksize, sys_advance_samples/blksize,
              (naudioindev > 0 ? audioindev[0] : 0),
               (naudiooutdev > 0 ? audiooutdev[0] : 0),
                (callback ? sched_audio_callbackfn : 0));
@@ -530,15 +526,15 @@ int sys_send_dacs(void)
         for (i = 0, n = sys_inchannels * DEFDACBLKSIZE, maxsamp = sys_inmax;
             i < n; i++)
         {
-            t_sample f = sys_soundin[i];
+            t_sample f = STUFF->st_soundin[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
         sys_inmax = maxsamp;
-        for (i = 0, n = sys_outchannels * DEFDACBLKSIZE, maxsamp = sys_outmax;
-            i < n; i++)
+        for (i = 0, n = STUFF->st_outchannels * DEFDACBLKSIZE,
+            maxsamp = sys_outmax; i < n; i++)
         {
-            t_sample f = sys_soundout[i];
+            t_sample f = STUFF->st_soundout[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
@@ -591,17 +587,17 @@ int sys_send_dacs(void)
 
 t_float sys_getsr(void)
 {
-     return (sys_dacsr);
+     return (STUFF->st_dacsr);
 }
 
 int sys_get_outchannels(void)
 {
-     return (sys_outchannels);
+     return (STUFF->st_outchannels);
 }
 
 int sys_get_inchannels(void)
 {
-     return (sys_inchannels);
+     return (STUFF->st_inchannels);
 }
 
 void sys_getmeters(t_sample *inmax, t_sample *outmax)
@@ -826,17 +822,17 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int newaudioindev[4], newaudioinchan[4],
         newaudiooutdev[4], newaudiooutchan[4];
         /* the new values the dialog came back with: */
-    int newrate = atom_getintarg(16, argc, argv);
-    int newadvance = atom_getintarg(17, argc, argv);
-    int newcallback = atom_getintarg(18, argc, argv);
-    int newblocksize = atom_getintarg(19, argc, argv);
+    int newrate = atom_getfloatarg(16, argc, argv);
+    int newadvance = atom_getfloatarg(17, argc, argv);
+    int newcallback = atom_getfloatarg(18, argc, argv);
+    int newblocksize = atom_getfloatarg(19, argc, argv);
 
     for (i = 0; i < 4; i++)
     {
-        newaudioindev[i] = atom_getintarg(i, argc, argv);
-        newaudioinchan[i] = atom_getintarg(i+4, argc, argv);
-        newaudiooutdev[i] = atom_getintarg(i+8, argc, argv);
-        newaudiooutchan[i] = atom_getintarg(i+12, argc, argv);
+        newaudioindev[i] = atom_getfloatarg(i, argc, argv);
+        newaudioinchan[i] = atom_getfloatarg(i+4, argc, argv);
+        newaudiooutdev[i] = atom_getfloatarg(i+8, argc, argv);
+        newaudiooutchan[i] = atom_getfloatarg(i+12, argc, argv);
     }
 
     for (i = 0, nindev = 0; i < 4; i++)
@@ -1093,7 +1089,7 @@ int sys_audiodevnametonumber(int output, const char *name)
     {
         for (i = 0; i < noutdevs; i++)
         {
-            unsigned int comp = strlen(name);
+            unsigned long comp = strlen(name);
             if (comp > strlen(outdevlist + i * DEVDESCSIZE))
                 comp = strlen(outdevlist + i * DEVDESCSIZE);
             if (!strncmp(name, outdevlist + i * DEVDESCSIZE, comp))
@@ -1104,7 +1100,7 @@ int sys_audiodevnametonumber(int output, const char *name)
     {
         for (i = 0; i < nindevs; i++)
         {
-            unsigned int comp = strlen(name);
+            unsigned long comp = strlen(name);
             if (comp > strlen(indevlist + i * DEVDESCSIZE))
                 comp = strlen(indevlist + i * DEVDESCSIZE);
             if (!strncmp(name, indevlist + i * DEVDESCSIZE, comp))

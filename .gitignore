@@ -51,11 +51,3 @@ pitchShifter/config.make
 pitchShifter/*xcconfig
 pitchShifter/*.plist
 
-pitchShifterIOS/Makefile
-pitchShifterIOS/*.xcodeproj
-pitchShifterIOS/config.make
-pitchShifterIOS/*xcconfig
-pitchShifterIOS/*.plist
-pitchShifterIOS/*.pch
-pitchShifterIOS/bin/data/Default*.png
-pitchShifterIOS/bin/data/Icon*.png
