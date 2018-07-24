@@ -26,14 +26,8 @@ void ofApp::setup() {
 	// register touch events
 	ofRegisterTouchEvents(this);
 	
-	// initialize the accelerometer
-	ofxAccelerometer.setup();
-	
 	// iOSAlerts will be sent to this
 	ofxiOSAlerts.addListener(this);
-	
-	// set landscape
-	//ofSetOrientation(OF_ORIENTATION_90_RIGHT;
 	
 	// try to set the preferred iOS sample rate, but get the actual sample rate
 	// being used by the AVSession since newer devices like the iPhone 6S only
@@ -45,7 +39,14 @@ void ofApp::setup() {
 	int ticksPerBuffer = 8; // 8 * 64 = buffer len of 512
 
 	// setup OF sound stream using the current *actual* samplerate
-	ofSoundStreamSetup(2, 1, this, sampleRate, ofxPd::blockSize()*ticksPerBuffer, 3);
+	ofSoundStreamSettings settings;
+	settings.numInputChannels = 1;
+	settings.numOutputChannels = 2;
+	settings.sampleRate = sampleRate;
+	settings.bufferSize = ofxPd::blockSize() * ticksPerBuffer;
+	settings.setInListener(this);
+	settings.setOutListener(this);
+	ofSoundStreamSetup(settings);
 
 	// setup Pd
 	//
@@ -282,6 +283,13 @@ void ofApp::draw() {
 		ofDrawLine(x, y+scopeArray[i]*h, x+w, y+scopeArray[i+1]*h);
 		x += w;
 	}
+}
+
+//--------------------------------------------------------------
+void ofApp::exit() {
+
+	// cleanup
+	ofSoundStreamStop();
 }
 
 //--------------------------------------------------------------

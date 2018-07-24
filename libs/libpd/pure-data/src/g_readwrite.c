@@ -338,13 +338,13 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
             ((t_scalar *)oldone)->sc_template
         && (template = template_findbyname(((t_scalar *)newone)->sc_template)))
     {
-            /* copy new one to old one and deete new one */
+            /* swap new one with old one; then delete new one */
         int i;
         for (i = 0; i < template->t_n; i++)
         {
             t_word w = ((t_scalar *)newone)->sc_vec[i];
-            ((t_scalar *)newone)->sc_vec[i] = ((t_scalar *)newone)->sc_vec[i];
-            ((t_scalar *)newone)->sc_vec[i] = w;
+            ((t_scalar *)newone)->sc_vec[i] = ((t_scalar *)oldone)->sc_vec[i];
+            ((t_scalar *)oldone)->sc_vec[i] = w;
         }
         pd_free(&newone->g_pd);
         if (glist_isvisible(x))
@@ -402,7 +402,7 @@ void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
     t_dataslot *ds;
     t_template *template = template_findbyname(templatesym);
     t_atom *a = (t_atom *)t_getbytes(0);
-    int i, n = template->t_n, natom = 0;
+    int i, n = template?(template->t_n):0, natom = 0;
     if (!amarrayelement)
     {
         t_atom templatename;
@@ -588,6 +588,8 @@ static void glist_write(t_glist *x, t_symbol *filename, t_symbol *format)
 
 /* ------ routines to save and restore canvases (patches) recursively. ----*/
 
+typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
+
     /* save to a binbuf, called recursively; cf. canvas_savetofile() which
     saves the document, and is only called on root canvases. */
 static void canvas_saveto(t_canvas *x, t_binbuf *b)
@@ -598,7 +600,11 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
     int zoomwas = x->gl_zoom;
 
     if (zoomwas > 1)
-        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)1);
+    {
+        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
+        if (zoommethod)
+            (*zoommethod)(&x->gl_pd, (t_floatarg)1);
+    }
         /* subpatch */
     if (x->gl_owner && !x->gl_env)
     {
@@ -661,7 +667,11 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
                 (t_float)x->gl_isgraph);
     }
     if (zoomwas > 1)
-        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)zoomwas);
+    {
+        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
+        if (zoommethod)
+            (*zoommethod)(&x->gl_pd, (t_floatarg)zoomwas);
+    }
 }
 
     /* call this recursively to collect all the template names for
@@ -694,12 +704,13 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
     for (i = 0; i < ntemplates; i++)
     {
         t_template *template = template_findbyname(templatevec[i]);
-        int j, m = template->t_n;
+        int j, m;
         if (!template)
         {
             bug("canvas_savetemplatesto");
             continue;
         }
+        m = template->t_n;
             /* drop "pd-" prefix from template symbol to print */
         binbuf_addv(b, "sss", &s__N, gensym("struct"),
             gensym(templatevec[i]->s_name + 3));

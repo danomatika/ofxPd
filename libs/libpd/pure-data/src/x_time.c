@@ -296,6 +296,9 @@ static void line_ft1(t_line *x, t_floatarg g)
 
 static void line_stop(t_line *x)
 {
+    if (pd_compatibilitylevel >= 48)
+        x->x_setval += x->x_1overtimediff * (clock_getsystime() - x->x_prevtime)
+            * (x->x_targetval - x->x_setval);
     x->x_targetval = x->x_setval;
     clock_unset(x->x_clock);
 }
@@ -626,6 +629,8 @@ static void pipe_free(t_pipe *x)
 {
     pipe_clear(x);
     freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
+    freebytes(x->x_gp, x->x_nptr * sizeof(*x->x_gp));
+
 }
 
 static void pipe_setup(void)

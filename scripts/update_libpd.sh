@@ -49,6 +49,7 @@ rm $SRC/pure-data/src/d_fft_fftw.c
 
 # remove some other stuff we don't need ...
 rm $SRC/pure-data/src/s_entry.c
+rm $SRC/pure-data/src/s_file.c
 rm $SRC/pure-data/src/s_watchdog.c
 rm $SRC/pure-data/src/u_pdreceive.c
 rm $SRC/pure-data/src/u_pdsend.c
