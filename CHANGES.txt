@@ -1,7 +1,8 @@
 1.7.0: 2018 Jul 24
 
 * updated for OF 0.10.0
-* updated to latest libpd pre-0.11 (pd 0.48-1)
+* updated to latest libpd pre-0.11 (pd 0.48-1),
+  note: some files have been removed, so regenerate your projects
 
 * fixed macOS 10.13 SDK disptach.h error
 * fixed compile error due to leftover Poco/Mutex include (reported by Dan Moore)

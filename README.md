@@ -84,7 +84,7 @@ Notes for iOS projects:
 PitchShifter
 ------------
 
-PitchShifter is a simple example application which uses an OF gui to control a pitch shifter within a PD patch. It's in `pitchShifter` and `pitchShifterIOS`. Like the basic example, you will have to generate the project files using the ProjectGenerator. 
+PitchShifter is a simple example application which uses an OF gui to control a pitch shifter within a PD patch. Like the basic example, you will have to generate the project files using the ProjectGenerator.
 
 How to Create a New ofxPd Project
 ---------------------------------
@@ -277,7 +277,7 @@ Note: Some libraries may require external libraries of their own and/or special 
 
 ### Calling the external setup function
 
-In order for ofxPd to use an external library, the library has to register itself on startup. This is accomplished by calling the library's setup function which is named after the library followed by a "_setup" suffix: "library_setup()". The zexy setup function is simply "zexy_setup()". Call this setup function after initializing ofxPd in your app's setup() function:
+In order for ofxPd to use an external library, the library has to register itself on startup. This is accomplished by calling the library's setup function which is named after the library followed by a "\_setup" suffix: "library_setup()". The zexy setup function is simply "zexy_setup()". Call this setup function after initializing ofxPd in your app's setup() function:
 ~~~
 if(!pd.init(numOutChannels, numInChannels, sampleRate, ticksPerBuffer)) {
 	OF_EXIT_APP(1);
