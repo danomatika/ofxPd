@@ -13,7 +13,7 @@ WARRANTIES, see the file, "LICENSE.txt," in this distribution.
 
 See https://github.com/danomatika/ofxPd for documentation as well as the [OF forum post on ofxPd](http://forum.openframeworks.cc/t/ofxpd/6492)
 
-This project has been supported by the [Frank-Ratchye STUDIO for Creative Inquiry at Carnegie Mellon University](http://studioforcreativeinquiry.org).
+This project has been supported by the CMU [Frank-Ratchye STUDIO for Creative Inquiry](http://studioforcreativeinquiry.org), the DU [Emergent Digital Practices Program](https://www.du.edu/ahss/edp/), and my time at the [ZKM | Hertz-Lab](https://zkm.de/en/about-the-zkm/organisation/hertz-lab).
 
 Description
 -----------
