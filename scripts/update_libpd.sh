@@ -53,6 +53,7 @@ rm $SRC/pure-data/src/s_file.c
 rm $SRC/pure-data/src/s_watchdog.c
 rm $SRC/pure-data/src/u_pdreceive.c
 rm $SRC/pure-data/src/u_pdsend.c
+rm $SRC/pure-data/src/.dir-locals.el
 
 # copy sources
 mkdir -p $DEST/pure-data

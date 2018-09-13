@@ -69,7 +69,6 @@ int libpd_init(void) {
   initialized = 1;
   signal(SIGFPE, SIG_IGN);
   libpd_start_message(32); // allocate array for message assembly
-  sys_printhook = (t_printhook) libpd_printhook;
   // are all these settings necessary?
   sys_externalschedlib = 0;
   sys_printtostderr = 0;
@@ -362,7 +361,7 @@ t_atom *libpd_next_atom(t_atom *a) {
 }
 
 void libpd_set_printhook(const t_libpd_printhook hook) {
-  libpd_printhook = hook;
+  sys_printhook = (t_printhook) hook;
 }
 
 void libpd_set_banghook(const t_libpd_banghook hook) {
