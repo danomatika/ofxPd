@@ -78,6 +78,14 @@ If everything went Ok, you should now be able to open the generated project and 
 
 Notes for iOS projects:
 
+* as of iOS 10+, you will need to manually add a NSMicrophoneUsageDescription string to the project's info plist or the app will crash immediately:
+  1. click on the blue project at the top of the Xcode file tree (ie. something like "pdExampleIOS"
+  2. click the "Info" tab in the top/middle
+  3. under "Custom iOS Target Properties", hover over the last key in the list and click the "+" button
+  4. add the following:
+    - Key: NSMicrophoneUsageDescription
+    - Type: string
+    - Value: a description string for the app like, ie. "This app needs to use the microphone for bla bla..."
 * if you use the OF release zips from openframeworks.cc, you need the iOS zip *not* the macOS zip
 * make sure that "iOS (Xcode)" is selected in the PG's "Platforms" box
 
@@ -206,6 +214,14 @@ You may be building an audio app for iOS that you want to run without the automa
 
 Bugs & Errors
 -------------
+
+### iOS app crashes immediately with something about "Microphone Description"
+
+As of iOS version 10+, apps need to ask the user in order to use the camera, microphone, or location data. If you run an iOS project that uses microphone input (ie. pdExampleIOS), a text description is required or the app will be terminated by the OS.
+
+Since the OF Project Generator (currently) doesn't know how to automatically add these description strings to the Xcode project, you will need to do it manually every time you (re)generate an iOS project.
+
+See the steps listed in the "Running the Example Projects" section.
 
 ### Xcode: Expected value in expression dispatch.h
 
