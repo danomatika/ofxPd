@@ -41,14 +41,14 @@ void ofApp::setup() {
 
 	// allocate pd instance handles
 	instanceMutex.lock();
-	pdinstance1 = pdinstance_new();
-	pdinstance2 = pdinstance_new();
+	pdinstance1 = libpd_new_instance();
+	pdinstance2 = libpd_new_instance();
 	instanceMutex.unlock();
 	
 	// set a "current" instance before pd.init() or else Pd will make
     // an unnecessary third "default" instance
 	instanceMutex.lock();
-	pd_setinstance(pdinstance1);
+	libpd_set_instance(pdinstance1);
 	instanceMutex.unlock();
 	
 	// setup Pd
@@ -77,7 +77,7 @@ void ofApp::setup() {
 	memset(outputBuffer2, 0, outputBufferSize);
 
 	instanceMutex.lock();
-	pd_setinstance(pdinstance1);  // talk to first pd instance
+	libpd_set_instance(pdinstance1);  // talk to first pd instance
 	instanceMutex.unlock();
 
 	// audio processing on
@@ -87,7 +87,7 @@ void ofApp::setup() {
 	pd.openPatch("test.pd");
 
 	instanceMutex.lock();
-	pd_setinstance(pdinstance2); // talk to the second pd instance
+	libpd_set_instance(pdinstance2); // talk to the second pd instance
 	instanceMutex.unlock();
 
 	// audio processing on
@@ -97,15 +97,15 @@ void ofApp::setup() {
 	pd.openPatch("test.pd");
 	
 	// The following two messages can be sent without setting the pd instance
-    // and anyhow the symbols are global so they may affect multiple instances.
-    // However, if the messages change anything in the pd instance structure
-    // (DSP state; current time; list of all canvases n our instance) those
-    // changes will apply to the current Pd nstance, so the earlier messages,
-    // for instance, were sensitive to which was the current one.
-    //
-    // Note also that I'm using the fact that $0 is set to 1003, 1004, ...
-    // as patches are opened, it would be better to open the patches with
-    // settable $1, etc parameters to openPatch().
+	// and anyhow the symbols are global so they may affect multiple instances.
+	// However, if the messages change anything in the pd instance structure
+	// (DSP state; current time; list of all canvases n our instance) those
+	// changes will apply to the current Pd nstance, so the earlier messages,
+	// for instance, were sensitive to which was the current one.
+	//
+	// Note also that I'm using the fact that $0 is set to 1003, 1004, ...
+	// as patches are opened, it would be better to open the patches with
+	// settable $1, etc parameters to openPatch().
 	
 	// [; pd frequency 220 (
 	pd << StartMessage() << 440.0f << FinishMessage("1003-frequency", "float");
@@ -139,6 +139,11 @@ void ofApp::exit() {
 
 	// cleanup
 	ofSoundStreamStop();
+	
+	instanceMutex.lock();
+	pdinstance1 = libpd_free_instance();
+	pdinstance2 = libpd_free_instance();
+	instanceMutex.unlock();
 }
 
 //--------------------------------------------------------------
@@ -146,12 +151,12 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 	
 	// process audio input for instance 1
 	instanceMutex.lock();
-	pd_setinstance(pdinstance1);
+	libpd_set_instance(pdinstance1);
 	instanceMutex.unlock();
 	pd.audioIn(input, bufferSize, nChannels);
 	
 	// process audio input for instance 2
-	pd_setinstance(pdinstance2);
+	libpd_set_instance(pdinstance2);
 	pd.audioIn(input, bufferSize, nChannels);
 }
 
@@ -160,13 +165,13 @@ void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 	
 	// process audio output for instance 1
 	instanceMutex.lock();
-	pd_setinstance(pdinstance1);
+	libpd_set_instance(pdinstance1);
 	instanceMutex.unlock();
 	pd.audioOut(outputBuffer1, bufferSize, nChannels);
 	
 	// process audio output for instance 2
 	instanceMutex.lock();
-	pd_setinstance(pdinstance2);
+	libpd_set_instance(pdinstance2);
 	instanceMutex.unlock();
 	pd.audioOut(outputBuffer2, bufferSize, nChannels);
 
