@@ -30,37 +30,49 @@ common:
 	ADDON_CFLAGS += -DLIBPD_USE_STD_MUTEX
 
 linux64:
+	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL
 
 linux:
+	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL
 
 linuxarmv6l:
+	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL
 
 linuxarmv7l:
+	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL
 
 msys2:
-	# not sure if pd~ is working on Windows, so leave it out
-	ADDON_SOURCES_EXCLUDE = libs/libpd/pure-data/extra/pd~
-	ADDON_INCLUDES_EXCLUDE = libs/libpd/pure-data/extra/pd~
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
+	# this assumes 64 bit builds only at this point...
+	ADDON_DLLS_TO_COPY = libs/libpd/libs/mingw64/libwinpthread-1.dll
 
 vs:
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
+	# this assumes 64 bit builds only at this point...
+	ADDON_DLLS_TO_COPY = libs/libpd/libs/mingw64/libwinpthread-1.dll
 
 android/armeabi:
+	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL
 
 android/armeabi-v7a:
+	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL
 
 osx:
+	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL
 	
@@ -68,6 +80,7 @@ osx:
 	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1
 
 ios:
+	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# set No common blocks option to avoid duplicate symbols link error
 	ADDON_CFLAGS += -fcommon
 	

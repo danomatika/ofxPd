@@ -38,7 +38,7 @@ char pd_compiledate[] = __DATE__;
 void pd_init(void);
 int sys_argparse(int argc, char **argv);
 void sys_findprogdir(char *progname);
-void sys_setsignalhandlers( void);
+void sys_setsignalhandlers(void);
 int sys_startgui(const char *guipath);
 void sys_setrealtime(const char *guipath);
 int m_mainloop(void);
@@ -199,7 +199,7 @@ int sys_fontheight(int fontsize)
 }
 
 int sys_defaultfont;
-#define DEFAULTFONT 10
+#define DEFAULTFONT 12
 
 static void openit(const char *dirname, const char *filename)
 {
@@ -225,7 +225,7 @@ open(), read(), etc, calls to be served somehow from the GUI too. */
 
 void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
+    const char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
     t_namelist *nl;
     unsigned int i;
     int did_fontwarning = 0;
@@ -315,6 +315,7 @@ static void sys_fakefromgui(void)
 }
 
 static void sys_afterargparse(void);
+static void sys_printusage(void);
 
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, char **argv)
@@ -366,6 +367,11 @@ int sys_main(int argc, char **argv)
         /* for external scheduler (to ignore audio api in sys_loadpreferences) */
         else if (!strcmp(argv[i], "-schedlib") && i < argc-1)
             sys_externalschedlib = 1;
+        else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help"))
+        {
+            sys_printusage();
+            return (1);
+        }
     }
     if (!noprefs)       /* load preferences before parsing args to allow ... */
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
@@ -487,10 +493,10 @@ static char *(usagemessage[]) = {
 "-stdpath         -- search standard directory (true by default)\n",
 "-helppath <path> -- add to help file search path\n",
 "-open <file>     -- open file(s) on startup\n",
-"-lib <file>      -- load object library(s)\n",
-"-font-size <n>     -- specify default font size in points\n",
-"-font-face <name>  -- specify default font\n",
-"-font-weight <name>-- specify default font weight (normal or bold)\n",
+"-lib <file>      -- load object library(s) (omit file extensions)\n",
+"-font-size <n>      -- specify default font size in points\n",
+"-font-face <name>   -- specify default font\n",
+"-font-weight <name> -- specify default font weight (normal or bold)\n",
 "-verbose         -- extra printout on startup and when searching for files\n",
 "-noverbose       -- no extra printout\n",
 "-version         -- don't run Pd; just print out which version it is \n",
@@ -513,7 +519,7 @@ static char *(usagemessage[]) = {
 #endif
 "-sleep           -- sleep when idle, don't spin (true by default)\n",
 "-nosleep         -- spin, don't sleep (may lower latency on multi-CPUs)\n",
-"-schedlib <file> -- plug in external scheduler\n",
+"-schedlib <file> -- plug in external scheduler (omit file extensions)\n",
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
 "-nobatch         -- run interactively (true by default)\n",
@@ -521,6 +527,13 @@ static char *(usagemessage[]) = {
 "-noautopatch     -- defeat auto-patching\n",
 "-compatibility <f> -- set back-compatibility to version <f>\n",
 };
+
+static void sys_printusage(void)
+{
+    unsigned int i;
+    for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
+        fprintf(stderr, "%s", usagemessage[i]);
+}
 
 static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
 {
@@ -644,7 +657,6 @@ static int sys_mmio = 0;
 
 int sys_argparse(int argc, char **argv)
 {
-    int i;
     while ((argc > 0) && **argv == '-')
     {
         if (!strcmp(*argv, "-r") && argc > 1 &&
@@ -998,8 +1010,8 @@ int sys_argparse(int argc, char **argv)
         {
             if (argc < 2)
                 goto usage;
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, argv[1]);
+            STUFF->st_temppath =
+                namelist_append_files(STUFF->st_temppath, argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-nostdpath"))
@@ -1341,10 +1353,8 @@ int sys_argparse(int argc, char **argv)
             argc -= 2, argv +=2;
         else
         {
-            unsigned int i;
         usage:
-            for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
-                fprintf(stderr, "%s", usagemessage[i]);
+            sys_printusage();
             return (1);
         }
     }
@@ -1392,7 +1402,7 @@ static void sys_afterargparse(void)
     strncpy(sbuf, sys_libdir->s_name, MAXPDSTRING-30);
     sbuf[MAXPDSTRING-30] = 0;
     strcat(sbuf, "/doc/5.reference");
-    STUFF->st_staticpath = namelist_append_files(STUFF->st_staticpath, sbuf);
+    STUFF->st_helppath = namelist_append_files(STUFF->st_helppath, sbuf);
         /* correct to make audio and MIDI device lists zero based.  On
         MMIO, however, "1" really means the second device (the first one
         is "mapper" which is was not included when the command args were

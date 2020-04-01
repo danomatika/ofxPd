@@ -131,7 +131,7 @@ canvas 0 0 458 153 10;\n\
 /* create invisible, built-in canvases to supply templates for floats
 and float-arrays. */
 
-void garray_init( void)
+void garray_init(void)
 {
     t_binbuf *b;
     b = binbuf_new();
@@ -896,7 +896,7 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval,
     if (npoints == 0)
         npoints = 512;  /* dunno what a good default would be... */
     if (npoints != (1 << ilog2((int)npoints)))
-        post("%s: rounnding to %d points", array->a_templatesym->s_name,
+        post("%s: rounding to %d points", array->a_templatesym->s_name,
             (npoints = (1<<ilog2((int)npoints))));
     garray_resize_long(x, npoints + 3);
     phaseincr = 2. * 3.14159 / npoints;

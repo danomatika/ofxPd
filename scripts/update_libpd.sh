@@ -2,6 +2,7 @@
 
 WD=$(dirname $0)
 
+VER=master
 SRC=libpd
 DEST=../libs/libpd
 
@@ -9,9 +10,10 @@ DEST=../libs/libpd
 
 cd $WD
 
-# get latest source
+# get source
 git clone git://github.com/libpd/libpd.git
 cd $SRC
+git checkout $VER
 git submodule init
 git submodule update
 cd -
@@ -61,6 +63,10 @@ cp -Rv $SRC/cpp $DEST/
 cp -Rv $SRC/pure-data/src $DEST/pure-data
 cp -Rv $SRC/pure-data/extra $DEST/pure-data
 cp -Rv $SRC/libpd_wrapper $DEST/
+
+# copy libs
+mkdir -p $DEST/libs
+cp -Rv $SRC/libs/mingw64 $DEST/libs/
 
 # cleanup
 rm -rf $SRC

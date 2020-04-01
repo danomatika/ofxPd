@@ -153,7 +153,8 @@ int iemgui_modulo_color(int col)
 
 t_symbol *iemgui_dollar2raute(t_symbol *s)
 {
-    char buf[MAXPDSTRING+1], *s1, *s2;
+    const char *s1;
+    char buf[MAXPDSTRING+1], *s2;
     if (strlen(s->s_name) >= MAXPDSTRING)
         return (s);
     for (s1 = s->s_name, s2 = buf; ; s1++, s2++)
@@ -168,7 +169,8 @@ t_symbol *iemgui_dollar2raute(t_symbol *s)
 
 t_symbol *iemgui_raute2dollar(t_symbol *s)
 {
-    char buf[MAXPDSTRING+1], *s1, *s2;
+    const char *s1;
+    char buf[MAXPDSTRING+1], *s2;
     if (strlen(s->s_name) >= MAXPDSTRING)
         return (s);
     for (s1 = s->s_name, s2 = buf; ; s1++, s2++)
@@ -494,8 +496,8 @@ void iemgui_size(void *x, t_iemgui *iemgui)
 void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_obj.te_xpix += (int)atom_getfloatarg(0, ac, av)*zoom;
-    iemgui->x_obj.te_ypix += (int)atom_getfloatarg(1, ac, av)*zoom;
+    iemgui->x_obj.te_xpix += (int)atom_getfloatarg(0, ac, av);
+    iemgui->x_obj.te_ypix += (int)atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
@@ -506,8 +508,8 @@ void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_obj.te_xpix = (int)atom_getfloatarg(0, ac, av)*zoom;
-    iemgui->x_obj.te_ypix = (int)atom_getfloatarg(1, ac, av)*zoom;
+    iemgui->x_obj.te_xpix = (int)atom_getfloatarg(0, ac, av);
+    iemgui->x_obj.te_ypix = (int)atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);

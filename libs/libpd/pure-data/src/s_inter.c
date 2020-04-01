@@ -142,9 +142,10 @@ struct _instanceinter
 extern int sys_guisetportnumber;
 extern int sys_addhist(int phase);
 void sys_set_searchpath(void);
+void sys_set_temppath(void);
 void sys_set_extrapath(void);
 void sys_set_startup(void);
-void sys_stopgui( void);
+void sys_stopgui(void);
 
 /* ----------- functions for timing, signals, priorities, etc  --------- */
 
@@ -200,14 +201,18 @@ double sys_getrealtime(void)
 
 extern int sys_nosleep;
 
+/* sleep (but cancel the sleeping if pollem is set and any file descriptors are
+ready - in that case, dispatch any resulting Pd messages and return.  Called
+with sys_lock() set.  We will temporarily release the lock if we actually
+sleep. */
 static int sys_domicrosleep(int microsec, int pollem)
 {
     struct timeval timout;
     int i, didsomething = 0;
     t_fdpoll *fp;
     timout.tv_sec = 0;
-    timout.tv_usec = (sys_nosleep ? 0 : microsec);
-    if (pollem)
+    timout.tv_usec = 0;
+    if (pollem && pd_this->pd_inter->i_nfdpoll)
     {
         fd_set readset, writeset, exceptset;
         FD_ZERO(&writeset);
@@ -216,45 +221,40 @@ static int sys_domicrosleep(int microsec, int pollem)
         for (fp = pd_this->pd_inter->i_fdpoll,
             i = pd_this->pd_inter->i_nfdpoll; i--; fp++)
                 FD_SET(fp->fdp_fd, &readset);
-#ifdef _WIN32
-        if (pd_this->pd_inter->i_maxfd == 0)
-                Sleep(microsec/1000);
-        else
-#endif
         if(select(pd_this->pd_inter->i_maxfd+1,
                   &readset, &writeset, &exceptset, &timout) < 0)
           perror("microsleep select");
         for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
             if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
         {
-#ifdef THREAD_LOCKING
-            sys_lock();
-#endif
             (*pd_this->pd_inter->i_fdpoll[i].fdp_fn)
                 (pd_this->pd_inter->i_fdpoll[i].fdp_ptr,
                     pd_this->pd_inter->i_fdpoll[i].fdp_fd);
-#ifdef THREAD_LOCKING
-            sys_unlock();
-#endif
             didsomething = 1;
         }
-        return (didsomething);
+        if (didsomething)
+            return (1);
     }
-    else
+    if (microsec)
     {
+        sys_unlock();
 #ifdef _WIN32
-        if (pd_this->pd_inter->i_maxfd == 0)
-              Sleep(microsec/1000);
-        else
+        Sleep(microsec/1000);
+#else
+        usleep(microsec);
 #endif
-        select(0, 0, 0, 0, &timout);
-        return (0);
+        sys_lock();
     }
+    return (0);
 }
 
+    /* sleep (but if any incoming or to-gui sending to do, do that instead.)
+    Call with the PD unstance lock UNSET - we set it here. */
 void sys_microsleep(int microsec)
 {
+    sys_lock();
     sys_domicrosleep(microsec, 1);
+    sys_unlock();
 }
 
 #if !defined(_WIN32) && !defined(__CYGWIN__)
@@ -317,7 +317,7 @@ void sys_setalarm(int microsec)
 #endif /* NOT _WIN32 && NOT __CYGWIN__ */
 
     /* on startup, set various signal handlers */
-void sys_setsignalhandlers( void)
+void sys_setsignalhandlers(void)
 {
 #if !defined(_WIN32) && !defined(__CYGWIN__)
     signal(SIGHUP, sys_huphandler);
@@ -682,7 +682,7 @@ static void sys_trytogetmoreguibuf(int newsize)
     }
 }
 
-int sys_havegui( void)
+int sys_havegui(void)
 {
     return (pd_this->pd_inter->i_havegui);
 }
@@ -796,7 +796,7 @@ void glob_ping(t_pd *dummy)
     pd_this->pd_inter->i_waitingforping = 0;
 }
 
-static int sys_flushqueue(void )
+static int sys_flushqueue(void)
 {
     int wherestop = pd_this->pd_inter->i_bytessincelastping + GUI_UPDATESLICE;
     if (wherestop + (GUI_UPDATESLICE >> 1) > GUI_BYTESPERPING)
@@ -900,9 +900,20 @@ void sys_unqueuegui(void *client)
     }
 }
 
+    /* poll for any incoming packets, or for GUI updates to send.  call with
+    the PD instance lock set. */
 int sys_pollgui(void)
 {
-    return (sys_domicrosleep(0, 1) || sys_poll_togui());
+    static double lasttime = 0;
+    double now = 0;
+    int didsomething = sys_domicrosleep(0, 1);
+    if (!didsomething || (now = sys_getrealtime()) > lasttime + 0.5)
+    {
+        didsomething |= sys_poll_togui();
+        if (now)
+            lasttime = now;
+    }
+    return (didsomething);
 }
 
 void sys_init_fdpoll(void)
@@ -930,7 +941,7 @@ void glob_watchdog(t_pd *dummy)
 }
 #endif
 
-static void sys_init_deken( void)
+static void sys_init_deken(void)
 {
     const char*os =
 #if defined __linux__
@@ -1153,19 +1164,26 @@ static int sys_do_startgui(const char *libdir)
                 sprintf(cmdbuf, "\"%s\" %d\n", glob_buffer.gl_pathv[0], portno);
             else
             {
+                int wish_paths_count = sizeof(wish_paths)/sizeof(*wish_paths);
                 #ifdef WISH
                     wish_paths[0] = WISH;
                 #endif
                 sprintf(home_filename,
                         "%s/Applications/Wish.app/Contents/MacOS/Wish",homedir);
                 wish_paths[1] = home_filename;
-                for(i=0; i<11; i++)
+                for(i=0; i<wish_paths_count; i++)
                 {
                     if (sys_verbose)
                         fprintf(stderr, "Trying Wish at \"%s\"\n",
                             wish_paths[i]);
                     if (stat(wish_paths[i], &statbuf) >= 0)
                         break;
+                }
+                if(i>=wish_paths_count)
+                {
+                    fprintf(stderr, "sys_startgui couldn't find tcl/tk\n");
+                    sys_closesocket(xsock);
+                    return (1);
                 }
                 sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n",
                         wish_paths[i], libdir, PDGUIDIR, portno);
@@ -1278,6 +1296,7 @@ static int sys_do_startgui(const char *libdir)
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
     sys_set_searchpath();     /* tell GUI about path and startup flags */
+    sys_set_temppath();
     sys_set_extrapath();
     sys_set_startup();
                        /* ... and about font, medio APIS, etc */
@@ -1412,7 +1431,7 @@ void sys_bail(int n)
         reentered = 1;
 #if !defined(__linux__) && !defined(__FreeBSD_kernel__) && !defined(__GNU__)
             /* sys_close_audio() hangs if you're in a signal? */
-        fprintf(stderr ,"gui socket %d - ", pd_this->pd_inter->i_guisock);
+        fprintf(stderr ,"gui socket %d - \n", pd_this->pd_inter->i_guisock);
         fprintf(stderr, "closing audio...\n");
         sys_close_audio();
         fprintf(stderr, "closing MIDI...\n");
@@ -1474,7 +1493,7 @@ int sys_startgui(const char *libdir)
  /* more work needed here - for some reason we can't restart the gui after
  shutting it down this way.  I think the second 'init' message never makes
  it because the to-gui buffer isn't re-initialized. */
-void sys_stopgui( void)
+void sys_stopgui(void)
 {
     t_canvas *x;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
@@ -1491,7 +1510,7 @@ void sys_stopgui( void)
 
 /* ----------- mutexes for thread safety --------------- */
 
-void s_inter_newpdinstance( void)
+void s_inter_newpdinstance(void)
 {
     pd_this->pd_inter = getbytes(sizeof(*pd_this->pd_inter));
 #if PDTHREADS
@@ -1504,9 +1523,21 @@ void s_inter_newpdinstance( void)
     pd_this->pd_inter->i_havegui = 0;
 }
 
-void s_inter_freepdinstance( void)
+void s_inter_free(t_instanceinter *inter)
 {
-    freebytes(pd_this->pd_inter, sizeof(*pd_this->pd_inter));
+    if (inter->i_fdpoll) {
+        binbuf_free(inter->i_inbinbuf);
+        inter->i_inbinbuf = 0;
+        t_freebytes(inter->i_fdpoll, inter->i_nfdpoll * sizeof(t_fdpoll));
+        inter->i_fdpoll = 0;
+        inter->i_nfdpoll = 0;
+    }
+    freebytes(inter, sizeof(*inter));
+}
+
+void s_inter_freepdinstance(void)
+{
+    s_inter_free(pd_this->pd_inter);
 }
 
 #if PDTHREADS
@@ -1527,7 +1558,7 @@ current instance of Pd is currently locked via sys_lock() below; this gains
 read access to the class and instance lists which must be released for the
 write-lock to be available. */
 
-void pd_globallock( void)
+void pd_globallock(void)
 {
 #ifdef PDINSTANCE
     if (!pd_this->pd_islocked)
@@ -1537,7 +1568,7 @@ void pd_globallock( void)
 #endif /* PDINSTANCE */
 }
 
-void pd_globalunlock( void)
+void pd_globalunlock(void)
 {
 #ifdef PDINSTANCE
     pthread_rwlock_unlock(&sys_rwlock);
@@ -1548,7 +1579,7 @@ void pd_globalunlock( void)
 /* routines to lock/unlock a Pd instance for thread safety.  Call pd_setinsance
 first.  The "pd_this"  variable can be written and read thread-safely as it
 is defined as per-thread storage. */
-void sys_lock( void)
+void sys_lock(void)
 {
 #ifdef PDINSTANCE
     pthread_mutex_lock(&pd_this->pd_inter->i_mutex);
@@ -1559,7 +1590,7 @@ void sys_lock( void)
 #endif
 }
 
-void sys_unlock( void)
+void sys_unlock(void)
 {
 #ifdef PDINSTANCE
     pd_this->pd_islocked = 0;
@@ -1570,7 +1601,7 @@ void sys_unlock( void)
 #endif
 }
 
-int sys_trylock( void)
+int sys_trylock(void)
 {
 #ifdef PDINSTANCE
     int ret;
@@ -1592,9 +1623,24 @@ int sys_trylock( void)
 
 #else /* PDTHREADS */
 
-void sys_lock( void) {}
-void sys_unlock( void) {}
-void pd_globallock( void) {}
-void pd_globalunlock( void) {}
+#ifdef TEST_LOCKING /* run standalone Pd with this to find deadlocks */
+static int amlocked;
+void sys_lock(void)
+{
+    if (amlocked) bug("duplicate lock");
+    amlocked = 1;
+}
+
+void sys_unlock(void)
+{
+    if (!amlocked) bug("duplicate unlock");
+    amlocked = 0;
+}
+#else
+void sys_lock(void) {}
+void sys_unlock(void) {}
+#endif
+void pd_globallock(void) {}
+void pd_globalunlock(void) {}
 
 #endif /* PDTHREADS */
