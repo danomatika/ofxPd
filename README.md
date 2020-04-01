@@ -149,6 +149,8 @@ _Note: **-DLIBPD_EXTRA** is optional if you do not need/use the externals in `li
 Using ofxPd with Visual Studio
 ------------------------------
 
+_As of 2019, the libpd sources may be building in Visual Studio, although this has not been directly confirmed with OF & ofxPd. (At least no one has told me.) If you mainly use VS, try this first before building the libpd.dll via MinGW._
+
 The libpd sources do not currently build with the Visual Studio C compiler. In
 order to use libpd with ofxPd in a Visual Studio project, you need to build a
 libpd.dll dynamic library using MinGW (Minimal GNU for Windows) which provides
@@ -156,9 +158,10 @@ a Unix command shell and compiler.
 
 The steps for 64 bit are basically:
 
-1. set up Msys2/MinGW, see https://github.com/libpd/libpd#windows
-2. build libpd using MinGW64: `make`
-3. install libpd to a temp folder: `make install prefix=build/libpd`
+1. set up Msys2/MinGW: see https://github.com/libpd/libpd#windows
+2. open an Msys2 shell (64 bit)
+3. build libpd: `make`
+4. install libpd to a temp folder: `make install prefix=build/libpd`
 
 Once built, replace the libpd source code in ofxPd with the libpd headers and library files:
 
@@ -185,7 +188,8 @@ _Note: You will need to re-add libpd.lib to the VS link stage whenever you regen
 
 For 32 bit:
 
-* build libpd using MinGW32
+* open an Msys2 shell (32 bit)
+* build libpd using `make`
 * set the "Win32" target in your VS project before setting the libpd.lib path
 * copy pthread from the "mingw32" folder: `libpd/libs/mingw32/libwinpthread-1.dll`
 
