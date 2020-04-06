@@ -149,7 +149,7 @@ _Note: **-DLIBPD_EXTRA** is optional if you do not need/use the externals in `li
 Using ofxPd with Visual Studio
 ------------------------------
 
-_As of 2019, the libpd sources may be building in Visual Studio, although this has not been directly confirmed with OF & ofxPd. (At least no one has told me.) If you mainly use VS, try this first before building the libpd.dll via MinGW._
+_As of 2019, the libpd sources may be building in Visual Studio, although this has not been directly confirmed with OF & ofxPd. (At least no one has told me.) If you mainly use VS, try this first before building the libpd.dll via Msys2/MinGW._
 
 The libpd sources do not currently build with the Visual Studio C compiler. In
 order to use libpd with ofxPd in a Visual Studio project, you need to build a
@@ -158,7 +158,7 @@ a Unix command shell and compiler.
 
 The steps for 64 bit are basically:
 
-1. set up Msys2/MinGW: see https://github.com/libpd/libpd#windows
+1. set up Msys2/MinGW: see https://github.com/libpd/libpd#windows and make sure to follow *all* steps in the Msys2 setup instructions (upadting packages after install) 
 2. open an Msys2 shell (64 bit)
 3. build libpd: `make`
 4. install libpd to a temp folder: `make install prefix=build/libpd`
@@ -171,6 +171,8 @@ Once built, replace the libpd source code in ofxPd with the libpd headers and li
 To set up a VS project using ofxPd, you need to link to the libpd.lib import library and place the runtime libraries for libpd in your project's `bin` folder.
 
 Add libpd.lib to link stage of the Visual Studio project:
+
+![VS Linker properties](doc/windows_vs_linker.png)
 
 * set "x64" target
 * Project -> Properties
@@ -186,12 +188,16 @@ Add the runtime libraries to the project's `bin` folder:
 
 _Note: You will need to re-add libpd.lib to the VS link stage whenever you regenerate the project with the OF ProjectGenerator._
 
+![VS project layout](doc/windows_vs_pdExample.png)
+
 For 32 bit:
 
 * open an Msys2 shell (32 bit)
 * build libpd using `make`
 * set the "Win32" target in your VS project before setting the libpd.lib path
 * copy pthread from the "mingw32" folder: `libpd/libs/mingw32/libwinpthread-1.dll`
+
+_Screenshots provided by @moebiussurfing._
 
 Notes
 -----
