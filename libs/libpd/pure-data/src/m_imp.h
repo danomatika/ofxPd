@@ -85,6 +85,7 @@ EXTERN int obj_nsiginlets(const t_object *x);
 EXTERN int obj_nsigoutlets(const t_object *x);
 EXTERN int obj_siginletindex(const t_object *x, int m);
 EXTERN int obj_sigoutletindex(const t_object *x, int m);
+EXTERN t_float *obj_findsignalscalar(const t_object *x, int m);
 
 /* s_inter.c */
 void pd_globallock(void);
@@ -95,7 +96,8 @@ void pd_globalunlock(void);
 
 EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
-EXTERN void glob_quit(void *dummy);
+EXTERN void glob_quit(void *dummy); /* glob_exit(0); */
+EXTERN void glob_exit(void *dummy, t_float status);
 EXTERN void open_via_helppath(const char *name, const char *dir);
 
 

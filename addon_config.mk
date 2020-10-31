@@ -29,6 +29,9 @@ common:
 	ADDON_CFLAGS += -DLIBPD_EXTRA
 	ADDON_CFLAGS += -DLIBPD_USE_STD_MUTEX
 
+	# this is included directly in pd~.c, don't build twice
+	ADDON_SOURCES_EXCLUDE = libs/libpd/pure-data/extra/pd~/binarymsg.c
+
 linux64:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading

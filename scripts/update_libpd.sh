@@ -11,7 +11,7 @@ DEST=../libs/libpd
 cd $WD
 
 # get source
-git clone git://github.com/libpd/libpd.git
+git clone --depth 1 git://github.com/libpd/libpd.git
 cd $SRC
 git checkout $VER
 git submodule init
