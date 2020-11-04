@@ -35,7 +35,7 @@ using namespace pd;
 // It's highly suggested that you attempt to streamline your patches first before
 // using this multi instance support.
 //
-class ofApp : public ofBaseApp, public PdReceiver{
+class ofApp : public ofBaseApp, public PdReceiver {
 
 	public:
 
@@ -59,11 +59,7 @@ class ofApp : public ofBaseApp, public PdReceiver{
 		// pd types which tell libpd to address a separate internal "instance"
 		t_pdinstance *pdinstance1, *pdinstance2;
 	
-		// used to avoid concurrency segfaults between main and audio thread
-		// when accessing currently non thread safe pd instance functions
-		ofMutex instanceMutex;
-	
 		int outputBufferSize; //< audio output buffer size
-		float* outputBuffer1; //< interleaved audio output buffer for instance 1
-		float* outputBuffer2; //< interleaved audio output buffer for instance 2
+		float *outputBuffer1; //< interleaved audio output buffer for instance 1
+		float *outputBuffer2; //< interleaved audio output buffer for instance 2
 };

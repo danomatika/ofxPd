@@ -40,16 +40,12 @@ void ofApp::setup() {
 	ofSoundStreamSetup(settings);
 
 	// allocate pd instance handles
-	//instanceMutex.lock();
 	pdinstance1 = libpd_new_instance();
 	pdinstance2 = libpd_new_instance();
-	//instanceMutex.unlock();
 	
 	// set a "current" instance before pd.init() or else Pd will make
     // an unnecessary third "default" instance
-	//instanceMutex.lock();
 	libpd_set_instance(pdinstance1);
-	//instanceMutex.unlock();
 	
 	// setup Pd
 	//
@@ -76,9 +72,7 @@ void ofApp::setup() {
 	memset(outputBuffer1, 0, outputBufferSize);
 	memset(outputBuffer2, 0, outputBufferSize);
 
-	//instanceMutex.lock();
 	libpd_set_instance(pdinstance1);  // talk to first pd instance
-	//instanceMutex.unlock();
 
 	// audio processing on
 	pd.start();
@@ -86,9 +80,7 @@ void ofApp::setup() {
 	// open patch
 	pd.openPatch("test.pd");
 
-	//instanceMutex.lock();
 	libpd_set_instance(pdinstance2); // talk to the second pd instance
-	//instanceMutex.unlock();
 
 	// audio processing on
 	pd.start();
@@ -139,20 +131,16 @@ void ofApp::exit() {
 
 	// cleanup
 	ofSoundStreamStop();
-	
-	//instanceMutex.lock();
+
 	libpd_free_instance(pdinstance1);
 	libpd_free_instance(pdinstance2);
-	//instanceMutex.unlock();
 }
 
 //--------------------------------------------------------------
 void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 	
 	// process audio input for instance 1
-	//instanceMutex.lock();
 	libpd_set_instance(pdinstance1);
-	//instanceMutex.unlock();
 	pd.audioIn(input, bufferSize, nChannels);
 	
 	// process audio input for instance 2
@@ -162,17 +150,13 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 
 //--------------------------------------------------------------
 void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
-	
+
 	// process audio output for instance 1
-	//instanceMutex.lock();
 	libpd_set_instance(pdinstance1);
-	//instanceMutex.unlock();
 	pd.audioOut(outputBuffer1, bufferSize, nChannels);
 	
 	// process audio output for instance 2
-	//instanceMutex.lock();
 	libpd_set_instance(pdinstance2);
-	//instanceMutex.unlock();
 	pd.audioOut(outputBuffer2, bufferSize, nChannels);
 
 	// mix the two instance output buffers together
