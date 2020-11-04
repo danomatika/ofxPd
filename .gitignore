@@ -44,10 +44,10 @@ pdExampleIOS/*.plist
 pdExampleIOS/*.pch
 pdExampleIOS/bin/data/Default*.png
 pdExampleIOS/bin/data/Icon*.png
+pdExampleIOS/mediaAssets/
 
 pitchShifter/Makefile
 pitchShifter/*.xcodeproj
 pitchShifter/config.make
 pitchShifter/*xcconfig
 pitchShifter/*.plist
-
