@@ -13,7 +13,6 @@
 #include "ofMain.h"
 
 #include "ofxPd.h"
-#include "z_libpd.h" // currently needed for pd types
 
 // a namespace for the Pd types
 using namespace pd;
