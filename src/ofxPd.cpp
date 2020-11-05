@@ -13,6 +13,10 @@
  * See http://gitorious.org/pdlib/pages/Libpd for documentation
  *
  */
+
+// include before PdBase.hpp to fix conflict between boost & libpd's s_ define
+#include "ofFileUtils.h"
+
 #include "ofxPd.h"
 
 #include <algorithm>

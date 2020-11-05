@@ -5,6 +5,8 @@
 * added info about NSMicrophoneUsageDescription
 
 * append ADDONS_CFLAGS to avoid problem with OF ProjectGenerator on Android
+* include ofFileUtils.h before ofxPd.h to conflict between boost & libpd's
+  s_ define (Antoine Rousseau)
 
 1.7.1: 2018 Sep 13
 
