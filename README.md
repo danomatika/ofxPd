@@ -159,7 +159,7 @@ If you want to build ofxPd with the libpd experimental libpd multi-instance supp
 * Drag these directories from ofxpd into this new group: ofxPd/src
 * Add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Header Search Paths (make sure "All" is selected)
 * Under Targets->YourApp->Build->**Other C Flags** (make sure "All" is selected), add
-	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA -DLIBPD_USE_STD_MUTEX</pre>
+	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA</pre>
   * _Note: Make sure you use Other **C** Flags! Other **C++** Flags will **not** work since libpd is written in C._
 
 ### For Linux (Makefiles & Codeblocks):
