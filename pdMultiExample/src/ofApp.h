@@ -14,7 +14,6 @@
 
 #include "ofxPd.h"
 #include "z_libpd.h" // currently needed for pd types
-#include "m_imp.h" // currently needed for t_pdinstance type
 
 // a namespace for the Pd types
 using namespace pd;
@@ -23,7 +22,7 @@ using namespace pd;
 // multiple instance support with the ofxPd C++ wrapper. You essentially
 // create t_pdinstance types which act as instance "handles" (aka pointer or ID)
 // and then tell pd which instance you currently want all libpd/ofxPd commands to
-// target using the pd_setinstance() function.
+// target using the libpd_set_instance() function.
 //
 // This example is adapted from the libpd pdtest_multi example which is originally
 // by Miller Puckette.

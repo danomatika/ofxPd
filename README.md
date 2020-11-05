@@ -76,7 +76,7 @@ To (re)generate project files for an *existing* project:
 
 If everything went Ok, you should now be able to open the generated project and build/run the example.
 
-Notes for iOS projects:
+### Notes for iOS Projects
 
 * As of iOS 10+, you will need to manually add a NSMicrophoneUsageDescription string to the project's info plist or the app will crash immediately:
   1. Click on the blue project at the top of the Xcode file tree (ie. something like "pdExampleIOS"
@@ -88,6 +88,23 @@ Notes for iOS projects:
     - Value: a description string for the app like, ie. "This app needs to use the microphone for bla bla..."
 * If you use the OF release zips from openframeworks.cc, you need the iOS zip *not* the macOS zip
 * Make sure that "iOS (Xcode)" is selected in the PG's "Platforms" box
+
+pdMultiExample & Multiple Instance Support
+------------------------------------------
+
+This special example demonsytrates libpd's experimental multiple-instance support, where you can run multiple separate instances of libpd concurrently.
+
+To build and run this example, the following C flags must be set: `-DPDINSTANCE` & `-DPDTHREADS`. If these are not set, the example will exit early with an error.
+
+_Note: multi-instance support is still experimental. For instance, currently each instance still shares a single set of receiver callbacks._
+
+### Makefile
+
+For Makefile builds, these are set in `pdMultiExample/config.make`.
+
+### Project Generator
+
+For project files which are created with the Project Generator (ie. Xcode), uncomment the line in `addons_config.mk` under the `common` target, save, then (re)generate the project with the PG.
 
 PitchShifter
 ------------
@@ -126,11 +143,15 @@ If you want to add ofxPd to another project, you need to make sure you include t
 
     openFrameworks/addons/ofxPd/src
 
-You will also need to include some additional C Flags for building the libpd source:
+You will also need to include some additional C flags for building the libpd source:
 
-	-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA -DLIBPD_USE_STD_MUTEX
+	-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
 
 _Note: **-DLIBPD_EXTRA** is optional if you do not need/use the externals in `libpd/pure-data/extra`_
+
+If you want to build ofxPd with the libpd experimental libpd multi-instance support (ie. for pdMultiExample), add these C flags as well:
+
+    -DPDINSTANCE -DPDTHREADS
 
 ### For Xcode:
 

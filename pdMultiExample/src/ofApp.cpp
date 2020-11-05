@@ -29,6 +29,13 @@ void ofApp::setup() {
 	#endif
 	int numOutputs = 2;
 
+	// allocate instance output buffers
+	outputBufferSize = numOutputs*ticksPerBuffer*ofxPd::blockSize();
+	outputBuffer1 = new float[outputBufferSize];
+	outputBuffer2 = new float[outputBufferSize];
+	memset(outputBuffer1, 0, outputBufferSize);
+	memset(outputBuffer2, 0, outputBufferSize);
+
 	// setup OF sound stream
 	ofSoundStreamSettings settings;
 	settings.numInputChannels = numInputs;
@@ -39,13 +46,18 @@ void ofApp::setup() {
 	settings.setOutListener(this);
 	ofSoundStreamSetup(settings);
 
+	// init before creating any instances
+	libpd_init();
+
 	// allocate pd instance handles
 	pdinstance1 = libpd_new_instance();
 	pdinstance2 = libpd_new_instance();
-	
-	// set a "current" instance before pd.init() or else Pd will make
-    // an unnecessary third "default" instance
-	libpd_set_instance(pdinstance1);
+	ofLog() << libpd_num_instances() << " instances";
+	ofLog() << "instance 1: " << ofToHex(pdinstance1);
+	ofLog() << "instance 2: " << ofToHex(pdinstance2);
+
+	// set an instance before pd.init() or else Pd will use the default instance
+	libpd_set_instance(pdinstance1); // talk to first pd instance
 	
 	// setup Pd
 	//
@@ -55,24 +67,10 @@ void ofApp::setup() {
 	//
 	// note: you won't see any message prints until update() is called since
 	// the queued messages are processed there, this is normal
-	//
-	// ... here we'd sure like to be able to have number of channels be
-    // per-instance.  The sample rate is still global within Pd but we might
-    // also consider relaxing that restrction.
-	//
 	if(!pd.init(numOutputs, numInputs, 44100, ticksPerBuffer, false)) {
 		ofExit(1);
 	}
 	pd.setReceiver(this);
-	
-	// allocate instance output buffers
-	outputBufferSize = numOutputs*ticksPerBuffer*ofxPd::blockSize();
-	outputBuffer1 = new float[outputBufferSize];
-	outputBuffer2 = new float[outputBufferSize];
-	memset(outputBuffer1, 0, outputBufferSize);
-	memset(outputBuffer2, 0, outputBufferSize);
-
-	libpd_set_instance(pdinstance1);  // talk to first pd instance
 
 	// audio processing on
 	pd.start();
@@ -80,30 +78,29 @@ void ofApp::setup() {
 	// open patch
 	pd.openPatch("test.pd");
 
-	libpd_set_instance(pdinstance2); // talk to the second pd instance
-
-	// audio processing on
-	pd.start();
-
-	// open patch
-	pd.openPatch("test.pd");
-	
-	// The following two messages can be sent without setting the pd instance
-	// and anyhow the symbols are global so they may affect multiple instances.
-	// However, if the messages change anything in the pd instance structure
-	// (DSP state; current time; list of all canvases n our instance) those
-	// changes will apply to the current Pd nstance, so the earlier messages,
-	// for instance, were sensitive to which was the current one.
-	//
-	// Note also that I'm using the fact that $0 is set to 1003, 1004, ...
-	// as patches are opened, it would be better to open the patches with
-	// settable $1, etc parameters to openPatch().
-	
-	// [; pd frequency 220 (
+	// start the osc~ via sending [; 1003-frequency 440(
+	// 1003 refers to the first $0 which is used within the test patch for the
+	// receiver name: [r $0-1003]
 	pd << StartMessage() << 440.0f << FinishMessage("1003-frequency", "float");
 
-	// [; pd frequency 440 (
-	pd << StartMessage() << 880.0f << FinishMessage("1004-frequency", "float");
+	// now do the same for instance 2
+	libpd_set_instance(pdinstance2); // talk to the second pd instance
+	if(!pd.init(numOutputs, numInputs, 44100, ticksPerBuffer, false)) {
+		ofExit(1);
+	}
+	pd.setReceiver(this);
+	pd.start();
+	pd.openPatch("test.pd");
+
+	// start the osc~ via sending [; 1000-frequency 880(
+	pd << StartMessage() << 880.0f << FinishMessage("1003-frequency", "float");
+
+	// check if we are really using multiple instances
+	if(!pdinstance1 || !pdinstance2) {
+		ofLogError() << "One or both instances are NULL.";
+		ofLogError() << "Is this example compiled with PDINSTANCE and PDTHREADS set?";
+		ofExit();
+	}
 }
 
 //--------------------------------------------------------------
@@ -116,11 +113,6 @@ void ofApp::update() {
 		// process any received messages, if you're using the queue
 		pd.receiveMessages();
 	}
-	
-//	// run for 1 second and exit
-//	if(ofGetElapsedTimef() > 1.0) {
-//		ofExit(); // exit app
-//	}
 }
 
 //--------------------------------------------------------------
@@ -142,7 +134,7 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 	// process audio input for instance 1
 	libpd_set_instance(pdinstance1);
 	pd.audioIn(input, bufferSize, nChannels);
-	
+
 	// process audio input for instance 2
 	libpd_set_instance(pdinstance2);
 	pd.audioIn(input, bufferSize, nChannels);
@@ -167,5 +159,5 @@ void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 
 //--------------------------------------------------------------
 void ofApp::print(const std::string& message) {
-	cout << message << endl;
+	ofLog() << message;
 }
