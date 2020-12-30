@@ -3,11 +3,12 @@
 * updated to libpd 0.12.0 (pd 0.51-4)
   note: some files have been added, so regenerate your projects
 
-* added prelim support for Visual Studio
+* added prelim support for Visual Studio (not fully tested, 64 bit only)
 * added info about PDINSTANCE and PDTHREADS defines to readme
 * added PDINSTANCE and PDTHREADS defines addon_config.mk (uncomment to use)
 * added info about NSMicrophoneUsageDescription to readme
 
+* readded [pd~] sources as they build on windows again
 * fixed pdMultiExample not building with PDINSTANCE and PDTHREADS defines
   (reported by Antoine Rousseau)
 * append ADDONS_CFLAGS to avoid problem with OF ProjectGenerator on Android

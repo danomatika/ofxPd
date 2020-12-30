@@ -170,9 +170,15 @@ If you want to build ofxPd with the libpd experimental libpd multi-instance supp
 Using ofxPd with Visual Studio
 ------------------------------
 
-_As of 2019, the libpd sources may be building in Visual Studio, although this has not been directly confirmed with OF & ofxPd. (At least no one has told me.) If you mainly use VS, try this first before building the libpd.dll via Msys2/MinGW._
+### Visual Studio only
 
-The libpd sources do not currently build with the Visual Studio C compiler. In order to use libpd with ofxPd in a Visual Studio project, you need a libpd.lib and libpd.dll libraries built using MinGW (Minimal GNU for Windows) which provides a Unix command shell and compiler.
+As of spring 2020, the libpd sources should build directly in new versions of Visual Studio. Also, ofxPd projects use the included 64 bit copy of `libwinpthread-1.dll` used for the Msys2/MinGW build, so everything should be included.
+
+_Note: This has not been directly confirmed with OF & ofxPd. (At least no one has told me.) If you mainly use VS, try this first before building the libpd.dll via Msys2/MinGW._
+
+### Build libpd.dll with MinGW & use with Visual Studio
+
+In order to use libpd with ofxPd in a Visual Studio project, you need a libpd.lib and libpd.dll libraries built using MinGW (Minimal GNU for Windows) which provides a Unix command shell and compiler.
 
 You can check if there is a pre-compiled libpd for ofxPd available here:
 
@@ -180,7 +186,7 @@ You can check if there is a pre-compiled libpd for ofxPd available here:
 
 If so, skip to the "Adding libpd" section, otherwise follow the steps below to set up a build environment and build libpd.
 
-### Building libpd with Msys2/MinGW
+#### Building libpd with Msys2/MinGW
 
 The steps for 64 bit are basically:
 
@@ -190,7 +196,7 @@ The steps for 64 bit are basically:
 3. Build libpd: `make`
 4. Install libpd to a temp folder: `make install prefix=build/libpd`
 
-### Adding libpd to a Visual Studio project
+#### Adding libpd to a Visual Studio project
 
 Replace the libpd source code in ofxPd with the libpd headers and library files:
 
