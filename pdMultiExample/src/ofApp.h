@@ -48,7 +48,7 @@ class ofApp : public ofBaseApp, public PdReceiver {
 		void audioRequested(float * output, int bufferSize, int nChannels);
 		
 		// pd message receiver callbacks
-		void print(const std::string& message);
+		void print(const std::string &message);
 	
 		// main ofxPd object we use to access libpd
 		ofxPd pd;

@@ -128,7 +128,7 @@ void ofApp::setup() {
 	pd.finishList(patch.dollarZeroStr()+"-fromOF");
 
 	// send a list using the List object
-	List testList;
+	pd::List testList;
 	testList.addFloat(1.23);
 	testList.addSymbol("sent from a List object");
 	pd.sendList("fromOF", testList);
@@ -371,7 +371,7 @@ void ofApp::touchUp(ofTouchEventArgs &touch) {}
 void ofApp::touchDoubleTap(ofTouchEventArgs &touch) {}
 
 //--------------------------------------------------------------
-void ofApp::touchCancelled(ofTouchEventArgs& args) {}
+void ofApp::touchCancelled(ofTouchEventArgs &args) {}
 
 //--------------------------------------------------------------
 void ofApp::lostFocus() {}
@@ -396,24 +396,24 @@ void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 }
 
 //--------------------------------------------------------------
-void ofApp::print(const std::string& message) {
+void ofApp::print(const std::string &message) {
 	cout << message << endl;
 }
 
 //--------------------------------------------------------------
-void ofApp::receiveBang(const std::string& dest) {
+void ofApp::receiveBang(const std::string &dest) {
 	cout << "OF: bang " << dest << endl;
 }
 
-void ofApp::receiveFloat(const std::string& dest, float value) {
+void ofApp::receiveFloat(const std::string &dest, float value) {
 	cout << "OF: float " << dest << ": " << value << endl;
 }
 
-void ofApp::receiveSymbol(const std::string& dest, const std::string& symbol) {
+void ofApp::receiveSymbol(const std::string &dest, const std::string &symbol) {
 	cout << "OF: symbol " << dest << ": " << symbol << endl;
 }
 
-void ofApp::receiveList(const std::string& dest, const List& list) {
+void ofApp::receiveList(const std::string &dest, const pd::List &list) {
 	cout << "OF: list " << dest << ": ";
 
 	// step through the list
@@ -432,7 +432,7 @@ void ofApp::receiveList(const std::string& dest, const List& list) {
 	cout << list.types() << endl;
 }
 
-void ofApp::receiveMessage(const std::string& dest, const std::string& msg, const List& list) {
+void ofApp::receiveMessage(const std::string &dest, const std::string &msg, const pd::List &list) {
 	cout << "OF: message " << dest << ": " << msg << " " << list.toString() << list.types() << endl;
 }
 

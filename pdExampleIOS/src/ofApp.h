@@ -49,13 +49,13 @@ class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 		void audioRequested(float * output, int bufferSize, int nChannels);
 		
 		// pd message receiver callbacks
-		void print(const std::string& message);
+		void print(const std::string &message);
 		
-		void receiveBang(const std::string& dest);
-		void receiveFloat(const std::string& dest, float value);
-		void receiveSymbol(const std::string& dest, const std::string& symbol);
-		void receiveList(const std::string& dest, const List& list);
-		void receiveMessage(const std::string& dest, const std::string& msg, const List& list);
+		void receiveBang(const std::string &dest);
+		void receiveFloat(const std::string &dest, float value);
+		void receiveSymbol(const std::string &dest, const std::string &symbol);
+		void receiveList(const std::string &dest, const pd::List &list);
+		void receiveMessage(const std::string &dest, const std::string &msg, const pd::List &list);
 		
 		// pd midi receiver callbacks
 		void receiveNoteOn(const int channel, const int pitch, const int velocity);

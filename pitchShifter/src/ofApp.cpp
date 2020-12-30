@@ -129,6 +129,6 @@ void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 }
 
 //--------------------------------------------------------------
-void ofApp::print(const std::string& message) {
+void ofApp::print(const std::string &message) {
 	cout << message << endl;
 }
