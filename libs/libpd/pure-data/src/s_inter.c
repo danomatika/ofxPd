@@ -567,8 +567,6 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
     }
 }
 
-void sys_exit(void);
-
 void socketreceiver_read(t_socketreceiver *x, int fd)
 {
     if (x->sr_udp)   /* UDP ("datagram") socket protocol */
@@ -1036,6 +1034,7 @@ static void sys_init_deken(void)
 
 static int sys_do_startgui(const char *libdir)
 {
+    char quotebuf[MAXPDSTRING];
     char apibuf[256], apibuf2[256];
     struct addrinfo *ailist = NULL, *ai;
     int sockfd = -1;
@@ -1354,7 +1353,9 @@ static int sys_do_startgui(const char *libdir)
     sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
              PD_MAJOR_VERSION, PD_MINOR_VERSION,
              PD_BUGFIX_VERSION, PD_TEST_VERSION,
-             apibuf, apibuf2, sys_font, sys_fontweight);
+             apibuf, apibuf2,
+             pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
+             sys_fontweight);
     sys_vgui("set pd_whichapi %d\n", sys_audioapi);
     sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
@@ -1469,8 +1470,6 @@ void sys_setrealtime(const char *libdir)
 #endif /* __APPLE__ */
 }
 
-extern void sys_exit(void);
-
 /* This is called when something bad has happened, like a segfault.
 Call glob_quit() below to exit cleanly.
 LATER try to save dirty documents even in the bad case. */
@@ -1494,8 +1493,12 @@ void sys_bail(int n)
     else _exit(1);
 }
 
+extern void sys_exit(void);
+
 void glob_exit(void *dummy, t_float status)
 {
+        /* sys_exit() sets the sys_quit flag, so all loops end */
+    sys_exit();
     sys_close_audio();
     sys_close_midi();
     if (sys_havegui())

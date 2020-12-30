@@ -1,6 +1,6 @@
 1.8.0: 2020 TBA
 
-* updated to libpd 0.12.0 (pd 0.51-2)
+* updated to libpd 0.12.0 (pd 0.51-4)
 
 * added info about NSMicrophoneUsageDescription
 
@@ -18,7 +18,7 @@
 * updated to latest libpd pre-0.11 (pd 0.48-1),
   note: some files have been removed, so regenerate your projects
 
-* fixed macOS 10.13 SDK disptach.h error
+* fixed macOS 10.13 SDK dispatch.h error
 * fixed compile error due to leftover Poco/Mutex include (reported by Dan Moore)
 * fixed iOS duplicate symbols link error by setting -fcommon (reported by ukelady)
 
