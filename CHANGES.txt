@@ -1,3 +1,7 @@
+1.8.1: 2021 Jan 08
+
+* updated to libpd 0.12.1 for pd~ support
+
 1.8.0: 2020 Dec 30
 
 * updated to libpd 0.12.0 (pd 0.51-4)
