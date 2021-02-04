@@ -18,11 +18,11 @@ This project has been supported by the CMU [Frank-Ratchye STUDIO for Creative In
 Description
 -----------
 
-ofxPd is an Open Frameworks addon for running an instance of the Pure Data audio environment within an OpenFrameworks application. Audio, messages, and [MIDI](http://en.wikipedia.org/wiki/Musical_Instrument_Digital_Interface) events can be passed to and from pure data patches and the library is thread safe.
+ofxPd is an Open Frameworks addon for running an instance of the Pure Data audio environment within an openFrameworks application. Audio, messages, and [MIDI](http://en.wikipedia.org/wiki/Musical_Instrument_Digital_Interface) events can be passed to and from pure data patches and the library is thread safe.
 
 [Pure Data](http://pure-data.info) is a graphical patching environment for audio and multimedia (note: the gui and graphics features are not within the scope of this addon) 
 
-[OpenFrameworks](http://www.openframeworks.cc) is a cross platform open source toolkit for creative coding in C++
+[openFrameworks](http://www.openframeworks.cc) is a cross platform open source toolkit for creative coding in C++
 
 Build Requirements
 ------------------
@@ -51,11 +51,11 @@ The easiest way to do this is via cloning with git:
 
 ### Which version to use?
 
-The master branch of ofxPd will work with the current stable version of OpenFrameworks and can be considered *relatively* stable.
+The master branch of ofxPd will work with the current stable version of openFrameworks and can be considered *relatively* stable.
 
-Previous versions are tagged using [Semantic Versioning](http://semver.org) with the updates to newer versions of OpenFrameworks and libpd noted in the changelog, CHANGES.txt. You can select the tag in the Github "Current Branch" menu or clone and check it out using git.
+Previous versions are tagged using [Semantic Versioning](http://semver.org) with the updates to newer versions of openFrameworks and libpd noted in the changelog, CHANGES.txt. You can select the tag in the Github "Current Branch" menu or clone and check it out using git.
 
-If you want to use ofxPd with a previous version of OpenFrameworks, checkout the corresponding version tag after cloning:
+If you want to use ofxPd with a previous version of openFrameworks, checkout the corresponding version tag after cloning:
 
     git clone git://github.com/danomatika/ofxPd.git
     cd ofxPd
@@ -66,12 +66,12 @@ Running the Example Projects
 
 The example projects are in the `pdExample` & `pdExampleIOS` folders.
 
-Project files for the examples are not included so you will need to generate the project files for your operating system and development environment using the OF ProjectGenerator which is included with the OpenFrameworks distribution.
+Project files for the examples are not included so you will need to generate the project files for your operating system and development environment using the OF ProjectGenerator which is included with the openFrameworks distribution.
 
 To (re)generate project files for an *existing* project:
 
 * Click the "Import" button in the ProjectGenerator
-* Navigate the to base folder for the project ie. "pdExample"
+* Navigate to the base folder for the example project ie. "pdExample"
 * Click the "Update" button
 
 If everything went Ok, you should now be able to open the generated project and build/run the example.
@@ -260,11 +260,11 @@ Notes
 
 ### Audio Interfacing & Debugging Audio Issues
 
-libpd as utilized in ofxPd does not handle any of the audio interfacing itself, but is called via the ofSoundStream system within OpenFrameworks. If you have any issues with the sound interface / audio apis themselves, please log an issue to the [OpenFrameworks Github repo](https://github.com/openframeworks/openFrameworks).
+libpd as utilized in ofxPd does not handle any of the audio interfacing itself, but is called via the ofSoundStream system within openFrameworks. If you have any issues with the sound interface / audio apis themselves, please log an issue to the [openFrameworks Github repo](https://github.com/openframeworks/openFrameworks).
 
 ### Sample Rate
 
-The sample rate is set to 44100 when initializing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
+The sample rate is set to 44100 when initialiszing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
 
 For example: The default sample rate on macOS is 96000. Running the app at 44100 results in double the playback pitch while initializing ofxPd at 96000 gives the correct pitch.
 
