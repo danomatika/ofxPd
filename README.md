@@ -71,7 +71,7 @@ Project files for the examples are not included so you will need to generate the
 To (re)generate project files for an *existing* project:
 
 * Click the "Import" button in the ProjectGenerator
-* Navigate to the base folder for the example project ie. "pdExample"
+* Navigate to the project's parent folder ie. "ofxPd", select the base folder for the example project ie. "pdExample", and click the Open button
 * Click the "Update" button
 
 If everything went Ok, you should now be able to open the generated project and build/run the example.
@@ -164,7 +164,7 @@ If you want to build ofxPd with the libpd experimental libpd multi-instance supp
 
 ### For Linux (Makefiles & Codeblocks):
 
-* edit addons.make in your project folder and add the following line to the end of the file: 
+Edit addons.make in your project folder and add the following line to the end of the file:
 	<pre>ofxPd</pre>
 
 Using ofxPd with Visual Studio
