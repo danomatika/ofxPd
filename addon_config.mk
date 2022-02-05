@@ -22,10 +22,14 @@ meta:
 	ADDON_URL = http://github.com/danomatika/ofxPd
 
 common:
-	# required for libpd
-	ADDON_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
-	# uncomment this for multiple instance support, ie. for pdMultiExample
-	#ADDON_CFLAGS += -DPDINSTANCE -DPDTHREADS
+	# required for libpd, append on separate lines to fix bug on Android builds
+	ADDON_CFLAGS = -DHAVE_UNISTD_H
+	ADDON_CFLAGS += -DUSEAPI_DUMMY 
+	ADDON_CFLAGS += -DPD
+	ADDON_CFLAGS += -DLIBPD_EXTRA
+	# uncomment these for multiple instance support, ie. for pdMultiExample
+	#ADDON_CFLAGS += -DPDINSTANCE
+	#ADDON_CFLAGS += -DPDTHREADS
 	# this is included directly in pd~.c, don't build twice
 	ADDON_SOURCES_EXCLUDE = libs/libpd/pure-data/extra/pd~/binarymsg.c
 
