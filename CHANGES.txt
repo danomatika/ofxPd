@@ -1,3 +1,10 @@
+1.9.0: TBA
+
+* updated to libpd 0.13.0 (pd 0.53-0)
+  note: some files have been added or removed, so regenerate your projects
+
+* added true support for multiple instances when compiling with PDINSTANCE
+
 1.8.1: 2021 Jan 08
 
 * updated to libpd 0.12.1 for pd~ support

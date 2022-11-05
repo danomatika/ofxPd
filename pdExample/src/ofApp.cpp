@@ -33,7 +33,7 @@ void ofApp::setup() {
 
 	// setup OF sound stream
 	ofSoundStreamSettings settings;
-	settings.numInputChannels = 2;
+	settings.numInputChannels = 1;
 	settings.numOutputChannels = 2;
 	settings.sampleRate = 44100;
 	settings.bufferSize = ofxPd::blockSize() * ticksPerBuffer;

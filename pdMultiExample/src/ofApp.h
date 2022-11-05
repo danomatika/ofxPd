@@ -17,21 +17,18 @@
 // a namespace for the Pd types
 using namespace pd;
 
-// This example demonstrates how to use the currently *experimental* libpd
-// multiple instance support with the ofxPd C++ wrapper. You essentially
-// create t_pdinstance types which act as instance "handles" (aka pointer or ID)
-// and then tell pd which instance you currently want all libpd/ofxPd commands to
-// target using the libpd_set_instance() function.
+// This example demonstrates how to use the libpd multiple instance support with
+// the ofxPd C++ wrapper. When compiled with -DPDINSTANCE and -DPDTHREADS set in
+// *both* CFLAGS and CXXFLAGS, each ofxPd instance is separate with it's own
+// internal state and message receivers. If the defines are not set, each ofxPd
+// instance refers to the same libpd main instance.
 //
-// This example is adapted from the libpd pdtest_multi example which is originally
-// by Miller Puckette.
-//
-// Note: This multiple instance support is currently EXPERIMENTAL. Use at your own
-// risk. This API is subject to change.
+// This example is adapted from the libpd pdtest_multi C example which is
+// originally by Miller Puckette.
 //
 // *Do not* use this as your first approach to parallelize CPU hogging patches.
 // It's highly suggested that you attempt to streamline your patches first before
-// using this multi instance support.
+// using this multiple instance support.
 //
 class ofApp : public ofBaseApp, public PdReceiver {
 
@@ -50,12 +47,8 @@ class ofApp : public ofBaseApp, public PdReceiver {
 		// pd message receiver callbacks
 		void print(const std::string &message);
 	
-		// main ofxPd object we use to access libpd
-		ofxPd pd;
-	
-		// pd instance handles, not full fledged ofxPd objects yet, but internal
-		// pd types which tell libpd to address a separate internal "instance"
-		t_pdinstance *pdinstance1, *pdinstance2;
+		// pd instances
+		ofxPd pd1, pd2;
 	
 		int outputBufferSize; //< audio output buffer size
 		float *outputBuffer1; //< interleaved audio output buffer for instance 1

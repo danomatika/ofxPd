@@ -46,19 +46,11 @@ void ofApp::setup() {
 	settings.setOutListener(this);
 	ofSoundStreamSetup(settings);
 
-	// init before creating any instances
-	libpd_init();
-
 	// allocate pd instance handles
-	pdinstance1 = libpd_new_instance();
-	pdinstance2 = libpd_new_instance();
-	ofLog() << libpd_num_instances() << " instances";
-	ofLog() << "instance 1: " << ofToHex(pdinstance1);
-	ofLog() << "instance 2: " << ofToHex(pdinstance2);
+	ofLog() << ofxPd::numInstances() - 1 << " instance(s)"; // - main instance
+	ofLog() << "instance 1: " << ofToHex(pd1.instancePtr());
+	ofLog() << "instance 2: " << ofToHex(pd2.instancePtr());
 
-	// set an instance before pd.init() or else Pd will use the default instance
-	libpd_set_instance(pdinstance1); // talk to first pd instance
-	
 	// setup Pd
 	//
 	// set 4th arg to true for queued message passing using an internal ringbuffer,
@@ -67,37 +59,36 @@ void ofApp::setup() {
 	//
 	// note: you won't see any message prints until update() is called since
 	// the queued messages are processed there, this is normal
-	if(!pd.init(numOutputs, numInputs, 44100, ticksPerBuffer, false)) {
+	if(!pd1.init(numOutputs, numInputs, 44100, ticksPerBuffer, false)) {
 		ofExit(1);
 	}
-	pd.setReceiver(this);
+	pd1.setReceiver(this);
 
 	// audio processing on
-	pd.start();
+	pd1.start();
 
 	// open patch
-	pd.openPatch("test.pd");
+	pd1.openPatch("test.pd");
 
 	// start the osc~ via sending [; 1003-frequency 440(
 	// 1003 refers to the first $0 which is used within the test patch for the
 	// receiver name: [r $0-1003]
-	pd << StartMessage() << 440.0f << FinishMessage("1003-frequency", "float");
+	pd1 << StartMessage() << 440.0f << FinishMessage("1003-frequency", "float");
 
 	// now do the same for instance 2
-	libpd_set_instance(pdinstance2); // talk to the second pd instance
-	if(!pd.init(numOutputs, numInputs, 44100, ticksPerBuffer, false)) {
+	if(!pd2.init(numOutputs, numInputs, 44100, ticksPerBuffer, false)) {
 		ofExit(1);
 	}
-	pd.setReceiver(this);
-	pd.start();
-	pd.openPatch("test.pd");
+	pd2.setReceiver(this);
+	pd2.start();
+	pd2.openPatch("test.pd");
 
 	// start the osc~ via sending [; 1000-frequency 880(
-	pd << StartMessage() << 880.0f << FinishMessage("1003-frequency", "float");
+	pd2 << StartMessage() << 880.0f << FinishMessage("1003-frequency", "float");
 
 	// check if we are really using multiple instances
-	if(!pdinstance1 || !pdinstance2) {
-		ofLogError() << "One or both instances are NULL.";
+	if(pd1.instancePtr() == pd2.instancePtr()) {
+		ofLogError() << "Both instances are the same.";
 		ofLogError() << "Is this example compiled with PDINSTANCE and PDTHREADS set?";
 		ofExit();
 	}
@@ -109,9 +100,12 @@ void ofApp::update() {
 	
 	// since this is a test and we don't know if init() was called with
 	// queued = true or not, we check it here
-	if(pd.isQueued()) {
+	if(pd1.isQueued()) {
 		// process any received messages, if you're using the queue
-		pd.receiveMessages();
+		pd1.receiveMessages();
+	}
+	if(pd2.isQueued()) {
+		pd2.receiveMessages();
 	}
 }
 
@@ -124,36 +118,32 @@ void ofApp::exit() {
 	// cleanup
 	ofSoundStreamStop();
 
-	libpd_free_instance(pdinstance1);
-	libpd_free_instance(pdinstance2);
+	pd1.clear();
+	pd2.clear();
 }
 
 //--------------------------------------------------------------
 void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 	
 	// process audio input for instance 1
-	libpd_set_instance(pdinstance1);
-	pd.audioIn(input, bufferSize, nChannels);
+	pd1.audioIn(input, bufferSize, nChannels);
 
 	// process audio input for instance 2
-	libpd_set_instance(pdinstance2);
-	pd.audioIn(input, bufferSize, nChannels);
+	pd2.audioIn(input, bufferSize, nChannels);
 }
 
 //--------------------------------------------------------------
 void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 
 	// process audio output for instance 1
-	libpd_set_instance(pdinstance1);
-	pd.audioOut(outputBuffer1, bufferSize, nChannels);
+	pd1.audioOut(outputBuffer1, bufferSize, nChannels);
 	
 	// process audio output for instance 2
-	libpd_set_instance(pdinstance2);
-	pd.audioOut(outputBuffer2, bufferSize, nChannels);
+	pd2.audioOut(outputBuffer2, bufferSize, nChannels);
 
 	// mix the two instance output buffers together
 	for(int i = 0; i < outputBufferSize; i += 1) {
-		output[i] = (outputBuffer1[i] + outputBuffer2[i]) * 0.5f; // mix
+		output[i] = (outputBuffer1[i] + outputBuffer2[i]) * 0.5f; // simple mix
 	}
 }
 

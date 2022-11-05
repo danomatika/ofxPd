@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Dan Wilcox <danomatika@gmail.com>
+ * Copyright (c) 2011-2022 Dan Wilcox <danomatika@gmail.com>
  *
  * BSD Simplified License.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -76,22 +76,11 @@ bool ofxPd::init(const int numOutChannels, const int numInChannels,
 }
 
 void ofxPd::clear() {
-	
-	// this seems hacky, but (so far) gets rid of a deadlock on Windows
-	// which causes a hang on exit
-	//
-	// hopefully to be fixed for real at a future point ...
-//	#ifndef TARGET_WIN32
-//		lock();
-//	#endif
+
 	if(inBuffer != NULL) {
 		delete[] inBuffer;
 		inBuffer = NULL;
 	}
-	PdContext::instance().clear();
-//	#ifndef TARGET_WIN32
-//		unlock();
-//	#endif
 	unsubscribeAll();
 
 	channels.clear();

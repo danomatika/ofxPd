@@ -92,11 +92,9 @@ If everything went Ok, you should now be able to open the generated project and 
 pdMultiExample & Multiple Instance Support
 ------------------------------------------
 
-This special example demonstrates libpd's experimental multiple-instance support, where you can run multiple separate instances of libpd concurrently.
+This special example demonstrates ofxPd's multiple-instance support, where you can run multiple separate instances of libpd concurrently.
 
-To build and run this example, the following C flags must be set: `-DPDINSTANCE` & `-DPDTHREADS`. If these are not set, the example will exit early with an error.
-
-_Note: multi-instance support is still experimental. For instance, currently each instance still shares a single set of receiver callbacks._
+To build and run this example, the following C *and* C++ flags must be set: `-DPDINSTANCE` & `-DPDTHREADS`. If these are not set, the example will exit early with an error.
 
 ### Makefile
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Dan Wilcox <danomatika@gmail.com>
+ * Copyright (c) 2011-2022 Dan Wilcox <danomatika@gmail.com>
  *
  * BSD Simplified License.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -25,17 +25,17 @@
 ///
 /// references: https://github.com/libpd/libpd/wiki
 ///
-/// note: libpd currently does not support multiple states and it is
-///       suggested that you use only one ofxPd object at a time
-///
 /// also: see PdBase.h in src/pd/cpp for some functions which are not wrapped by
 ///       ofxPd and PdTypes.h for small Pd C++ Objects
 ///
 /// differences from libpd C api and/or C++ wrapper:
-///     - the ofxPd object is thread safe
 ///     - midi channels are 1-16 to match pd ranges
 ///     - pgm values are 1-128 to match [pgmin]/[pgmout] in pd
 ///     - init() takes numOutChannels first to match ofSoundStream
+///
+/// note: as of ofxPd 1.9.0 & libpd 0.13, ofxpd supports multiple instances if
+///       compiled with PDINSTANCE defined, in which case each ofxPd instance can
+///       act separately with it's own PdReceiver and PdMidiReceiver
 ///
 class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiReceiver {
 
@@ -353,6 +353,10 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// write a float vector to an array
 		///
 		/// writeArray("array1", array1);
+	    ///
+	    /// clear array and set to a specific value
+		///
+		/// clearArray("array1", 0);
 		///
 		/// see PdBase.h for function declarations
 
@@ -361,12 +365,24 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// has this pd instance been initialized?
 		/// bool isInited();
 		///
+		/// is the global pd instance using the ringbuffer queue
+		/// for message padding?
+		/// bool isQueued();
+		///
 		/// get the blocksize of pd (sample length per channel)
 		/// static int blockSize();
 		///
 		/// get/set the max length of messages and lists, default: 32
 		/// void setMaxMsgLength(unsigned int len);
 		/// unsigned int maxMsgLength();
+		///
+		/// get the pd instance pointer
+		/// returns main instance when libpd is not compiled with PDINSTANCE
+		/// t_pdinstance *instancePtr();
+		///
+		/// get the number of pd instances, including the main instance
+		/// returns number or 1 when libpd is not compiled with PDINSTANCE
+		/// static int numInstances();
 		///
 		/// see PdBase.h for function declarations
 	
