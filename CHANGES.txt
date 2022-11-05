@@ -1,9 +1,11 @@
-1.9.0: TBA
+1.9.0: 2022 Nov 05
 
 * updated to libpd 0.13.0 (pd 0.53-0)
   note: some files have been added or removed, so regenerate your projects
 
-* added true support for multiple instances when compiling with PDINSTANCE
+* added support for multiple ofxPd instances when compiling with PDINSTANCE
+  note: projects which use libpd_*_instance functions must be updated to use
+        separate ofxPd instances
 
 1.8.1: 2021 Jan 08
 

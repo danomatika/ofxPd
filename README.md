@@ -4,7 +4,7 @@ ofxPd
 <img src="https://raw.github.com/danomatika/ofxPd/master/ofxaddons_thumbnail.png"/>
 </p>
 
-Copyright (c) [Dan Wilcox](danomatika.com) 2011-2020
+Copyright (c) [Dan Wilcox](danomatika.com) 2011-2022
 
 BSD Simplified License.
 
@@ -103,6 +103,10 @@ For Makefile builds, these are set in `pdMultiExample/config.make`.
 ### Project Generator
 
 For project files which are created with the Project Generator (ie. Xcode), uncomment the line in `addons_config.mk` under the `common` target, save, then (re)generate the project with the PG.
+
+### Xcode
+
+The defines can be added manually to the Xcode projects build settings: `Other C Flags` & `Other C++ Flags`.
 
 PitchShifter
 ------------
