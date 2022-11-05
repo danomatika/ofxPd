@@ -58,8 +58,8 @@ class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
 		void receiveMidiByte(const int port, const int byte);
 		
 		ofxPd pd;
-		vector<float> scopeArray;
-		vector<Patch> instances;
+		std::vector<float> scopeArray;
+		std::vector<Patch> instances;
 		
 		int midiChan;
 };

@@ -18,7 +18,7 @@ void ofApp::setup() {
 	//ofSetLogLevel("Pd", OF_LOG_VERBOSE); // see verbose info inside
 
 	// double check where we are ...
-	cout << ofFilePath::getCurrentWorkingDirectory() << endl;
+	std::cout << ofFilePath::getCurrentWorkingDirectory() << std::endl;
 
 	// the number of libpd ticks per buffer,
 	// used to compute the audio buffer len: tpb * blocksize (always 64)
@@ -79,24 +79,24 @@ void ofApp::setup() {
 	pd.start();
 
 	// -----------------------------------------------------
-	cout << endl << "BEGIN Patch Test" << endl;
+	std::cout << std::endl << "BEGIN Patch Test" << std::endl;
 
 	// open patch
 	Patch patch = pd.openPatch("pd/test.pd");
-	cout << patch << endl;
+	std::cout << patch << std::endl;
 
 	// close patch
 	pd.closePatch(patch);
-	cout << patch << endl;
+	std::cout << patch << std::endl;
 
 	// open patch again
 	patch = pd.openPatch(patch);
-	cout << patch << endl;
+	std::cout << patch << std::endl;
 	
-	cout << "FINISH Patch Test" << endl;
+	std::cout << "FINISH Patch Test" << std::endl;
 
 	// -----------------------------------------------------
-	cout << endl << "BEGIN Message Test" << endl;
+	std::cout << std::endl << "BEGIN Message Test" << std::endl;
 
 	// test basic atoms
 	pd.sendBang("fromOF");
@@ -130,10 +130,10 @@ void ofApp::setup() {
 	// stream interface for list
 	pd << StartMessage() << 1.23 << "sent from a streamed list" << FinishList("fromOF");
 
-	cout << "FINISH Message Test" << endl;
+	std::cout << "FINISH Message Test" << std::endl;
 
 	// -----------------------------------------------------
-	cout << endl << "BEGIN MIDI Test" << endl;
+	std::cout << std::endl << "BEGIN MIDI Test" << std::endl;
 
 	// send functions
 	pd.sendNoteOn(midiChan, 60);
@@ -155,55 +155,59 @@ void ofApp::setup() {
 	   << StartSysex(0) << 239 << Finish()
 	   << StartSysRealTime(0) << 239 << Finish();
 
-	cout << "FINISH MIDI Test" << endl;
+	std::cout << "FINISH MIDI Test" << std::endl;
 
 	// -----------------------------------------------------
-	cout << endl << "BEGIN Array Test" << endl;
+	std::cout << std::endl << "BEGIN Array Test" << std::endl;
 
 	// array check length
-	cout << "array1 len: " << pd.arraySize("array1") << endl;
+	std::cout << "array1 len: " << pd.arraySize("array1") << std::endl;
 
 	// read array
 	std::vector<float> array1;
 	pd.readArray("array1", array1);	// sets array to correct size
-	cout << "array1 ";
-	for(int i = 0; i < array1.size(); ++i)
-		cout << array1[i] << " ";
-	cout << endl;
+	std::cout << "array1 ";
+	for(int i = 0; i < array1.size(); ++i) {
+		std::cout << array1[i] << " ";
+	}
+	std::cout << std::endl;
 
 	// write array
-	for(int i = 0; i < array1.size(); ++i)
+	for(int i = 0; i < array1.size(); ++i) {
 		array1[i] = i;
+	}
 	pd.writeArray("array1", array1);
 
 	// ready array
 	pd.readArray("array1", array1);
-	cout << "array1 ";
-	for(int i = 0; i < array1.size(); ++i)
-		cout << array1[i] << " ";
-	cout << endl;
+	std::cout << "array1 ";
+	for(int i = 0; i < array1.size(); ++i) {
+		std::cout << array1[i] << " ";
+	}
+	std::cout << std::endl;
 
 	// clear array
 	pd.clearArray("array1", 10);
 
 	// ready array
 	pd.readArray("array1", array1);
-	cout << "array1 ";
-	for(int i = 0; i < array1.size(); ++i)
-		cout << array1[i] << " ";
-	cout << endl;
+	std::cout << "array1 ";
+	for(int i = 0; i < array1.size(); ++i) {
+		std::cout << array1[i] << " ";
+	}
+	std::cout << std::endl;
 
-	cout << "FINISH Array Test" << endl;
+	std::cout << "FINISH Array Test" << std::endl;
 
 	// -----------------------------------------------------
-	cout << endl << "BEGIN PD Test" << endl;
+	std::cout << std::endl << "BEGIN PD Test" << std::endl;
 
 	pd.sendSymbol("fromOF", "test");
 
-	cout << "FINISH PD Test" << endl;
+	std::cout << "FINISH PD Test" << std::endl;
 
 	// -----------------------------------------------------
-	cout << endl << "BEGIN Instance Test" << endl;
+	std::cout << std::endl << "BEGIN Instance Test" << std::endl;
 
 	// open 10 instances
 	for(int i = 0; i < 10; ++i) {
@@ -234,7 +238,7 @@ void ofApp::setup() {
 	}
 	instances.clear();
 
-	cout << "FINISH Instance Test" << endl;
+	std::cout << "FINISH Instance Test" << std::endl;
 
 	// -----------------------------------------------------
 	// play a tone by sending a list
@@ -338,11 +342,11 @@ void ofApp::keyPressed (int key) {
 		case ' ':
 			if(pd.isReceivingSource(*this, "env")) {
 				pd.ignoreSource(*this, "env");
-				cout << "ignoring env" << endl;
+				std::cout << "ignoring env" << std::endl;
 			}
 			else {
 				pd.receiveSource(*this, "env");
-				cout << "receiving from env" << endl;
+				std::cout << "receiving from env" << std::endl;
 			}
 			break;
 
@@ -363,73 +367,73 @@ void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 
 //--------------------------------------------------------------
 void ofApp::print(const std::string &message) {
-	cout << message << endl;
+	std::cout << message << std::endl;
 }
 
 //--------------------------------------------------------------
 void ofApp::receiveBang(const std::string &dest) {
-	cout << "OF: bang " << dest << endl;
+	std::cout << "OF: bang " << dest << std::endl;
 }
 
 void ofApp::receiveFloat(const std::string &dest, float value) {
-	cout << "OF: float " << dest << ": " << value << endl;
+	std::cout << "OF: float " << dest << ": " << value << std::endl;
 }
 
 void ofApp::receiveSymbol(const std::string &dest, const std::string &symbol) {
-	cout << "OF: symbol " << dest << ": " << symbol << endl;
+	std::cout << "OF: symbol " << dest << ": " << symbol << std::endl;
 }
 
 void ofApp::receiveList(const std::string &dest, const pd::List &list) {
-	cout << "OF: list " << dest << ": ";
+	std::cout << "OF: list " << dest << ": ";
 
 	// step through the list
 	for(int i = 0; i < list.len(); ++i) {
 		if(list.isFloat(i))
-			cout << list.getFloat(i) << " ";
+			std::cout << list.getFloat(i) << " ";
 		else if(list.isSymbol(i))
-			cout << list.getSymbol(i) << " ";
+			std::cout << list.getSymbol(i) << " ";
 	}
 
 	// you can also use the built in toString function or simply stream it out
-	// cout << list.toString();
-	// cout << list;
+	// std::cout << list.toString();
+	// std::cout << list;
 
 	// print an OSC-style type string
-	cout << list.types() << endl;
+	std::cout << list.types() << std::endl;
 }
 
 void ofApp::receiveMessage(const std::string&dest, const std::string &msg, const pd::List &list) {
-	cout << "OF: message " << dest << ": " << msg << " " << list.toString() << list.types() << endl;
+	std::cout << "OF: message " << dest << ": " << msg << " " << list.toString() << list.types() << std::endl;
 }
 
 //--------------------------------------------------------------
 void ofApp::receiveNoteOn(const int channel, const int pitch, const int velocity) {
-	cout << "OF MIDI: note on: " << channel << " " << pitch << " " << velocity << endl;
+	std::cout << "OF MIDI: note on: " << channel << " " << pitch << " " << velocity << std::endl;
 }
 
 void ofApp::receiveControlChange(const int channel, const int controller, const int value) {
-	cout << "OF MIDI: control change: " << channel << " " << controller << " " << value << endl;
+	std::cout << "OF MIDI: control change: " << channel << " " << controller << " " << value << std::endl;
 }
 
 // note: pgm nums are 1-128 to match pd
 void ofApp::receiveProgramChange(const int channel, const int value) {
-	cout << "OF MIDI: program change: " << channel << " " << value << endl;
+	std::cout << "OF MIDI: program change: " << channel << " " << value << std::endl;
 }
 
 void ofApp::receivePitchBend(const int channel, const int value) {
-	cout << "OF MIDI: pitch bend: " << channel << " " << value << endl;
+	std::cout << "OF MIDI: pitch bend: " << channel << " " << value << std::endl;
 }
 
 void ofApp::receiveAftertouch(const int channel, const int value) {
-	cout << "OF MIDI: aftertouch: " << channel << " " << value << endl;
+	std::cout << "OF MIDI: aftertouch: " << channel << " " << value << std::endl;
 }
 
 void ofApp::receivePolyAftertouch(const int channel, const int pitch, const int value) {
-	cout << "OF MIDI: poly aftertouch: " << channel << " " << pitch << " " << value << endl;
+	std::cout << "OF MIDI: poly aftertouch: " << channel << " " << pitch << " " << value << std::endl;
 }
 
 // note: pd adds +2 to the port num, so sending to port 3 in pd to [midiout],
 //       shows up at port 1 in ofxPd
 void ofApp::receiveMidiByte(const int port, const int byte) {
-	cout << "OF MIDI: midi byte: " << port << " " << byte << endl;
+	std::cout << "OF MIDI: midi byte: " << port << " " << byte << std::endl;
 }

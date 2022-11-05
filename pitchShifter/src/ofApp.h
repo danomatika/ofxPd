@@ -49,7 +49,7 @@ class ofApp : public ofBaseApp, public PdReceiver {
 		void print(const std::string &message);
 		
 		ofxPd pd; //< pd instance
-		vector<float> scopeArray;
+		std::vector<float> scopeArray;
 
 		// gui
 		ofxSimpleSlider mixSlider, transposeSlider, inGainSlider, outGainSlider;

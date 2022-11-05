@@ -63,7 +63,7 @@ void ofApp::setup() {
 
 	// open patch
 	Patch patch = pd.openPatch("pd/_main.pd");
-	cout << patch << endl;
+	std::cout << patch << std::endl;
 
 	// setup GUI
 	int x = -12, width = 100, step = 75;
@@ -130,5 +130,5 @@ void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 
 //--------------------------------------------------------------
 void ofApp::print(const std::string &message) {
-	cout << message << endl;
+	std::cout << message << std::endl;
 }

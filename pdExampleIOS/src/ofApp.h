@@ -75,8 +75,8 @@ class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 		float setAVSessionSampleRate(float preferredSampleRate);
 		
 		ofxPd pd;
-		vector<float> scopeArray;
-		vector<Patch> instances;
+		std::vector<float> scopeArray;
+		std::vector<pd::Patch> instances;
 		
         int midiChan;
 };
