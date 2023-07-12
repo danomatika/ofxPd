@@ -50,14 +50,14 @@ linuxarmv7l:
 	ADDON_CFLAGS += -DHAVE_LIBDL
 
 msys2:
-	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	# windows needs this to correctly define the EXTERN macro
+	ADDON_CFLAGS += -DPD_INTERNAL
 	# this assumes 64 bit builds only at this point...
 	ADDON_DLLS_TO_COPY = libs/libpd/libs/mingw64/libwinpthread-1.dll
 
 vs:
-	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	# windows needs this to correctly define the EXTERN macro
+	ADDON_CFLAGS += -DPD_INTERNAL
 	# this assumes 64 bit builds only at this point...
 	ADDON_DLLS_TO_COPY = libs/libpd/libs/mingw64/libwinpthread-1.dll
 
