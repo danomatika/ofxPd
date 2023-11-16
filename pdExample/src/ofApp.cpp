@@ -12,10 +12,10 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-	
-	ofSetBackgroundColor(100, 100, 100);
+
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
+	ofSetBackgroundColor(100, 100, 100);
 	//ofSetLogLevel("Pd", OF_LOG_VERBOSE); // see verbose info inside
 
 	// double check where we are ...
