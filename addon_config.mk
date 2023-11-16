@@ -23,7 +23,7 @@ meta:
 
 common:
 	# required for libpd
-	ADDON_CFLAGS = -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
+	ADDON_CFLAGS = -DPD -DUSEAPI_DUMMY -DPD_INTERNAL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DLIBPD_EXTRA
 	# uncomment this for multiple instance support, ie. for pdMultiExample
 	#ADDON_CFLAGS += -DPDINSTANCE -DPDTHREADS
 	# this is included directly in pd~.c, don't build twice
@@ -74,13 +74,13 @@ android/armeabi-v7a:
 osx:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE
 	# fix dispatch.h error with macOS SDK 10.13+
 	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1
 
 ios:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# set No common blocks option to avoid duplicate symbols link error
-	ADDON_CFLAGS += -fcommon
+	ADDON_CFLAGS += -fcommon -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE
 	# fix dispatch.h error with macOS SDK 10.13+
 	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1
