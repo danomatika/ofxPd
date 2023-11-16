@@ -45,8 +45,8 @@ class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 		void deviceOrientationChanged(int newOrientation);
 		
 		// audio callbacks
-		void audioReceived(float * input, int bufferSize, int nChannels);
-		void audioRequested(float * output, int bufferSize, int nChannels);
+		void audioIn(ofSoundBuffer &buffer);
+		void audioOut(ofSoundBuffer &buffer);
 		
 		// pd message receiver callbacks
 		void print(const std::string &message);

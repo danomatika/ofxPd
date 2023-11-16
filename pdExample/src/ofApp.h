@@ -35,8 +35,8 @@ class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
 		void keyPressed(int key);
 		
 		// audio callbacks
-		void audioReceived(float * input, int bufferSize, int nChannels);
-		void audioRequested(float * output, int bufferSize, int nChannels);
+		void audioIn(ofSoundBuffer &buffer);
+		void audioOut(ofSoundBuffer &buffer);
 		
 		// pd message receiver callbacks
 		void print(const std::string &message);

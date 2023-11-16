@@ -123,7 +123,7 @@ void ofApp::exit() {
 }
 
 //--------------------------------------------------------------
-void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
+void ofApp::audioIn(float * input, int bufferSize, int nChannels) {
 	
 	// process audio input for instance 1
 	pd1.audioIn(input, bufferSize, nChannels);
@@ -133,7 +133,7 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 }
 
 //--------------------------------------------------------------
-void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
+void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
 
 	// process audio output for instance 1
 	pd1.audioOut(outputBuffer1, bufferSize, nChannels);

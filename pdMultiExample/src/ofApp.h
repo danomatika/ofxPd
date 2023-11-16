@@ -40,9 +40,9 @@ class ofApp : public ofBaseApp, public PdReceiver {
 		void draw();
 		void exit();
 		
-		// audio callbacks
-		void audioReceived(float * input, int bufferSize, int nChannels);
-		void audioRequested(float * output, int bufferSize, int nChannels);
+		// audio callbacks, using raw buffer versions
+		void audioIn(float * input, int bufferSize, int nChannels);
+		void audioOut(float * output, int bufferSize, int nChannels);
 		
 		// pd message receiver callbacks
 		void print(const std::string &message);

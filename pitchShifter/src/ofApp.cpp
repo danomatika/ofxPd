@@ -119,13 +119,13 @@ void ofApp::exit() {
 void ofApp::keyPressed(int key) {}
 
 //--------------------------------------------------------------
-void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
-	pd.audioIn(input, bufferSize, nChannels);
+void ofApp::audioIn(ofSoundBuffer &buffer) {
+	pd.audioIn(buffer);
 }
 
 //--------------------------------------------------------------
-void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
-	pd.audioOut(output, bufferSize, nChannels);
+void ofApp::audioOut(ofSoundBuffer &buffer) {
+	pd.audioOut(buffer);
 }
 
 //--------------------------------------------------------------
