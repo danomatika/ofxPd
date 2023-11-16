@@ -29,12 +29,14 @@ pdExample/*.xcodeproj
 pdExample/config.make
 pdExample/*xcconfig
 pdExample/*.plist
+pdExample/of.entitlements
 
 pdMultiExample/Makefile
 pdMultiExample/*.xcodeproj
 pdMultiExample/config.make
 pdMultiExample/*xcconfig
 pdMultiExample/*.plist
+pdMultiExample/of.entitlements
 
 pdExampleIOS/Makefile
 pdExampleIOS/*.xcodeproj
@@ -45,9 +47,11 @@ pdExampleIOS/*.pch
 pdExampleIOS/bin/data/Default*.png
 pdExampleIOS/bin/data/Icon*.png
 pdExampleIOS/mediaAssets/
+pdExampleIOS/of.entitlements
 
 pitchShifter/Makefile
 pitchShifter/*.xcodeproj
 pitchShifter/config.make
 pitchShifter/*xcconfig
 pitchShifter/*.plist
+pitchShifter/of.entitlements
