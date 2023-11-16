@@ -155,7 +155,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void subscribe(const std::string &source);
 		void unsubscribe(const std::string &source);
 		bool exists(const std::string &source);
-		void unsubscribeAll(); //< receivers will be unsubscribed from *all* sources
+		void unsubscribeAll(); ///< receivers will be unsubscribed from *all* sources
 
 		/// process the internal message queue if using the ringbuffer:
 		///
@@ -181,7 +181,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		void addReceiver(pd::PdReceiver &receiver);
 		void removeReceiver(pd::PdReceiver &receiver);
 		bool receiverExists(pd::PdReceiver &receiver);
-		void clearReceivers();	//< also unsubscribes all receivers
+		void clearReceivers(); ///< also unsubscribes all receivers
 
 		/// set a receiver to receive/ignore a subscribed source from libpd
 		///
@@ -438,18 +438,18 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 	private:
 
-		int ticks; //< number of ticks per buffer
-		int bsize; //< current buffer size aka tbp * blocksize
-		int srate; //< current sample rate
-		int inChannels, outChannels; //< current num of input & output channels
-		bool computing; //< is compute audio on?
+		int ticks; ///< number of ticks per buffer
+		int bsize; ///< current buffer size aka tbp * blocksize
+		int srate; ///< current sample rate
+		int inChannels, outChannels; ///< current num of input & output channels
+		bool computing; ///< is compute audio on?
 	
-		float *inBuffer; //< interleaved input audio buffer
+		float *inBuffer; ///< interleaved input audio buffer
 
 		/// a receiving source's pointer and receivers
 		struct Source {
 
-			std::set<pd::PdReceiver*> receivers; //< receivers
+			std::set<pd::PdReceiver *> receivers; ///< receivers
 
 			// helper functions
 			void addReceiver(pd::PdReceiver *receiver) {
@@ -457,7 +457,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 			}
 
 			void removeReceiver(pd::PdReceiver *receiver) {
-				std::set<pd::PdReceiver*>::iterator iter;
+				std::set<pd::PdReceiver *>::iterator iter;
 				iter = receivers.find(receiver);
 				if(iter != receivers.end())
 					receivers.erase(iter);
@@ -470,14 +470,14 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 			}
 		};
 
-		std::set<pd::PdReceiver*> receivers;    //< the receivers
-		std::map<std::string,Source> sources;   //< subscribed sources
-		                                        //< first object always global
+		std::set<pd::PdReceiver *> receivers;  ///< the receivers
+		std::map<std::string,Source> sources; ///< subscribed sources
+		                                      ///< first object always global
 
 		/// a receiving midi channel's receivers
 		struct Channel {
 
-			std::set<pd::PdMidiReceiver*> receivers; //< receivers
+			std::set<pd::PdMidiReceiver *> receivers; ///< receivers
 
 			// helper functions
 			void addMidiReceiver(pd::PdMidiReceiver *receiver) {
@@ -485,7 +485,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 			}
 
 			void removeMidiReceiver(pd::PdMidiReceiver *receiver) {
-				std::set<pd::PdMidiReceiver*>::iterator iter;
+				std::set<pd::PdMidiReceiver *>::iterator iter;
 				iter = receivers.find(receiver);
 				if(iter != receivers.end())
 					receivers.erase(iter);
@@ -498,7 +498,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 			}
 		};
 
-		std::set<pd::PdMidiReceiver*> midiReceivers;  //< the midi receivers
-		std::map<int,Channel> channels;               //< subscribed channels
-		                                              //< first object always global
+		std::set<pd::PdMidiReceiver *> midiReceivers; ///< the midi receivers
+		std::map<int,Channel> channels;               ///< subscribed channels
+		                                              ///< first object always global
 };
