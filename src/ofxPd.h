@@ -33,7 +33,7 @@
 ///     - pgm values are 1-128 to match [pgmin]/[pgmout] in pd
 ///     - init() takes numOutChannels first to match ofSoundStream
 ///
-/// note: as of ofxPd 1.9.0 & libpd 0.13, ofxpd supports multiple instances if
+/// note: as of ofxPd 1.9.0 & libpd 0.13, ofxPd supports multiple instances if
 ///       compiled with PDINSTANCE defined, in which case each ofxPd instance can
 ///       act separately with it's own PdReceiver and PdMidiReceiver
 ///

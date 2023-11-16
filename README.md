@@ -4,7 +4,7 @@ ofxPd
 <img src="https://raw.github.com/danomatika/ofxPd/master/ofxaddons_thumbnail.png"/>
 </p>
 
-Copyright (c) [Dan Wilcox](danomatika.com) 2011-2022
+Copyright (c) [Dan Wilcox](danomatika.com) 2011-2023
 
 BSD Simplified License.
 
@@ -147,7 +147,7 @@ If you want to add ofxPd to another project, you need to make sure you include t
 
 You will also need to include some additional C flags for building the libpd source:
 
-	-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA
+	-DPD -DUSEAPI_DUMMY -DPD_INTERNAL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DLIBPD_EXTRA
 
 _Note: **-DLIBPD_EXTRA** is optional if you do not need/use the externals in `libpd/pure-data/extra`_
 
@@ -157,12 +157,19 @@ If you want to build ofxPd with the libpd experimental libpd multi-instance supp
 
 ### For Xcode:
 
+Additional C flags are needed per-platform:
+* macOS: `-DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE`
+* iOS: `-fcommon -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE`
+
 * Create a new group "ofxPd" 
-* Drag these directories from ofxpd into this new group: ofxPd/src
+* Drag these directories from ofxPd into this new group: ofxPd/src
 * Add a search path to: `../../../addons/ofxPd/libs/libpd/pure-data/src` under Targets->YourApp->Build->Header Search Paths (make sure "All" is selected)
 * Under Targets->YourApp->Build->**Other C Flags** (make sure "All" is selected), add
-	<pre>-DHAVE_UNISTD_H -DUSEAPI_DUMMY -DPD -DLIBPD_EXTRA</pre>
+	<pre>-DPD -DUSEAPI_DUMMY -DPD_INTERNAL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DLIBPD_EXTRA</pre>
+    and the additional C flags noted above
   * _Note: Make sure you use Other **C** Flags! Other **C++** Flags will **not** work since libpd is written in C._
+* Under **Other C++ Flags**, add
+    <pre>-DHAVE_UNISTD_H=1</pre>
 
 ### For Linux (Makefiles & Codeblocks):
 
@@ -266,7 +273,7 @@ libpd as utilized in ofxPd does not handle any of the audio interfacing itself, 
 
 ### Sample Rate
 
-The sample rate is set to 44100 when initialiszing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
+The sample rate is set to 44100 when initializing ofxPd in the examples. If your sample rate is higher, the playback pitch will be higher. Make sure the sample rate is the same as your system audio sample rate to hear the correct pitch.
 
 For example: The default sample rate on macOS is 96000. Running the app at 44100 results in double the playback pitch while initializing ofxPd at 96000 gives the correct pitch.
 
@@ -282,6 +289,14 @@ You may be building an audio app for iOS that you want to run without the automa
 
 Bugs & Errors
 -------------
+
+### OF 0.12 and Xcode: 'ext.h' file not found
+
+The OF 0.12 ProjectGenerator seems to have an issue with setting the correct C flags. Check that the required flags specified in the "Adding ofxPd to an Existing Project" section are set in the Xcode project:
+
+1. Click on the project in the left-hand Project Navigator
+2. Under Targets->YourApp->Build->**Other C Flags** (make sure "All" is selected)
+3. If the entry is empty or is missing the required flags, set them
 
 ### iOS app crashes immediately with something about "Microphone Description"
 
