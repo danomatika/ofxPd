@@ -1,3 +1,20 @@
+1.10.0: 2023 Nov 16
+
+* updated to libpd 0.14.0 (pd 0.54-1)
+  note: some files have been added or removed, so regenerate your projects
+
+* updated for OF 0.12
+  warning: the ProjectGenerator may not set the correct C flags for Xcode
+           projects, see the readme on how to manually set them
+
+* added ofSoundBuffer audioIn() and audioOut() functions (suggested by Nejrup)
+* use ofSetBackgroundColor instead of ofSetBackground in pdExample
+  (Jonathan Frank)
+* updated thumbnail to pd vanilla screenshot
+* various formatting updates and typo fixes
+
+* removed references to Codeblocks in readme build requirements
+
 1.9.1: 2022 Dec 16
 
 * updated to libpd 0.13.2 (pd 0.53-1)
