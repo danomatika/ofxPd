@@ -618,6 +618,14 @@ void ofxPd::audioOut(float *output, int bufferSize, int nChannels) {
 	}
 }
 
+void ofxPd::audioIn(ofSoundBuffer &buffer) {
+	audioIn(buffer.getBuffer().data(), buffer.getNumFrames(), buffer.getNumChannels());
+}
+
+void ofxPd::audioOut(ofSoundBuffer &buffer) {
+	audioOut(buffer.getBuffer().data(), buffer.getNumFrames(), buffer.getNumChannels());
+}
+
 /* ***** PROTECTED ***** */
 
 //------------------------------------------------------------------------------

@@ -19,6 +19,7 @@
 #include <set>
 
 #include "PdBase.hpp"
+#include "ofSoundBuffer.h"
 
 ///
 /// a Pure Data instance
@@ -414,8 +415,18 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// channels changes, will produce a verbose print for debugging as well
 		///
 		/// note: the libpd processing is done in the audioOut callback
+
+		/// raw buffer input callback
 		virtual void audioIn(float *input, int bufferSize, int nChannels);
+
+		/// raw buffer output callback
 		virtual void audioOut(float *output, int bufferSize, int nChannels);
+
+		/// newer-style input callback which uses ofSoundBuffer
+		void audioIn(ofSoundBuffer &buffer);
+
+		/// newer-style output callback which uses ofSoundBuffer
+		void audioOut(ofSoundBuffer &buffer);
 
 	protected:
 
