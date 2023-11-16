@@ -12,7 +12,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-
+	
+	ofSetBackgroundColor(100, 100, 100);
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
 	//ofSetLogLevel("Pd", OF_LOG_VERBOSE); // see verbose info inside
@@ -252,7 +253,6 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	ofBackground(100, 100, 100);
 	
 	// since this is a test and we don't know if init() was called with
 	// queued = true or not, we check it here
