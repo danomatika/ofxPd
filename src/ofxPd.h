@@ -65,8 +65,8 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// receiveMidi() in order to pass messages from the ringbuffers to your
 		/// PdReceiver and PdMidiReceiver implementations
 		///
-		/// the queued ringbuffers are useful when you need to receieve events
-		/// on a gui thread and don't want to use locking (aka the mutex)
+		/// the queued ringbuffers are useful when you need to receive events
+		/// on a gui thread and don't want to use locking (aka a mutex)
 		///
 		bool init(const int numOutChannels, const int numInChannels,
 		          const int sampleRate, const int ticksPerBuffer=32,
@@ -157,7 +157,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		bool exists(const std::string &source);
 		void unsubscribeAll(); //< receivers will be unsubscribed from *all* sources
 
-		/// process the interal message queue if using the ringbuffer:
+		/// process the internal message queue if using the ringbuffer:
 		///
 		/// internally, libpd will use a ringbuffer to pass messages & midi without
 		/// needing to require locking (mutexes) if you call init() with queued = true
@@ -250,10 +250,10 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 		/// pd.startMessage();
 		/// pd.addSymbol("hello");
 		/// pd.addFloat(1.23);
-		/// pd.finishList("test");  // "test" is the reciever name in pd
+		/// pd.finishList("test");  // "test" is the receiver name in pd
 		///
 		/// sends [list hello 1.23( -> [r test],
-		/// you will need to use the [list trim] object on the reciving end
+		/// you will need to use the [list trim] object on the receiving end
 		///
 		/// finishMsg sends a typed message -> [; test msg1 hello 1.23(
 		///
@@ -314,7 +314,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 		/// single messages
 		///
-		/// pd << Bang("test"); /// "test" is the reciever name in pd
+		/// pd << Bang("test"); /// "test" is the receiver name in pd
 		/// pd << Float("test", 100);
 		/// pd << Symbol("test", "a symbol");
 		///
@@ -410,7 +410,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 
 	/// \section Audio Processing Callbacks
 
-		/// audio settings will be reinited if the buffersize or number of
+		/// audio settings will be re-inited if the buffersize or number of
 		/// channels changes, will produce a verbose print for debugging as well
 		///
 		/// note: the libpd processing is done in the audioOut callback
@@ -439,7 +439,7 @@ class ofxPd : public pd::PdBase, protected pd::PdReceiver, protected pd::PdMidiR
 	private:
 
 		int ticks; //< number of ticks per buffer
-		int bsize; //< current buffer size aka tbp*blocksize
+		int bsize; //< current buffer size aka tbp * blocksize
 		int srate; //< current sample rate
 		int inChannels, outChannels; //< current num of input & output channels
 		bool computing; //< is compute audio on?
