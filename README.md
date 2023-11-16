@@ -31,9 +31,9 @@ To use ofxPd, first you need to download and install Open Frameworks. Developmen
 
 [OF github repository](https://github.com/openframeworks/openFrameworks)
 
-On macOS, you will need to install Xcode from the Mac Developer Tools.
+On macOS, you will need to install Xcode.
 
-On Linux, you can use the Makefile and/or Codeblocks project files (without the "\_win" suffix).
+On Linux, you can use the Makefile.
 
 On Windows, Qt Creator/Msys2 are recommended as the libpd sources do not currently build in Visual Studio. However, you *can* use a libpd.dll built by MinGW in a Visual Studio project. See the "Using ofxPd with Visual Studio" section below.
 
@@ -132,10 +132,6 @@ Then after renaming:
 
 Rename the project in Xcode (do not rename the .xcodeproj file in Finder!): Xcode Menu->Project->Rename
 
-### For Codeblocks (Win & Linux):
-
-Rename the \*.cbp and \*.workspace files to the same name as the project folder. Open the workspace, readd the renamed project file, and remove the old project.
-
 Adding ofxPd to an Existing Project
 -----------------------------------
 
@@ -171,7 +167,7 @@ Additional C flags are needed per-platform:
 * Under **Other C++ Flags**, add
     <pre>-DHAVE_UNISTD_H=1</pre>
 
-### For Linux (Makefiles & Codeblocks):
+### For Linux (Makefiles):
 
 Edit addons.make in your project folder and add the following line to the end of the file:
 	<pre>ofxPd</pre>
