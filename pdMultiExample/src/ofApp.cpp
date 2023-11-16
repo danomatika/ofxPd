@@ -30,7 +30,7 @@ void ofApp::setup() {
 	int numOutputs = 2;
 
 	// allocate instance output buffers
-	outputBufferSize = numOutputs*ticksPerBuffer*ofxPd::blockSize();
+	outputBufferSize = numOutputs * ticksPerBuffer * ofxPd::blockSize();
 	outputBuffer1 = new float[outputBufferSize];
 	outputBuffer2 = new float[outputBufferSize];
 	memset(outputBuffer1, 0, outputBufferSize);

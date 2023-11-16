@@ -67,17 +67,17 @@ void ofApp::setup() {
 	pd.subscribe("toOF");
 	pd.subscribe("env");
 
-	// add message receiver, required if you want to receieve messages
+	// add message receiver, required if you want to receive messages
 	pd.addReceiver(*this);   // automatically receives from all subscribed sources
-	pd.ignoreSource(*this, "env");      // don't receive from "env"
-	//pd.ignoreSource(*this);           // ignore all sources
-	//pd.receiveSource(*this, "toOF");  // receive only from "toOF"
+	pd.ignoreSource(*this, "env");     // don't receive from "env"
+	//pd.ignoreSource(*this);          // ignore all sources
+	//pd.receiveSource(*this, "toOF"); // receive only from "toOF"
 
-	// add midi receiver, required if you want to recieve midi messages
+	// add midi receiver, required if you want to receive midi messages
 	pd.addMidiReceiver(*this);  // automatically receives from all channels
-	//pd.ignoreMidiChannel(*this, 1);     // ignore midi channel 1
-	//pd.ignoreMidiChannel(*this);        // ignore all channels
-	//pd.receiveMidiChannel(*this, 1);    // receive only from channel 1
+	//pd.ignoreMidiChannel(*this, 1);  // ignore midi channel 1
+	//pd.ignoreMidiChannel(*this);     // ignore all channels
+	//pd.receiveMidiChannel(*this, 1); // receive only from channel 1
 
 	// add the data/pd folder to the search path
 	pd.addToSearchPath("pd/abs");
@@ -145,9 +145,9 @@ void ofApp::setup() {
 	// send functions
 	pd.sendNoteOn(midiChan, 60);
 	pd.sendControlChange(midiChan, 0, 64);
-	pd.sendProgramChange(midiChan, 100);    // note: pgm num range is 1 - 128
-	pd.sendPitchBend(midiChan, 2000);   // note: ofxPd uses -8192 - 8192 while [bendin] returns 0 - 16383,
-										// so sending a val of 2000 gives 10192 in pd
+	pd.sendProgramChange(midiChan, 100); // note: pgm num range is 1 - 128
+	pd.sendPitchBend(midiChan, 2000);    // note: ofxPd uses -8192 - 8192 while [bendin] returns 0 - 16383,
+										 // so sending a val of 2000 gives 10192 in pd
 	pd.sendAftertouch(midiChan, 100);
 	pd.sendPolyAftertouch(midiChan, 64, 100);
 	pd.sendMidiByte(0, 239);    // note: pd adds +2 to the port number from [midiin], [sysexin], & [realtimein]
@@ -254,7 +254,6 @@ void ofApp::setup() {
 	pd.addFloat(72);
 	pd.finishList("tone");
 	pd.sendBang("tone");
-
 }
 
 //--------------------------------------------------------------
@@ -265,7 +264,7 @@ void ofApp::update() {
 	// queued = true or not, we check it here
 	if(pd.isQueued()) {
 		// process any received messages, if you're using the queue and *do not*
-		// call these, you won't receieve any messages or midi!
+		// call these, you won't receive any messages or midi!
 		pd.receiveMessages();
 		pd.receiveMidi();
 	}
@@ -494,7 +493,9 @@ float ofApp::setAVSessionSampleRate(float preferredSampleRate) {
 	}
 
 	// set category
-	[session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionAllowBluetooth|AVAudioSessionCategoryOptionMixWithOthers|AVAudioSessionCategoryOptionDefaultToSpeaker error:&audioSessionError];
+	[session setCategory:AVAudioSessionCategoryPlayAndRecord
+	         withOptions:(AVAudioSessionCategoryOptionAllowBluetooth | AVAudioSessionCategoryOptionMixWithOthers | AVAudioSessionCategoryOptionDefaultToSpeaker)
+	               error:&audioSessionError];
 	if(audioSessionError) {
 		NSLog(@"Error %ld, %@", (long)audioSessionError.code, audioSessionError.localizedDescription);
 	}
@@ -512,6 +513,6 @@ float ofApp::setAVSessionSampleRate(float preferredSampleRate) {
 	}
 	ofLogNotice() << "AVSession samplerate: " << session.sampleRate << ", I/O buffer duration: " << session.IOBufferDuration;
 
-	// our actual samplerate, might be differnt aka 48k on iPhone 6S
+	// our actual samplerate, might be different aka 48k on iPhone 6S
 	return session.sampleRate;
 }

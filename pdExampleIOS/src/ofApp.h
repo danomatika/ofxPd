@@ -19,7 +19,7 @@
 // a namespace for the Pd types
 using namespace pd;
 
-// derive from Pd receiver classes to receieve message and midi events
+// derive from Pd receiver classes to receive message and midi events
 class ofApp : public ofxiOSApp, public PdReceiver, public PdMidiReceiver {
 
 	public:
