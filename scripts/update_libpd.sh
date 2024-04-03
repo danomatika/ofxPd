@@ -12,12 +12,7 @@ DEST=../libs/libpd
 cd "$(dirname $0)"
 
 # get source
-git clone --depth 1 https://github.com/libpd/libpd.git
-cd $SRC
-git checkout $VER
-git submodule init
-git submodule update
-cd -
+git clone --recurse-submodules --remote-submodules https://github.com/libpd/libpd.git
 
 # remove uneeded makefiles, etc in src
 find $SRC/pure-data -name "makefile*" -delete
@@ -56,6 +51,7 @@ rm $SRC/pure-data/src/x_libpdreceive.*
 rm $SRC/pure-data/src/z_*.*
 
 # remove some other stuff we don't need ...
+rm $SRC/pure-data/src/m_dispatch_gen.c
 rm $SRC/pure-data/src/s_entry.c
 rm $SRC/pure-data/src/s_file.c
 rm $SRC/pure-data/src/s_watchdog.c
