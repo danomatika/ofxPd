@@ -26,8 +26,6 @@ common:
 	ADDON_CFLAGS = -DPD -DUSEAPI_DUMMY -DPD_INTERNAL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H -DLIBPD_EXTRA
 	# uncomment this for multiple instance support, ie. for pdMultiExample
 	#ADDON_CFLAGS += -DPDINSTANCE -DPDTHREADS
-	# this is included directly in pd~.c, don't build twice
-	ADDON_SOURCES_EXCLUDE = libs/libpd/pure-data/extra/pd~/binarymsg.c
 
 linux64:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
@@ -84,3 +82,8 @@ ios:
 	ADDON_CFLAGS += -fcommon -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE
 	# fix dispatch.h error with macOS SDK 10.13+
 	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1
+
+emscripten:
+	ADDON_LIBS_EXCLUDE = libs/libpd/libs
+	# support dynamic loading
+	ADDON_CFLAGS += -DHAVE_LIBDL
