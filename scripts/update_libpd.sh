@@ -12,7 +12,7 @@ DEST=../libs/libpd
 cd "$(dirname $0)"
 
 # get source
-git clone --recurse-submodules --remote-submodules https://github.com/libpd/libpd.git
+git clone -b emscripten --recurse-submodules --remote-submodules https://github.com/Jonathhhan/libpd.git
 
 # remove uneeded makefiles, etc in src
 find $SRC/pure-data -name "makefile*" -delete
