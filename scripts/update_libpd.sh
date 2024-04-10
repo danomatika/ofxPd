@@ -3,6 +3,7 @@
 # exit on error
 set -e
 
+REPO=https://github.com/libpd/libpd.git
 VER=master
 SRC=libpd
 DEST=../libs/libpd
@@ -11,13 +12,18 @@ DEST=../libs/libpd
 
 cd "$(dirname $0)"
 
+# optionally override repo url, set to "libpd" for default
+if [ "$1" != "" -a "$1" != "libpd" ] ; then
+	REPO="$1"
+fi
+
 # optionally checkout a tag, branch, or commit etc
-if [ "$1" != "" ] ; then
-	VER="$1"
+if [ "$2" != "" ] ; then
+	VER="$2"
 fi
 
 # get source
-git clone --depth 1 https://github.com/libpd/libpd.git
+git clone --depth 1 $REPO
 cd $SRC
 git checkout $VER
 git submodule init

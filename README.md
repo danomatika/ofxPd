@@ -260,6 +260,29 @@ Name the zip using the following format: "libpd-VER-ARCH-VS####.zip". For exampl
 
 Create an issue on the ofxPd Github repo about your new build and we can add it to the [release builds link](http://docs.danomatika.com/releases/ofxPd/).
 
+Trying Newer Versions of libpd
+------------------------------
+
+The source files for libpd (Pure Data vanilla + C wrappers) are included with this repo but are generally only updated for a new libpd and/or OF version release. If you want to try a newer version of libpd in the meantime, you can use the update script to pull the current libpd master branch:
+
+    ./scripts/update_libpd.sh
+
+This will clone the libpd repo and copy the required files into `libs/libpd`.
+
+_Note: As Pure Data is updated, some files may be added or removed, so you may need to either remove unneeded sources and regenerate your project files. You may also need to set additional defines. **Please check the libpd changelog first before opening an issue about this.**_
+
+Additionally, if you want to test a specific libpd tag, branch, or commit you can provide arguments to the script:
+
+    ./scripts/update_libpd.sh REPO VER
+
+For instance, to try a libpd branch named "bugfix/bug1" use:
+
+    ./scripts/update_libpd.sh libpd bugfix/bug1
+
+If you have a fork of libpd you want to test with ofxPd, you can override the default "libpd" repo with the URL:
+
+    ./scripts/update_libpd.sh https://github.com/foobar/libpd.git master
+
 Notes
 -----
 
