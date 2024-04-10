@@ -76,13 +76,13 @@ android/armeabi-v7a:
 osx:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT
 	# fix dispatch.h error with macOS SDK 10.13+
 	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1
 
 ios:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# set No common blocks option to avoid duplicate symbols link error
-	ADDON_CFLAGS += -fcommon -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE
+	ADDON_CFLAGS += -fcommon -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT
 	# fix dispatch.h error with macOS SDK 10.13+
 	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1
