@@ -283,6 +283,10 @@ If you have a fork of libpd you want to test with ofxPd, you can override the de
 
     ./scripts/update_libpd.sh https://github.com/foobar/libpd.git master
 
+To revert libpd to the sources included with ofxPd, use the clean script:
+
+    ./scripts/clean_libpd.sh
+
 Notes
 -----
 
