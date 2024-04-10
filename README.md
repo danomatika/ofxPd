@@ -154,8 +154,8 @@ If you want to build ofxPd with the libpd experimental libpd multi-instance supp
 ### For Xcode:
 
 Additional C flags are needed per-platform:
-* macOS: `-DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE`
-* iOS: `-fcommon -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE`
+* macOS: `-DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT`
+* iOS: `-fcommon -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT`
 
 * Create a new group "ofxPd" 
 * Drag these directories from ofxPd into this new group: ofxPd/src
