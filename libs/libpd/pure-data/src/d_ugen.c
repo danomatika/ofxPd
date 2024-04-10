@@ -255,7 +255,14 @@ static void *switch_new(t_floatarg fvecsize, t_floatarg foverlap,
 static void block_float(t_block *x, t_floatarg f)
 {
     if (x->x_switched)
+    {
+        int wason = x->x_switchon;
         x->x_switchon = (f != 0);
+            /* bash phase if switched on again to make sure
+            we are in sync with inlet prolog and outlet epilog! */
+        if (!wason && x->x_reblock)
+            x->x_phase = THIS->u_phase & (x->x_period - 1);
+    }
 }
 
 static void block_bang(t_block *x)
@@ -1056,7 +1063,7 @@ void ugen_done_graph(t_dspcontext *dc)
     t_dspcontext *parent_context = dc->dc_parentcontext;
     t_float parent_srate;
     int parent_vecsize, parent_overlap;
-    int period, frequency, phase, calcsize;
+    int period, frequency, calcsize;
     t_float srate;
     int chainblockbegin;    /* DSP chain onset before block prolog code */
     int chainblockend;      /* and after block epilog code */
@@ -1124,7 +1131,6 @@ void ugen_done_graph(t_dspcontext *dc)
             (parent_vecsize * realoverlap * upsample);
         frequency = (parent_vecsize * realoverlap * upsample)/
             (calcsize * downsample);
-        phase = blk->x_phase;
         srate = parent_srate * realoverlap * upsample / downsample;
         if (period < 1) period = 1;
         if (frequency < 1) frequency = 1;
@@ -1145,7 +1151,6 @@ void ugen_done_graph(t_dspcontext *dc)
         calcsize = parent_vecsize;
         downsample = upsample = 1;
         period = frequency = 1;
-        phase = 0;
         if (!parent_context) reblock = 1;
         switched = 0;
     }
@@ -1477,7 +1482,7 @@ static void samplerate_tilde_bang(t_samplerate *x)
     outlet_float(x->x_obj.ob_outlet, canvas_getsr(x->x_canvas));
 }
 
-static void *samplerate_tilde_new(t_symbol *s)
+static void *samplerate_tilde_new(void)
 {
     t_samplerate *x = (t_samplerate *)pd_new(samplerate_tilde_class);
     outlet_new(&x->x_obj, &s_float);

@@ -25,10 +25,12 @@ t_pd *pd_new(t_class *c)
     return (x);
 }
 
+typedef void (*t_freemethod)(t_pd *);
+
 void pd_free(t_pd *x)
 {
     t_class *c = *x;
-    if (c->c_freemethod) (*(t_gotfn)(c->c_freemethod))(x);
+    if (c->c_freemethod) (*(t_freemethod)(c->c_freemethod))(x);
     if (c->c_patchable)
     {
         while (((t_object *)x)->ob_outlet)
@@ -275,7 +277,10 @@ void pd_bang(t_pd *x)
 
 void pd_float(t_pd *x, t_float f)
 {
-    (*(*x)->c_floatmethod)(x, f);
+    if (x == &pd_objectmaker)
+        ((t_floatmethodr)(*(*x)->c_floatmethod))(x, f);
+    else
+        (*(*x)->c_floatmethod)(x, f);
 }
 
 void pd_pointer(t_pd *x, t_gpointer *gp)
@@ -322,7 +327,7 @@ void pd_init(void)
     pd_init_systems();
 }
 
-EXTERN void pd_init_systems(void) {
+void pd_init_systems(void) {
     mess_init();
     sys_lock();
     obj_init();
@@ -332,12 +337,12 @@ EXTERN void pd_init_systems(void) {
     sys_unlock();
 }
 
-EXTERN void pd_term_systems(void) {
+void pd_term_systems(void) {
     sys_lock();
     sys_unlock();
 }
 
-EXTERN t_canvas *pd_getcanvaslist(void)
+t_canvas *pd_getcanvaslist(void)
 {
     return (pd_this->pd_canvaslist);
 }

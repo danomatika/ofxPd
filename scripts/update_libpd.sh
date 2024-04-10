@@ -72,6 +72,7 @@ rm $SRC/pure-data/src/s_file.c
 rm $SRC/pure-data/src/s_watchdog.c
 rm $SRC/pure-data/src/u_pdreceive.c
 rm $SRC/pure-data/src/u_pdsend.c
+rm $SRC/pure-data/src/m_dispatch_gen.c
 rm -f $SRC/pure-data/.dir-locals.el
 rm -f $SRC/pure-data/src/.dir-locals.el
 
