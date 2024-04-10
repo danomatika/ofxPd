@@ -34,22 +34,22 @@ common:
 linux64:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 linux:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 linuxarmv6l:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 linuxarmv7l:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 msys2:
 	# support dynamic loading
@@ -66,12 +66,12 @@ vs:
 android/armeabi:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 android/armeabi-v7a:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 osx:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
