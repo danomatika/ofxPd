@@ -269,7 +269,7 @@ The source files for libpd (Pure Data vanilla + C wrappers) are included with th
 
 This will clone the libpd repo and copy the required files into `libs/libpd`.
 
-_Note: As Pure Data is updated, some files may be added or removed, so you may need to either remove unneeded sources and regenerate your project files. You may also need to set additional defines. **Please check the libpd changelog first before opening an issue about this.**_
+_Note: As Pure Data is updated, some files may be added or removed, so you may need to either remove unneeded sources and regenerate your project files. You may also need to set additional defines. **Please check the [libpd changelog](https://github.com/libpd/libpd/blob/master/CHANGES.txt) first before opening an issue about this.**_
 
 Additionally, if you want to test a specific libpd tag, branch, or commit you can provide arguments to the script:
 
