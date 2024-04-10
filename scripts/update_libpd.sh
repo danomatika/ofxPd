@@ -11,6 +11,11 @@ DEST=../libs/libpd
 
 cd "$(dirname $0)"
 
+# optionally checkout a tag, branch, or commit etc
+if [ "$1" != "" ] ; then
+	VER="$1"
+fi
+
 # get source
 git clone --depth 1 https://github.com/libpd/libpd.git
 cd $SRC
