@@ -32,22 +32,22 @@ common:
 linux64:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 linux:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 linuxarmv6l:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 linuxarmv7l:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 msys2:
 	# support dynamic loading
@@ -64,25 +64,25 @@ vs:
 android/armeabi:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 android/armeabi-v7a:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_ENDIAN_H
 
 osx: macos
 
 macos:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
-	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE
+	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT
 	# fix dispatch.h error with macOS SDK 10.13+
 	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1
 
 ios:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# set No common blocks option to avoid duplicate symbols link error
-	ADDON_CFLAGS += -fcommon -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE
+	ADDON_CFLAGS += -fcommon -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT
 	# fix dispatch.h error with macOS SDK 10.13+
 	ADDON_CPPFLAGS += -DHAVE_UNISTD_H=1

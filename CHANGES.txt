@@ -1,3 +1,10 @@
+1.10.1: 2024 Apr 10
+
+* fixed endian detection issues on Linux by defining HAVE_ENDIAN_H
+
+* defined _DARWIN_UNLIMITED_SELECT to increased max number of file descriptors
+  on macOS
+
 1.10.0: 2023 Nov 16
 
 * updated to libpd 0.14.0 (pd 0.54-1)
