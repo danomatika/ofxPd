@@ -71,7 +71,9 @@ android/armeabi-v7a:
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL
 
-osx:
+osx: macos
+
+macos:
 	ADDON_LIBS_EXCLUDE = libs/libpd/libs
 	# support dynamic loading
 	ADDON_CFLAGS += -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_C_SOURCE
