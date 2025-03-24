@@ -286,9 +286,11 @@ You may be building an audio app for iOS that you want to run without the automa
 Bugs & Errors
 -------------
 
-### OF 0.12 and Xcode: 'ext.h' file not found
+### OF 0.12.0 and Xcode: 'ext.h' file not found
 
-The OF 0.12 ProjectGenerator seems to have an issue with setting the correct C flags. Check that the required flags specified in the "Adding ofxPd to an Existing Project" section are set in the Xcode project:
+_Note: This issue is fixed in the OF 0.12.1 ProjectGenerator nightly builds._
+
+The OF 0.12.0 ProjectGenerator seems to have an issue with setting the correct C flags. Check that the required flags specified in the "Adding ofxPd to an Existing Project" section are set in the Xcode project:
 
 1. Click on the project in the left-hand Project Navigator
 2. Under Targets->YourApp->Build->**Other C Flags** (make sure "All" is selected)
