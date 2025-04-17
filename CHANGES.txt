@@ -1,3 +1,8 @@
+TBA
+
+* fixed pdMultiExample not using newer ofSoundBuffer audioIn and audioOut
+  functions (reported by Theo Watson)
+
 1.10.1: 2024 Apr 10
 
 * fixed endian detection issues on Linux by defining HAVE_ENDIAN_H
