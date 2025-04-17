@@ -30,11 +30,9 @@ void ofApp::setup() {
 	int numOutputs = 2;
 
 	// allocate instance output buffers
-	outputBufferSize = numOutputs * ticksPerBuffer * ofxPd::blockSize();
-	outputBuffer1 = new float[outputBufferSize];
-	outputBuffer2 = new float[outputBufferSize];
-	memset(outputBuffer1, 0, outputBufferSize);
-	memset(outputBuffer2, 0, outputBufferSize);
+	int outputBufferFrames = ticksPerBuffer * ofxPd::blockSize();
+	outputBuffer1.allocate(outputBufferFrames, numOutputs);
+	outputBuffer2.allocate(outputBufferFrames, numOutputs);
 
 	// setup OF sound stream
 	ofSoundStreamSettings settings;
@@ -123,27 +121,27 @@ void ofApp::exit() {
 }
 
 //--------------------------------------------------------------
-void ofApp::audioIn(float * input, int bufferSize, int nChannels) {
-	
+void ofApp::audioIn(ofSoundBuffer& buffer) {
+
 	// process audio input for instance 1
-	pd1.audioIn(input, bufferSize, nChannels);
+	pd1.audioIn(buffer);
 
 	// process audio input for instance 2
-	pd2.audioIn(input, bufferSize, nChannels);
+	pd2.audioIn(buffer);
 }
 
 //--------------------------------------------------------------
-void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
+void ofApp::audioOut(ofSoundBuffer& buffer) {
 
 	// process audio output for instance 1
-	pd1.audioOut(outputBuffer1, bufferSize, nChannels);
-	
+	pd1.audioOut(outputBuffer1);
+
 	// process audio output for instance 2
-	pd2.audioOut(outputBuffer2, bufferSize, nChannels);
+	pd2.audioOut(outputBuffer2);
 
 	// mix the two instance output buffers together
-	for(int i = 0; i < outputBufferSize; i += 1) {
-		output[i] = (outputBuffer1[i] + outputBuffer2[i]) * 0.5f; // simple mix
+	for(int i = 0; i < outputBuffer1.size() && i < buffer.size(); i++) {
+		buffer[i] = (outputBuffer1[i] + outputBuffer2[i]) * 0.5f; // simple mix
 	}
 }
 

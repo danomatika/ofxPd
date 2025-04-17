@@ -40,17 +40,16 @@ class ofApp : public ofBaseApp, public PdReceiver {
 		void draw();
 		void exit();
 		
-		// audio callbacks, using raw buffer versions
-		void audioIn(float * input, int bufferSize, int nChannels);
-		void audioOut(float * output, int bufferSize, int nChannels);
-		
+		// audio callbacks
+		void audioIn(ofSoundBuffer& buffer);
+		void audioOut(ofSoundBuffer& buffer);
+
 		// pd message receiver callbacks
 		void print(const std::string &message);
 	
 		// pd instances
 		ofxPd pd1, pd2;
-	
-		int outputBufferSize; //< audio output buffer size
-		float *outputBuffer1; //< interleaved audio output buffer for instance 1
-		float *outputBuffer2; //< interleaved audio output buffer for instance 2
+
+		ofSoundBuffer outputBuffer1; //< interleaved audio output buffer for instance 1
+		ofSoundBuffer outputBuffer2; //< interleaved audio output buffer for instance 2
 };
